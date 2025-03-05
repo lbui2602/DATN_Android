@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/attendanceFragment"
-        android:name="com.example.datn.AttendanceFragment"
+        android:name="com.example.datn.view.main.fragment.AttendanceFragment"
         android:label="fragment_attendance"
         tools:layout="@layout/fragment_attendance" />
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.datn.HistoryFragment"
+        android:name="com.example.datn.view.main.fragment.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.example.datn.SettingFragment"
+        android:name="com.example.datn.view.main.fragment.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
 </navigation>

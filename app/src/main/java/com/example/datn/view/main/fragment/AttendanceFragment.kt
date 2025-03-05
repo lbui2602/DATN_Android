@@ -1,4 +1,4 @@
-package com.example.datn
+package com.example.datn.view.main.fragment
 
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,6 +14,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.example.datn.RetrofitClient
 import com.example.datn.databinding.FragmentAttendanceBinding
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -22,7 +23,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
-import java.util.concurrent.Executors
 
 class AttendanceFragment : Fragment() {
     lateinit var binding : FragmentAttendanceBinding
@@ -54,7 +54,6 @@ class AttendanceFragment : Fragment() {
     }
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
-
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder().build().also {
