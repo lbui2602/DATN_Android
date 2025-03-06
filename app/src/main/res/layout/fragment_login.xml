@@ -11,9 +11,10 @@
         android:background="@color/blue"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.auth.fragment.LoginFragment">
+        tools:context=".view.auth.fragment.login.LoginFragment">
         <ImageView
-            android:src="@drawable/emiu"
+            android:id="@+id/imgLogo"
+            android:src="@color/white"
             android:layout_marginTop="70dp"
             android:layout_gravity="center"
             android:layout_width="100dp"
@@ -35,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <EditText
+                android:id="@+id/edtEmail"
                 android:hint="Nhập vào email"
                 android:textColor="@color/black"
                 android:inputType="text"
@@ -46,12 +48,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
+                    android:id="@+id/edtPassword"
                     android:inputType="textPassword"
                     android:hint="Nhập vào mật khẩu"
                     android:layout_margin="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <ImageView
+                    android:id="@+id/imgVisible"
                     android:layout_gravity="center|end"
                     android:layout_margin="10dp"
                     android:src="@drawable/ic_visible"
@@ -59,15 +63,15 @@
                     android:layout_height="wrap_content"/>
             </FrameLayout>
             <Button
+                android:id="@+id/btnLogin"
                 android:background="@color/blue"
                 android:text="Đăng nhập"
                 android:padding="5dp"
-                android:layout_margin="10dp"
+                android:layout_margin="20dp"
                 android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
     </LinearLayout>
 </layout>

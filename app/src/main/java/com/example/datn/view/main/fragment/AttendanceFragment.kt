@@ -14,7 +14,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import com.example.datn.RetrofitClient
+import com.example.datn.remote.RetrofitClient
 import com.example.datn.databinding.FragmentAttendanceBinding
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -120,21 +120,21 @@ class AttendanceFragment : Fragment() {
         val roleId = RequestBody.create("text/plain".toMediaTypeOrNull(), "2")
         val idDepartment = RequestBody.create("text/plain".toMediaTypeOrNull(), "1")
 
-        RetrofitClient.instance.uploadImage(fullName, email, password, phone, address, roleId, idDepartment, body)
-            .enqueue(object : Callback<com.example.datn.Response> {
-                override fun onResponse(call: Call<com.example.datn.Response>, response: Response<com.example.datn.Response>) {
-                    if (response.isSuccessful) {
-                        val uploadResponse = response.body()
-                        Log.e("CameraFragment", "Upload thành công: ${uploadResponse?.message}")
-                    } else {
-                        Log.e("CameraFragment", "Lỗi khi upload: ${response.errorBody()?.string()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<com.example.datn.Response>, t: Throwable) {
-                    Log.e("CameraFragment", "Upload thất bại: ${t.message}")
-                }
-            })
+//        RetrofitClient.instance.uploadImage(fullName, email, password, phone, address, roleId, idDepartment, body)
+//            .enqueue(object : Callback<com.example.datn.Response> {
+//                override fun onResponse(call: Call<com.example.datn.Response>, response: Response<com.example.datn.Response>) {
+//                    if (response.isSuccessful) {
+//                        val uploadResponse = response.body()
+//                        Log.e("CameraFragment", "Upload thành công: ${uploadResponse?.message}")
+//                    } else {
+//                        Log.e("CameraFragment", "Lỗi khi upload: ${response.errorBody()?.string()}")
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<com.example.datn.Response>, t: Throwable) {
+//                    Log.e("CameraFragment", "Upload thất bại: ${t.message}")
+//                }
+//            })
 
     }
 
