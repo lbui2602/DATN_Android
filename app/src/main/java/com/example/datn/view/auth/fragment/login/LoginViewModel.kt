@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
-import com.example.datn.remote.Repository
+import com.example.datn.remote.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

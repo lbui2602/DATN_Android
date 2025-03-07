@@ -17,8 +17,10 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "face_api_key", "\"${face_api_key}\""
+        buildConfigField "String", "face_api_secret", "\"${face_api_secret}\""
+        buildConfigField "String", "faceset_token", "\"${faceset_token}\""
     }
 
     buildTypes {
@@ -35,6 +37,7 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures{
+        buildConfig true
         dataBinding true
     }
 }

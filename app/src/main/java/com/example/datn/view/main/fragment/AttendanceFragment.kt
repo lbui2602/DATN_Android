@@ -62,7 +62,7 @@ class AttendanceFragment : Fragment() {
             }
             imageCapture = ImageCapture.Builder().build()
 
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
             try {
                 cameraProvider.unbindAll()
@@ -98,7 +98,6 @@ class AttendanceFragment : Fragment() {
                     Log.e("CameraFragment", "capture2")
                     val imageUri = Uri.fromFile(file)
                     binding.img.setImageURI(imageUri)
-
                     // Gửi ảnh lên API
                     uploadImage(file)
                 }
@@ -112,31 +111,7 @@ class AttendanceFragment : Fragment() {
     private fun uploadImage(file: File) {
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
         val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
-
-        val fullName = RequestBody.create("text/plain".toMediaTypeOrNull(), "Nguyen Van A")
-        val email = RequestBody.create("text/plain".toMediaTypeOrNull(), "anv@gmail.com")
-        val password = RequestBody.create("text/plain".toMediaTypeOrNull(), "11111111")
-        val phone = RequestBody.create("text/plain".toMediaTypeOrNull(), "0976705402")
-        val address = RequestBody.create("text/plain".toMediaTypeOrNull(), "HN")
-        val roleId = RequestBody.create("text/plain".toMediaTypeOrNull(), "2")
-        val idDepartment = RequestBody.create("text/plain".toMediaTypeOrNull(), "1")
-
-//        RetrofitClient.instance.uploadImage(fullName, email, password, phone, address, roleId, idDepartment, body)
-//            .enqueue(object : Callback<com.example.datn.Response> {
-//                override fun onResponse(call: Call<com.example.datn.Response>, response: Response<com.example.datn.Response>) {
-//                    if (response.isSuccessful) {
-//                        val uploadResponse = response.body()
-//                        Log.e("CameraFragment", "Upload thành công: ${uploadResponse?.message}")
-//                    } else {
-//                        Log.e("CameraFragment", "Lỗi khi upload: ${response.errorBody()?.string()}")
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<com.example.datn.Response>, t: Throwable) {
-//                    Log.e("CameraFragment", "Upload thất bại: ${t.message}")
-//                }
-//            })
-
+        val api_key = RequestBody.create("text/plain".toMediaTypeOrNull(), "")
+        val api_secret = RequestBody.create("text/plain".toMediaTypeOrNull(), "")
     }
-
 }

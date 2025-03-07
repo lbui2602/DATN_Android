@@ -16,9 +16,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-//192.168.1.101
-    private const val BASE_URL_1 = "http://192.168.1.101:3000/"  // Backend chính
-    private const val BASE_URL_2 = "https://api-us.faceplusplus.com/"  // Face++
+    //192.168.1.101
+    //192.168.52.52
+    private const val BASE_URL_1 = "http://192.168.52.52:3000/"  // Backend chính
+    private const val BASE_URL_2 = "https://api-us.faceplusplus.com/facepp/v3/"  // Face++
 
     @Provides
     @Singleton
