@@ -7,6 +7,7 @@ import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.models.face_api.RemoveFaceResponse
 import com.example.datn.models.face_api.SearchFaceResponse
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -25,8 +26,8 @@ interface FaceApiService {
     @POST("detect")
     suspend fun detectFace(
         @Part image: MultipartBody.Part,
-        @Query("api_key") apiKey: String,
-        @Query("api_secret") apiSecret: String
+        @Part("api_key") apiKey: RequestBody,
+        @Part("api_secret") apiSecret: RequestBody
     ): DetectFaceResponse
 
     @FormUrlEncoded
@@ -60,8 +61,8 @@ interface FaceApiService {
     @POST("search")
     suspend fun searchFace(
         @Part image: MultipartBody.Part,
-        @Query("api_key") apiKey: String,
-        @Query("api_secret") apiSecret: String,
-        @Query("outer_id") outerId: String
+        @Part("api_key") apiKey: RequestBody,
+        @Part("api_secret") apiSecret: RequestBody,
+        @Part("outer_id") outerId: RequestBody
     ): SearchFaceResponse
 }
