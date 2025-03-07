@@ -6,7 +6,11 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id("com.google.devtools.ksp")
 }
-
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(new FileInputStream(localPropertiesFile))
+}
 android {
     namespace 'com.example.datn'
     compileSdk 35
@@ -18,9 +22,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "face_api_key", "\"${face_api_key}\""
-        buildConfigField "String", "face_api_secret", "\"${face_api_secret}\""
-        buildConfigField "String", "faceset_token", "\"${faceset_token}\""
+        buildConfigField "String", "face_api_key", "\"${localProperties.getProperty("face_api_key")}\""
+        buildConfigField "String", "face_api_secret", "\"${localProperties.getProperty("face_api_secret")}\""
+        buildConfigField "String", "faceset_token", "\"${localProperties.getProperty("faceset_token")}\""
     }
 
     buildTypes {
