@@ -45,6 +45,5 @@ class RegisterFragment : Fragment() {
         val phone = binding.edtFullname.text.toString().trim()
         val address = binding.edtFullname.text.toString().trim()
         val departmentId = binding.edtFullname.text.toString().trim()
-        val roleId = binding.spnRole.
     }
 }
