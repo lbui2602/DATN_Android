@@ -1,4 +1,4 @@
-package com.example.datn.models
+package com.example.datn.models.register
 
 data class User(
     val __v: Int,

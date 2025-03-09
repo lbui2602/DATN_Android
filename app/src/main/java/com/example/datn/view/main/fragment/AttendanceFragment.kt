@@ -1,6 +1,5 @@
 package com.example.datn.view.main.fragment
 
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -22,23 +21,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.example.datn.BuildConfig
-import com.example.datn.remote.RetrofitClient
 import com.example.datn.databinding.FragmentAttendanceBinding
-import com.example.datn.view.auth.fragment.login.LoginViewModel
-import com.example.datn.view.main.MainActivity
 import com.google.android.material.snackbar.Snackbar
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 
@@ -95,7 +86,6 @@ class AttendanceFragment : Fragment() {
                 Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
             }
         })
-
     }
 
     private fun startCamera() {
@@ -133,6 +123,7 @@ class AttendanceFragment : Fragment() {
             }
         }
     }
+
     private fun capturePhoto() {
         Log.e("CameraFragment", "capture")
         val file = File(requireContext().externalMediaDirs.first(), "lbui.jpg")
@@ -204,8 +195,6 @@ class AttendanceFragment : Fragment() {
 
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
-
-
 
     private fun uploadImage(file: File) {
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)

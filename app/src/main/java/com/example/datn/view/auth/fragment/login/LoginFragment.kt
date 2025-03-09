@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.datn.BuildConfig
+import com.example.datn.R
 import com.example.datn.databinding.FragmentLoginBinding
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.view.main.MainActivity
@@ -58,6 +60,9 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val loginRequest = LoginRequest("anv@gmail.com","11111111")
             viewModel.login(loginRequest)
+        }
+        binding.tvRegister.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 }
