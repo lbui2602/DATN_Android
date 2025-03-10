@@ -14,7 +14,7 @@ import com.example.datn.remote.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+@HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
@@ -26,6 +26,33 @@ class RegisterViewModel @Inject constructor(
 
     private val _departmentsResponse = MutableLiveData<DepartmentsResponses?>()
     val departmentsResponse: LiveData<DepartmentsResponses?> get() = _departmentsResponse
+
+    private val _isVisible = MutableLiveData<Boolean?>()
+    val isVisible: LiveData<Boolean?> get() = _isVisible
+
+    private val _isVisibleConfirm = MutableLiveData<Boolean?>()
+    val isVisibleConfirm: LiveData<Boolean?> get() = _isVisibleConfirm
+
+    init {
+        _isVisible.value = false
+        _isVisibleConfirm.value = false
+    }
+
+    fun changVisiblePassword() {
+        if (_isVisible.value == true) {
+            _isVisible.value = false
+        } else {
+            _isVisible.value = true
+        }
+    }
+
+    fun changVisiblePasswordConfirm() {
+        if (_isVisibleConfirm.value == true) {
+            _isVisibleConfirm.value = false
+        } else {
+            _isVisibleConfirm.value = true
+        }
+    }
 
     fun register(registerRequest: RegisterRequest){
         viewModelScope.launch {
@@ -72,5 +99,7 @@ class RegisterViewModel @Inject constructor(
             }
         }
     }
+
+
 
 }

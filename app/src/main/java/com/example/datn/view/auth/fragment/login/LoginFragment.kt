@@ -15,6 +15,7 @@ import com.example.datn.BuildConfig
 import com.example.datn.R
 import com.example.datn.databinding.FragmentLoginBinding
 import com.example.datn.models.login.LoginRequest
+import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,19 +38,16 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("apiKey",BuildConfig.face_api_key)
-        Log.e("apiKey",BuildConfig.face_api_secret)
-        Log.e("apiKey",BuildConfig.faceset_token)
         setAction()
         setObserver()
     }
 
     private fun setObserver() {
-        viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response->
+        viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
                 print(response.toString())
-                Glide.with(requireContext()).load("http://192.168.52.52:3000"+response.image).into(binding.imgLogo)
-                startActivity(Intent(requireContext(),MainActivity::class.java))
+                Glide.with(requireContext()).load("http://192.168.1.101:3000"+response.image).into(binding.imgLogo)
+//                startActivity(Intent(requireContext(),MainActivity::class.java))
             } else {
                 Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
             }
@@ -58,11 +56,23 @@ class LoginFragment : Fragment() {
 
     private fun setAction(){
         binding.btnLogin.setOnClickListener {
-            val loginRequest = LoginRequest("anv@gmail.com","11111111")
-            viewModel.login(loginRequest)
+            val email = binding.edtEmail.text.toString().trim()
+            val password = binding.edtPassword.text.toString().trim()
+            validate(email,password,{
+                viewModel.login(LoginRequest(email,password))
+            })
         }
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+    }
+    private fun validate(email:String,password:String,action : () -> Unit){
+        if(email.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_login_email))
+        }else if(password.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_login_password))
+        }else{
+            action()
         }
     }
 }

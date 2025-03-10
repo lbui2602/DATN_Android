@@ -7,5 +7,4 @@ data class RegisterRequest(
     val phone: String,
     val address: String,
     val departmentId: String,
-    val roleId: String
-    )
+    val roleId: String)
