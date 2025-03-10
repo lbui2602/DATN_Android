@@ -1,6 +1,7 @@
 package com.example.datn.remote.repository
 
 import android.util.Log
+import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.CreateFaceSetResponse
 import com.example.datn.models.face_api.DetectFaceResponse
@@ -8,6 +9,7 @@ import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
+import com.example.datn.models.role.RolesResponse
 import com.example.datn.remote.service.ApiService
 import com.example.datn.remote.service.FaceApiService
 import okhttp3.MultipartBody
@@ -32,5 +34,11 @@ class Repository @Inject constructor(
     }
     suspend fun addFaceToFaceSet(apiKey: String,apiSecret:String,outerId:String,faceTokens:String) : AddFaceResponse {
         return faceApiService.addFaceToFaceSet(apiKey, apiSecret, outerId, faceTokens)
+    }
+    suspend fun getRoles() : RolesResponse {
+        return apiService.getRoles()
+    }
+    suspend fun getDepartments() : DepartmentsResponses {
+        return apiService.getDepartments()
     }
 }
