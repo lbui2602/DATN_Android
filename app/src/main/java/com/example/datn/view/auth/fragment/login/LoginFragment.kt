@@ -58,9 +58,9 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val email = binding.edtEmail.text.toString().trim()
             val password = binding.edtPassword.text.toString().trim()
-            validate(email,password,{
-                viewModel.login(LoginRequest(email,password))
-            })
+            validate(email,password) {
+                viewModel.login(LoginRequest(email, password))
+            }
         }
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)

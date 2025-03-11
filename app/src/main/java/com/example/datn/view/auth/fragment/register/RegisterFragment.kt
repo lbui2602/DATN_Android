@@ -12,13 +12,12 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.databinding.FragmentRegisterBinding
 import com.example.datn.models.department.Department
+import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.Role
-import com.example.datn.view.auth.fragment.login.LoginViewModel
-import com.example.datn.view.main.MainActivity
+import com.example.datn.util.Util
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,6 +27,8 @@ class RegisterFragment : Fragment() {
     private var roles = mutableListOf<Role>()
     private var departments = mutableListOf<Department>()
     private val viewModel: RegisterViewModel by viewModels()
+    var selectedRoleID = ""
+    var selectedDepartmentId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -61,11 +62,42 @@ class RegisterFragment : Fragment() {
         binding.llBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding.btnRegister.setOnClickListener {
+            val fullname = binding.edtFullname.text.toString().trim()
+            val email = binding.edtEmail.text.toString().trim()
+            val password = binding.edtPassword.text.toString().trim()
+            val passwordConfirm = binding.edtPasswordConfirm.text.toString().trim()
+            val phone = binding.edtPhone.text.toString().trim()
+            val address = binding.edtAddress.text.toString().trim()
+            validate(fullname,email,password,passwordConfirm,phone,address) {
+                viewModel.register(
+                    RegisterRequest(
+                        fullname,
+                        email,
+                        password,
+                        phone,
+                        address,
+                        selectedDepartmentId,
+                        selectedRoleID
+                    )
+                )
+            }
+        }
     }
     private fun setObservers(){
+        viewModel.registerResponse.observe(viewLifecycleOwner, Observer { response->
+            if (response != null) {
+                if(response.code.toInt() == 1){
+                    findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
+                }
+            } else {
+                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+
         binding.spnRole.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedItem = roles[position]
+                selectedRoleID = roles[position]._id
 
             }
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -74,7 +106,7 @@ class RegisterFragment : Fragment() {
 
         binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedItem = departments[position]
+                selectedDepartmentId = departments[position]._id
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -101,17 +133,6 @@ class RegisterFragment : Fragment() {
                 Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
             }
         })
-        viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->
-            if (isVisible == true) {
-                binding.imgVisible.setImageResource(R.drawable.ic_visible_off)
-                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            } else {
-                binding.imgVisible.setImageResource(R.drawable.ic_visible)
-                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
-            binding.edtPassword.setSelection(binding.edtPassword.text!!.length)
-        })
-
         viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->
             if (isVisible == true) {
                 binding.imgVisible.setImageResource(R.drawable.ic_visible_off)
@@ -152,12 +173,37 @@ class RegisterFragment : Fragment() {
         adapterDepartment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnDepartment.adapter = adapterDepartment
     }
-    private fun validate(){
-        val fullname = binding.edtFullname.text.toString().trim()
-        val email = binding.edtFullname.text.toString().trim()
-        val password = binding.edtFullname.text.toString().trim()
-        val phone = binding.edtFullname.text.toString().trim()
-        val address = binding.edtFullname.text.toString().trim()
-        val departmentId = binding.edtFullname.text.toString().trim()
+    private fun validate(
+        fullname : String,
+        email : String,
+        password : String,
+        passwordConfirm : String,
+        phone : String,
+        address : String,
+        action : () -> Unit){
+        if(fullname.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_register_fullname))
+        }
+        else if(email.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_login_email))
+        }
+        else if(password.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_login_password))
+        }
+        else if(passwordConfirm.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_login_password_confirm))
+        }
+        else if(!password.equals(passwordConfirm)){
+            Util.showDialog(requireContext(),getString(R.string.msg_password_no_match))
+        }
+        else if(phone.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_register_phone))
+        }
+        else if(address.isNullOrBlank()){
+            Util.showDialog(requireContext(),getString(R.string.msg_register_address))
+        }
+        else{
+            action()
+        }
     }
 }

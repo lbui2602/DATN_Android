@@ -1,10 +1,12 @@
 package com.example.datn.models.register
 
+import com.example.datn.models.department.Department
+
 data class RegisterRequest(
-    val fullname : String,
+    val fullName : String,
     val email: String,
     val password: String,
     val phone: String,
     val address: String,
-    val departmentId: String,
+    val idDepartment: String,
     val roleId: String)

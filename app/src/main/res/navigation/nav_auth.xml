@@ -23,5 +23,13 @@
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.datn.view.auth.fragment.register.RegisterFragment"
-        android:label="RegisterFragment" />
+        android:label="RegisterFragment" >
+        <action
+            android:id="@+id/action_registerFragment_to_uploadAvatarFragment"
+            app:destination="@id/uploadAvatarFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/uploadAvatarFragment"
+        android:name="com.example.datn.view.auth.fragment.upload_avatar.UploadAvatarFragment"
+        android:label="UploadAvatarFragment" />
 </navigation>

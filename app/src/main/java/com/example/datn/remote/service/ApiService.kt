@@ -16,7 +16,7 @@ import retrofit2.http.Part
 interface ApiService {
 
     @POST("api/auth/register")
-    fun register(
+    suspend fun register(
         @Body request : RegisterRequest
     ): RegisterResponse
 
