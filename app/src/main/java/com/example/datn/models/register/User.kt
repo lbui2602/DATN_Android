@@ -11,6 +11,6 @@ data class User(
     val image: String,
     val password: String,
     val phone: String,
-    val roleId: Int,
+    val roleId: String,
     val updatedAt: String
 )

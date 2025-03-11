@@ -58,13 +58,14 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = repository.register(registerRequest)
-                if(response!=null){
+                Log.e("response",response.toString())
+                if(response.code.toInt() == 1){
                     Log.e("loginResponse",response.toString())
                     _registerResponse.postValue(response)
                 }
 
             } catch (e: Exception) {
-                print(e.toString())
+                Log.e("response",e.toString())
                 _registerResponse.postValue(null)
             }
         }
