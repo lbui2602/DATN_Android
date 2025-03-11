@@ -147,9 +147,9 @@ class AttendanceFragment : Fragment() {
     }
 
     fun resizeImageFile(file: File, maxSize: Int): File {
-        val bitmap = BitmapFactory.decodeFile(file.absolutePath) // Đọc ảnh
-        val rotatedBitmap = fixImageRotation(file, bitmap) // Xử lý xoay ảnh
-        val resizedBitmap = resizeBitmap(rotatedBitmap, maxSize) // Resize ảnh
+        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
+        val rotatedBitmap = fixImageRotation(file, bitmap)
+        val resizedBitmap = resizeBitmap(rotatedBitmap, maxSize)
 
         // Lưu ảnh mới vào file
         val resizedFile = File(file.parent, "resized_${file.name}")

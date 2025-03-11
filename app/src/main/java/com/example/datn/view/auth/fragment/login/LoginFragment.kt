@@ -56,11 +56,12 @@ class LoginFragment : Fragment() {
 
     private fun setAction(){
         binding.btnLogin.setOnClickListener {
-            val email = binding.edtEmail.text.toString().trim()
-            val password = binding.edtPassword.text.toString().trim()
-            validate(email,password) {
-                viewModel.login(LoginRequest(email, password))
-            }
+//            val email = binding.edtEmail.text.toString().trim()
+//            val password = binding.edtPassword.text.toString().trim()
+//            validate(email,password) {
+//                viewModel.login(LoginRequest(email, password))
+//            }
+            startActivity(Intent(requireContext(),MainActivity::class.java))
         }
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)

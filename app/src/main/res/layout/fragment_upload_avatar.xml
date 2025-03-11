@@ -6,16 +6,61 @@
 
     </data>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.auth.fragment.upload_avatar.UploadAvatarFragment">
-
-        <!-- TODO: Update blank fragment layout -->
-        <TextView
+        android:layout_height="match_parent">
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment" />
+            android:layout_height="match_parent">
 
-    </FrameLayout>
+            <androidx.camera.view.PreviewView
+                android:id="@+id/previewView"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true" />
+
+            <!-- Custom Button Layout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:padding="10dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/bg_rounded"
+                android:backgroundTint="@color/green"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/llBack"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/bg_circle"
+                        android:layout_width="40dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_height="40dp">
+
+                        <ImageView
+                            android:src="@drawable/ic_back"
+                            android:layout_margin="3dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btn_capture"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitCenter"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:src="@drawable/capture_icon"
+                        android:background="@null" />
+                </FrameLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
 </layout>

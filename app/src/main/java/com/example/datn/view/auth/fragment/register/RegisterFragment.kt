@@ -89,6 +89,8 @@ class RegisterFragment : Fragment() {
             if (response != null) {
                 if(response.code.toInt() == 1){
                     findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
+                }else{
+                    Util.showDialog(requireContext(),response.message)
                 }
             } else {
                 Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
