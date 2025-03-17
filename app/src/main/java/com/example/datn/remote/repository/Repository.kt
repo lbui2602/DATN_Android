@@ -10,6 +10,7 @@ import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.role.RolesResponse
+import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.remote.service.ApiService
 import com.example.datn.remote.service.FaceApiService
 import okhttp3.MultipartBody
@@ -40,5 +41,8 @@ class Repository @Inject constructor(
     }
     suspend fun getDepartments() : DepartmentsResponses {
         return apiService.getDepartments()
+    }
+    suspend fun uploadAvatar(userId : RequestBody, image : MultipartBody.Part) : UploadAvatarResponse{
+        return apiService.uploadAvatar(userId,image)
     }
 }

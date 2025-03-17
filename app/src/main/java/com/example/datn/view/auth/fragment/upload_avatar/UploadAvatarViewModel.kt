@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.DetectFaceResponse
+import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.remote.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +24,9 @@ class UploadAvatarViewModel @Inject constructor(
 
     private val _addFaceResponse = MutableLiveData<AddFaceResponse?>()
     val addFaceResponse: LiveData<AddFaceResponse?> get() = _addFaceResponse
+
+    private val _uploadAvatarResponse = MutableLiveData<UploadAvatarResponse?>()
+    val uploadAvatarResponse: LiveData<UploadAvatarResponse?> get() = _uploadAvatarResponse
 
     fun detectFace(image: MultipartBody.Part, apiKey: RequestBody, apiSecret: RequestBody){
         viewModelScope.launch {
@@ -57,4 +61,22 @@ class UploadAvatarViewModel @Inject constructor(
             }
         }
     }
+    fun uploadAvatar(userId : RequestBody,image : MultipartBody.Part){
+        viewModelScope.launch {
+            try {
+                val response = repository.uploadAvatar(userId,image)
+                if(response!=null){
+                    _uploadAvatarResponse.postValue(response)
+                }
+                else{
+                    _uploadAvatarResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                print(e.toString())
+                _uploadAvatarResponse.postValue(null)
+            }
+        }
+    }
+
 }

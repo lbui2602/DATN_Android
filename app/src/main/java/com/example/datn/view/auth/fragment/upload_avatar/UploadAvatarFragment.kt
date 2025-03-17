@@ -1,5 +1,6 @@
 package com.example.datn.view.auth.fragment.upload_avatar
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -24,6 +25,8 @@ import androidx.lifecycle.lifecycleScope
 import com.example.datn.BuildConfig
 import com.example.datn.R
 import com.example.datn.databinding.FragmentUploadAvatarBinding
+import com.example.datn.util.Util
+import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.fragment.attendance.AttendanceViewModel
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -31,13 +34,16 @@ import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Multipart
 import java.io.File
 import java.io.FileOutputStream
 
 class UploadAvatarFragment : Fragment() {
     private lateinit var binding : FragmentUploadAvatarBinding
     private lateinit var imageCapture: ImageCapture
-    private val viewModel: AttendanceViewModel by viewModels()
+    private val viewModel: UploadAvatarViewModel by viewModels()
+    var userId = ""
+    private lateinit var file : MultipartBody.Part
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,6 +89,20 @@ class UploadAvatarFragment : Fragment() {
         viewModel.addFaceResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 print(response.toString())
+                lifecycleScope.launch {
+                    val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
+                    delay(200)
+                    viewModel.uploadAvatar(userId,file)
+                }
+            } else {
+                Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.uploadAvatarResponse.observe(viewLifecycleOwner, Observer { response->
+            if (response != null && response.code.toInt() ==1) {
+                Util.showDialog(requireContext(),response.message){
+                    startActivity(Intent(requireActivity(),MainActivity::class.java))
+                }
             } else {
                 Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
             }
@@ -146,6 +166,7 @@ class UploadAvatarFragment : Fragment() {
     private fun uploadImage(file: File) {
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
         val body = MultipartBody.Part.createFormData("image_file", file.name, requestFile)
+        this.file= body
         val api_key = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_key)
         val api_secret = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_secret)
         val faceset_token = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.faceset_token)
