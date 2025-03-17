@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval"><!-- Màu đỏ -->
+    <size android:width="150dp" android:height="200dp"/> <!-- Chiều dọc lớn hơn -->
+</shape>
+
