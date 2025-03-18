@@ -15,15 +15,19 @@ import com.example.datn.BuildConfig
 import com.example.datn.R
 import com.example.datn.databinding.FragmentLoginBinding
 import com.example.datn.models.login.LoginRequest
+import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     lateinit var binding : FragmentLoginBinding
     private val viewModel: LoginViewModel by viewModels()
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -46,7 +50,8 @@ class LoginFragment : Fragment() {
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
                 print(response.toString())
-                Glide.with(requireContext()).load("http://192.168.1.101:3000"+response.image).into(binding.imgLogo)
+                Glide.with(requireContext()).load("http://192.168.52.52:3000"+response.image).into(binding.imgLogo)
+                sharedPreferencesManager.saveAuthToken("Bearer "+response.token)
 //                startActivity(Intent(requireContext(),MainActivity::class.java))
             } else {
                 Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
@@ -56,12 +61,12 @@ class LoginFragment : Fragment() {
 
     private fun setAction(){
         binding.btnLogin.setOnClickListener {
-//            val email = binding.edtEmail.text.toString().trim()
-//            val password = binding.edtPassword.text.toString().trim()
-//            validate(email,password) {
-//                viewModel.login(LoginRequest(email, password))
-//            }
-            startActivity(Intent(requireContext(),MainActivity::class.java))
+            val email = binding.edtEmail.text.toString().trim()
+            val password = binding.edtPassword.text.toString().trim()
+            validate(email,password) {
+                viewModel.login(LoginRequest(email, password))
+            }
+//            startActivity(Intent(requireContext(),MainActivity::class.java))
         }
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)

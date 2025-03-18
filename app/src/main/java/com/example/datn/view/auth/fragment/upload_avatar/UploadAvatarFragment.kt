@@ -25,10 +25,13 @@ import androidx.lifecycle.lifecycleScope
 import com.example.datn.BuildConfig
 import com.example.datn.R
 import com.example.datn.databinding.FragmentUploadAvatarBinding
+import com.example.datn.models.face_token.FaceTokenRequest
+import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.fragment.attendance.AttendanceViewModel
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -37,13 +40,16 @@ import okhttp3.RequestBody
 import retrofit2.http.Multipart
 import java.io.File
 import java.io.FileOutputStream
-
+import javax.inject.Inject
+@AndroidEntryPoint
 class UploadAvatarFragment : Fragment() {
     private lateinit var binding : FragmentUploadAvatarBinding
     private lateinit var imageCapture: ImageCapture
     private val viewModel: UploadAvatarViewModel by viewModels()
-    var userId = ""
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
     private lateinit var file : MultipartBody.Part
+    var face_token = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,13 +80,23 @@ class UploadAvatarFragment : Fragment() {
         viewModel.detectFaceResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 print(response.toString())
-                val api_key = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_key)
-                val api_secret = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_secret)
-                val face_token = RequestBody.create("text/plain".toMediaTypeOrNull(), response.faces.get(0).face_token)
-                val outer_id = RequestBody.create("text/plain".toMediaTypeOrNull(), "datn_lbui")
+                face_token =response.faces.get(0).face_token
+                lifecycleScope.launch {
+                    viewModel.updateFaceToken(FaceTokenRequest(sharedPreferencesManager.getUserId().toString(),response.faces.get(0).face_token))
+                }
+            } else {
+                Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.updateFaceTokenResponse.observe(viewLifecycleOwner, Observer { response->
+            if (response != null && response.code.toInt() ==1) {
                 lifecycleScope.launch {
                     delay(500)
-                    viewModel.addFaceToFaceSet(BuildConfig.face_api_key,BuildConfig.face_api_secret,"datn_lbui",response.faces.get(0).face_token)
+                    viewModel.addFaceToFaceSet(
+                        BuildConfig.face_api_key,
+                        BuildConfig.face_api_secret,
+                        BuildConfig.outer_id,
+                        face_token)
                 }
             } else {
                 Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
@@ -90,9 +106,12 @@ class UploadAvatarFragment : Fragment() {
             if (response != null) {
                 print(response.toString())
                 lifecycleScope.launch {
-                    val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
-                    delay(200)
-                    viewModel.uploadAvatar(userId,file)
+                    if(file !=null){
+                        val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getUserId().toString())
+                        viewModel.uploadAvatar(userId,file)
+                    }else{
+                        Log.e("hi","hi")
+                    }
                 }
             } else {
                 Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
@@ -169,8 +188,9 @@ class UploadAvatarFragment : Fragment() {
         this.file= body
         val api_key = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_key)
         val api_secret = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_secret)
-        val faceset_token = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.faceset_token)
-        viewModel.detectFace(body,api_key, api_secret)
+        val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getUserId().toString())
+//        viewModel.detectFace(body,api_key, api_secret)
+        viewModel.uploadAvatar(userId,this.file)
     }
 
     fun resizeImageFile(file: File, maxSize: Int): File {

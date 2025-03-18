@@ -5,6 +5,8 @@ import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.CreateFaceSetResponse
 import com.example.datn.models.face_api.DetectFaceResponse
+import com.example.datn.models.face_token.FaceTokenRequest
+import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.register.RegisterRequest
@@ -44,5 +46,8 @@ class Repository @Inject constructor(
     }
     suspend fun uploadAvatar(userId : RequestBody, image : MultipartBody.Part) : UploadAvatarResponse{
         return apiService.uploadAvatar(userId,image)
+    }
+    suspend fun updateFaceToken(request : FaceTokenRequest) : FaceTokenResponse{
+        return apiService.updateFaceToken(request)
     }
 }

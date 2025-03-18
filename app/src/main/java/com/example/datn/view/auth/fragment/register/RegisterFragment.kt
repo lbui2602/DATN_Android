@@ -17,9 +17,11 @@ import com.example.datn.databinding.FragmentRegisterBinding
 import com.example.datn.models.department.Department
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.Role
+import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
@@ -27,6 +29,8 @@ class RegisterFragment : Fragment() {
     private var roles = mutableListOf<Role>()
     private var departments = mutableListOf<Department>()
     private val viewModel: RegisterViewModel by viewModels()
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
     var selectedRoleID = ""
     var selectedDepartmentId = ""
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,32 +67,33 @@ class RegisterFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding.btnRegister.setOnClickListener {
-//            val fullname = binding.edtFullname.text.toString().trim()
-//            val email = binding.edtEmail.text.toString().trim()
-//            val password = binding.edtPassword.text.toString().trim()
-//            val passwordConfirm = binding.edtPasswordConfirm.text.toString().trim()
-//            val phone = binding.edtPhone.text.toString().trim()
-//            val address = binding.edtAddress.text.toString().trim()
-//            validate(fullname,email,password,passwordConfirm,phone,address) {
-//                viewModel.register(
-//                    RegisterRequest(
-//                        fullname,
-//                        email,
-//                        password,
-//                        phone,
-//                        address,
-//                        selectedDepartmentId,
-//                        selectedRoleID
-//                    )
-//                )
-//            }
-            findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
+            val fullname = binding.edtFullname.text.toString().trim()
+            val email = binding.edtEmail.text.toString().trim()
+            val password = binding.edtPassword.text.toString().trim()
+            val passwordConfirm = binding.edtPasswordConfirm.text.toString().trim()
+            val phone = binding.edtPhone.text.toString().trim()
+            val address = binding.edtAddress.text.toString().trim()
+            validate(fullname,email,password,passwordConfirm,phone,address) {
+                viewModel.register(
+                    RegisterRequest(
+                        fullname,
+                        email,
+                        password,
+                        phone,
+                        address,
+                        selectedDepartmentId,
+                        selectedRoleID
+                    )
+                )
+            }
+//            findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
         }
     }
     private fun setObservers(){
         viewModel.registerResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 if(response.code.toInt() == 1){
+                    sharedPreferencesManager.saveUserId(response.user._id)
                     findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
                 }else{
                     Util.showDialog(requireContext(),response.message)

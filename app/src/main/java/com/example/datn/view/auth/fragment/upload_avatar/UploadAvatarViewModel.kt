@@ -1,12 +1,13 @@
 package com.example.datn.view.auth.fragment.upload_avatar
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.DetectFaceResponse
+import com.example.datn.models.face_token.FaceTokenRequest
+import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.remote.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +28,9 @@ class UploadAvatarViewModel @Inject constructor(
 
     private val _uploadAvatarResponse = MutableLiveData<UploadAvatarResponse?>()
     val uploadAvatarResponse: LiveData<UploadAvatarResponse?> get() = _uploadAvatarResponse
+
+    private val _updateFaceTokenResponse = MutableLiveData<FaceTokenResponse?>()
+    val updateFaceTokenResponse: LiveData<FaceTokenResponse?> get() = _updateFaceTokenResponse
 
     fun detectFace(image: MultipartBody.Part, apiKey: RequestBody, apiSecret: RequestBody){
         viewModelScope.launch {
@@ -75,6 +79,23 @@ class UploadAvatarViewModel @Inject constructor(
             } catch (e: Exception) {
                 print(e.toString())
                 _uploadAvatarResponse.postValue(null)
+            }
+        }
+    }
+    fun updateFaceToken(faceTokenRequest: FaceTokenRequest){
+        viewModelScope.launch {
+            try {
+                val response = repository.updateFaceToken(faceTokenRequest)
+                if(response!=null){
+                    _updateFaceTokenResponse.postValue(response)
+                }
+                else{
+                    _updateFaceTokenResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                print(e.toString())
+                _updateFaceTokenResponse.postValue(null)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.datn.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AlertDialog
 
 object Util {
@@ -25,7 +26,6 @@ object Util {
                 dialogInterface.dismiss()
             }
         }
-
         builder.show()
     }
 }
