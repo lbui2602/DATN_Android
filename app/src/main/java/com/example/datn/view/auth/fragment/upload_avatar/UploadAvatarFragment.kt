@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.datn.BuildConfig
 import com.example.datn.R
 import com.example.datn.databinding.FragmentUploadAvatarBinding
@@ -38,6 +39,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Multipart
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
@@ -72,11 +74,16 @@ class UploadAvatarFragment : Fragment() {
             startCamera()
         }
         binding.imgCapture.setOnClickListener {
-            capturePhoto()
+            viewModel.capturePhoto(requireContext(),imageCapture)
         }
         setObservers()
     }
     private fun setObservers() {
+        viewModel.multipartFile.observe(viewLifecycleOwner, Observer { file->
+            if(file !=null){
+                this.file = file
+            }
+        })
         viewModel.detectFaceResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 print(response.toString())
@@ -119,11 +126,18 @@ class UploadAvatarFragment : Fragment() {
         })
         viewModel.uploadAvatarResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null && response.code.toInt() ==1) {
-                Util.showDialog(requireContext(),response.message){
-                    startActivity(Intent(requireActivity(),MainActivity::class.java))
-                }
+                Util.showDialog(requireContext(),response.message,"OK",{
+                    findNavController().popBackStack(R.id.loginFragment,true)
+                })
             } else {
                 Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
             }
         })
     }
@@ -161,82 +175,4 @@ class UploadAvatarFragment : Fragment() {
             }
         }
     }
-
-    private fun capturePhoto() {
-        Log.e("CameraFragment", "capture")
-        val file = File(requireContext().externalMediaDirs.first(), "lbui.jpg")
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(file).build()
-
-        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(requireContext()),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Log.e("CameraFragment", "capture2")
-                    val resizedFile = resizeImageFile(file, 1024) // Resize ảnh xuống tối đa 1024px
-                    val imageUri = Uri.fromFile(resizedFile)
-                    // Gửi ảnh đã resize lên API
-                    uploadImage(resizedFile)
-                }
-
-                override fun onError(exception: ImageCaptureException) {
-                    Log.e("CameraFragment", "Photo capture failed: ${exception.message}", exception)
-                }
-            })
-    }
-    private fun uploadImage(file: File) {
-        val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
-        val body = MultipartBody.Part.createFormData("image_file", file.name, requestFile)
-        this.file= body
-        val api_key = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_key)
-        val api_secret = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_secret)
-        val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getUserId().toString())
-//        viewModel.detectFace(body,api_key, api_secret)
-        viewModel.uploadAvatar(userId,this.file)
-    }
-
-    fun resizeImageFile(file: File, maxSize: Int): File {
-        val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-        val rotatedBitmap = fixImageRotation(file, bitmap)
-        val resizedBitmap = resizeBitmap(rotatedBitmap, maxSize)
-
-        // Lưu ảnh mới vào file
-        val resizedFile = File(file.parent, "resized_${file.name}")
-        val outputStream = FileOutputStream(resizedFile)
-        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream) // Nén 80%
-        outputStream.flush()
-        outputStream.close()
-
-        return resizedFile
-    }
-
-    // Hàm resize ảnh (giữ tỉ lệ gốc)
-    fun resizeBitmap(image: Bitmap, maxSize: Int): Bitmap {
-        val width = image.width
-        val height = image.height
-        val ratio: Float = width.toFloat() / height.toFloat()
-
-        val newWidth: Int
-        val newHeight: Int
-        if (ratio > 1) {
-            newWidth = maxSize
-            newHeight = (maxSize / ratio).toInt()
-        } else {
-            newHeight = maxSize
-            newWidth = (maxSize * ratio).toInt()
-        }
-        return Bitmap.createScaledBitmap(image, newWidth, newHeight, true)
-    }
-    // Hàm kiểm tra và sửa hướng xoay ảnh
-    fun fixImageRotation(file: File, bitmap: Bitmap): Bitmap {
-        val exif = ExifInterface(file.absolutePath)
-        val orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
-        val matrix = Matrix()
-        when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> matrix.postRotate(90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> matrix.postRotate(180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> matrix.postRotate(270f)
-            else -> return bitmap // Không cần xoay
-        }
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    }
-
 }

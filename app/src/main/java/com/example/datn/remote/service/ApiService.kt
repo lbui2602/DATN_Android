@@ -1,5 +1,6 @@
 package com.example.datn.remote.service
 
+import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_token.FaceTokenRequest
@@ -21,7 +22,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
-
+    //auth
     @POST("api/auth/register")
     suspend fun register(
         @Body request : RegisterRequest
@@ -29,12 +30,6 @@ interface ApiService {
 
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
-
-    @GET("api/roles")
-    suspend fun getRoles() : RolesResponse
-
-    @GET("api/departments")
-    suspend fun getDepartments() : DepartmentsResponses
 
     @Multipart
     @POST("api/auth/uploadAvatar")
@@ -47,4 +42,19 @@ interface ApiService {
     suspend fun updateFaceToken(
         @Body request: FaceTokenRequest
     ): FaceTokenResponse
+    //system
+    @GET("api/roles")
+    suspend fun getRoles() : RolesResponse
+
+    @GET("api/departments")
+    suspend fun getDepartments() : DepartmentsResponses
+
+    @Multipart
+    @POST("api/attendance")
+    suspend fun attendance(
+        @Part("userId") userId: RequestBody,
+        @Part("time") time: RequestBody,
+        @Part("date") date: RequestBody,
+        @Part image: MultipartBody.Part
+    ): AttendanceResponse
 }
