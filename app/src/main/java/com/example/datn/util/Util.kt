@@ -15,6 +15,7 @@ import java.util.Date
 import java.util.Locale
 
 object Util {
+    val url = "http://192.168.52.52:3000"
     fun showDialog(
         context: Context,
         message: String,
@@ -55,7 +56,7 @@ object Util {
         var resizedBitmap = resizeBitmap(rotatedBitmap, maxSize)
 
         val resizedFile = File(file.parent, "resized_${file.name}")
-        var quality = 90 // Bắt đầu với chất lượng nén 90%
+        var quality = 80 // Bắt đầu với chất lượng nén 90%
 
         do {
             val outputStream = ByteArrayOutputStream()

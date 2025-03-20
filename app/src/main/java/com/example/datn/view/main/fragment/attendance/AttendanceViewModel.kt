@@ -1,6 +1,7 @@
 package com.example.datn.view.main.fragment.attendance
 
 import android.content.Context
+import android.util.JsonToken
 import android.util.Log
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -10,7 +11,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.BuildConfig
+import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.remote.repository.Repository
@@ -30,6 +33,9 @@ class AttendanceViewModel @Inject constructor(
 ) : ViewModel() {
     private val _attendanceResponse = MutableLiveData<AttendanceResponse?>()
     val attendanceResponse: LiveData<AttendanceResponse?> get() = _attendanceResponse
+
+    private val _attendanceByDateResponse = MutableLiveData<AttendanceByDateResponse?>()
+    val attendanceByDateResponse: LiveData<AttendanceByDateResponse?> get() = _attendanceByDateResponse
 
     private val _multipartFile = MutableLiveData<MultipartBody.Part?>()
     val multipartFile: LiveData<MultipartBody.Part?> get() = _multipartFile
@@ -62,24 +68,45 @@ class AttendanceViewModel @Inject constructor(
         val time = RequestBody.create("text/plain".toMediaTypeOrNull(), Util.formatTime())
         val date = RequestBody.create("text/plain".toMediaTypeOrNull(),Util.formatDate())
         _multipartFile.value = body
-        attendance(userId,time,date,body)
+        attendance("Bearer "+sharedPreferencesManager.getAuthToken().toString(),userId,time,date,body)
     }
 
-    fun attendance(userId: RequestBody,time : RequestBody,date : RequestBody,image :MultipartBody.Part){
+    fun attendance(token: String,userId: RequestBody,time : RequestBody,date : RequestBody,image :MultipartBody.Part){
         viewModelScope.launch {
             _isLoading.postValue(true)
             try {
-                val response = repository.attendance(userId, time, date, image)
-                if(response!=null){
+                val response = repository.attendance(token,userId, time, date, image)
+                if(response!=null  && response.code.toInt() ==1){
                     _attendanceResponse.postValue(response)
                 }
                 else{
+                    Log.e("attendance ","null")
                     _attendanceResponse.postValue(null)
                 }
 
             } catch (e: Exception) {
-                print(e.toString())
+                Log.e("attendance ",e.toString())
                 _attendanceResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
+    fun getAttendanceByUserIdAndDate(token:String,request : GetAttendanceByUserIdRequest){
+        Log.e("getAttendanceByUserIdAndDate","hi")
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.getAttendanceByUserIdAndDate(token, request)
+                if(response!=null){
+                    _attendanceByDateResponse.postValue(response)
+                }
+                else{
+                    _attendanceByDateResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                Log.e("getAttendanceByUserIdAndDate",e.toString())
+                _attendanceByDateResponse.postValue(null)
             }
             _isLoading.postValue(false)
         }

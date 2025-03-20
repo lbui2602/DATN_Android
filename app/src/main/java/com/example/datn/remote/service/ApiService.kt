@@ -1,6 +1,8 @@
 package com.example.datn.remote.service
 
+import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_token.FaceTokenRequest
@@ -20,6 +22,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     //auth
@@ -52,9 +55,16 @@ interface ApiService {
     @Multipart
     @POST("api/attendance")
     suspend fun attendance(
+        @Header("Authorization") token: String,
         @Part("userId") userId: RequestBody,
         @Part("time") time: RequestBody,
         @Part("date") date: RequestBody,
         @Part image: MultipartBody.Part
     ): AttendanceResponse
+
+    @POST("api/attendance/getByDate")
+    suspend fun getAttendanceByUserIdAndDate(
+        @Header("Authorization") token: String,
+        @Body request : GetAttendanceByUserIdRequest
+    ):AttendanceByDateResponse
 }

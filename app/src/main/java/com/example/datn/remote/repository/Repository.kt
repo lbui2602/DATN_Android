@@ -1,7 +1,9 @@
 package com.example.datn.remote.repository
 
 import android.util.Log
+import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.CreateFaceSetResponse
@@ -51,7 +53,10 @@ class Repository @Inject constructor(
     suspend fun updateFaceToken(request : FaceTokenRequest) : FaceTokenResponse{
         return apiService.updateFaceToken(request)
     }
-    suspend fun attendance(userId: RequestBody,time : RequestBody,date : RequestBody,image :MultipartBody.Part) : AttendanceResponse{
-        return apiService.attendance(userId,time,date,image)
+    suspend fun attendance(token:String,userId: RequestBody,time : RequestBody,date : RequestBody,image :MultipartBody.Part) : AttendanceResponse{
+        return apiService.attendance(token,userId,time,date,image)
+    }
+    suspend fun getAttendanceByUserIdAndDate(token:String,request : GetAttendanceByUserIdRequest) : AttendanceByDateResponse{
+        return apiService.getAttendanceByUserIdAndDate(token,request)
     }
 }

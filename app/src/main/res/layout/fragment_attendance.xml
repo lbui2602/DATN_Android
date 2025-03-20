@@ -50,8 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
-            <ImageView
-                android:id="@+id/img"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv"
+                android:layout_marginHorizontal="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
         </LinearLayout>

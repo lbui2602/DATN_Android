@@ -51,8 +51,8 @@ class LoginFragment : Fragment() {
             if (response != null) {
                 print(response.toString())
                 Glide.with(requireContext()).load("http://192.168.52.52:3000"+response.image).into(binding.imgLogo)
-                sharedPreferencesManager.saveAuthToken("Bearer "+response.token)
-                sharedPreferencesManager.saveUserId("Bearer "+response._id)
+                sharedPreferencesManager.saveAuthToken(response.token)
+                sharedPreferencesManager.saveUserId(response._id)
                 startActivity(Intent(requireContext(),MainActivity::class.java))
             } else {
                 Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
