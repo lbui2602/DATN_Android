@@ -54,6 +54,7 @@ class LoginFragment : Fragment() {
                 sharedPreferencesManager.saveAuthToken(response.token)
                 sharedPreferencesManager.saveUserId(response._id)
                 startActivity(Intent(requireContext(),MainActivity::class.java))
+                requireActivity().finish()
             } else {
                 Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
             }
@@ -64,10 +65,10 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val email = binding.edtEmail.text.toString().trim()
             val password = binding.edtPassword.text.toString().trim()
-            validate(email,password) {
-                viewModel.login(LoginRequest(email, password))
-            }
-//            startActivity(Intent(requireContext(),MainActivity::class.java))
+//            validate(email,password) {
+//                viewModel.login(LoginRequest(email, password))
+//            }
+            startActivity(Intent(requireContext(),MainActivity::class.java))
         }
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
