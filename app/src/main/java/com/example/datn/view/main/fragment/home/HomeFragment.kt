@@ -3,6 +3,7 @@ package com.example.datn.view.main.fragment.home
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
@@ -14,13 +15,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.datn.R
 import com.example.datn.databinding.FragmentHomeBinding
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.gms.maps.model.PolylineOptions
 import kotlin.math.*
 
 class HomeFragment : Fragment(), OnMapReadyCallback {
@@ -28,8 +29,11 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentHomeBinding
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
-    // Địa điểm cố định (sau này có thể lấy từ API)
-    private val fixedLocation = LatLng(21.02295, 105.80137) // Ví dụ: Hồ Con Rùa, Sài Gòn
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+
+    private val fixedLocation = LatLng(21.02295, 105.80137)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,8 +62,25 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     private fun setupMap() {
         val mapFragment =
-            childFragmentManager.findFragmentById(R.id.map) as? com.google.android.gms.maps.SupportMapFragment
+            childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
+
+        // Khởi tạo FusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        // Thiết lập yêu cầu cập nhật vị trí
+        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000) // Cập nhật mỗi 5 giây
+            .setMinUpdateDistanceMeters(10f) // Chỉ cập nhật khi di chuyển tối thiểu 10m
+            .build()
+
+        // Khởi tạo LocationCallback để lắng nghe vị trí mới
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let { location ->
+                    updateLocationOnMap(LatLng(location.latitude, location.longitude))
+                }
+            }
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -74,6 +95,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         enableMyLocation()
     }
 
+    @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -81,56 +103,45 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             mMap.isMyLocationEnabled = true
-            getLocation()
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
         } else {
             requestLocationPermission()
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getLocation() {
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-            if (location != null) {
-                val currentLatLng = LatLng(location.latitude, location.longitude)
+    private fun updateLocationOnMap(currentLatLng: LatLng) {
+        mMap.clear()
 
-                // Đánh dấu vị trí của người dùng
-                mMap.addMarker(
-                    MarkerOptions()
-                        .position(currentLatLng)
-                        .title("Vị trí của bạn")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                )
 
-                // Đánh dấu địa điểm cố định
-                mMap.addMarker(
-                    MarkerOptions()
-                        .position(fixedLocation)
-                        .title("Địa điểm cố định")
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                )
+        mMap.addMarker(
+            MarkerOptions()
+                .position(fixedLocation)
+                .title("Địa điểm cố định")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        )
 
-                // Vẽ đường đi
-                drawRoute(currentLatLng, fixedLocation)
+        drawRoute(currentLatLng, fixedLocation)
 
-                // Tính khoảng cách
-                val distance = calculateDistance(
-                    currentLatLng.latitude, currentLatLng.longitude,
-                    fixedLocation.latitude, fixedLocation.longitude
-                )
-                Snackbar.make(binding.root, "Khoảng cách: ${"%.2f".format(distance)} km", Snackbar.LENGTH_LONG).show()
-
-                // Di chuyển camera để hiển thị cả 2 điểm
-                val bounds = LatLngBounds.builder()
-                    .include(currentLatLng)
-                    .include(fixedLocation)
-                    .build()
-                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 150))
-            } else {
-                Snackbar.make(binding.root, "Không thể lấy vị trí hiện tại", Snackbar.LENGTH_SHORT)
-                    .show()
-            }
+        val distance = calculateDistance(
+            currentLatLng.latitude, currentLatLng.longitude,
+            fixedLocation.latitude, fixedLocation.longitude
+        )
+        binding.tvDistance.text = "Khoảng cách của bạn tới công ty là: ${"%.2f".format(distance)} km"
+        if(distance < 1){
+            binding.btnAttendance.isEnabled = true
+            binding.btnAttendance.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(requireContext(), R.color.green)
+            )
         }
+
+        // Điều chỉnh camera để hiển thị cả hai điểm
+        val bounds = LatLngBounds.builder()
+            .include(currentLatLng)
+            .include(fixedLocation)
+            .build()
+
+        val padding = 100 // Độ đệm cho camera (pixels)
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
     }
 
     // Hàm vẽ đường đi giữa hai điểm
@@ -138,7 +149,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         val polylineOptions = PolylineOptions()
             .add(start)
             .add(end)
-            .width(8f)
+            .width(3f)
             .color(ContextCompat.getColor(requireContext(), R.color.black))
         mMap.addPolyline(polylineOptions)
     }
@@ -153,5 +164,10 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 sin(dLon / 2) * sin(dLon / 2)
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return R * c // Khoảng cách (km)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
