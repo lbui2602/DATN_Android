@@ -52,9 +52,9 @@ interface FaceApiService {
     @POST("compare")
     suspend fun compareFaces(
         @Part image1: MultipartBody.Part,
-        @Part image2: MultipartBody.Part,
-        @Query("api_key") apiKey: String,
-        @Query("api_secret") apiSecret: String
+        @Part("face_token2") faceToken: RequestBody,
+        @Part("api_key") apiKey: RequestBody,
+        @Part("api_secret") apiSecret: RequestBody
     ): CompareFaceResponse
 
     @Multipart

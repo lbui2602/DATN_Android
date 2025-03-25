@@ -1,47 +1,32 @@
 package com.example.datn.view.main.fragment.attendance
 
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.example.datn.BuildConfig
 import com.example.datn.click.IClickAttendance
 import com.example.datn.databinding.FragmentAttendanceBinding
 import com.example.datn.models.attendance.Attendance
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
-import com.example.datn.view.auth.adapter.AttendanceAdapter
-import com.example.datn.view.main.MainActivity
+import com.example.datn.view.main.adapter.AttendanceAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import java.io.File
-import java.io.FileOutputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,7 +34,7 @@ class AttendanceFragment : Fragment(),IClickAttendance {
     lateinit var binding : FragmentAttendanceBinding
     private val viewModel: AttendanceViewModel by viewModels()
     private lateinit var imageCapture: ImageCapture
-    lateinit var file : MultipartBody.Part
+    lateinit var file : File
     lateinit var adapter: AttendanceAdapter
     private var list = mutableListOf<Attendance>()
     @Inject
@@ -95,6 +80,22 @@ class AttendanceFragment : Fragment(),IClickAttendance {
     }
 
     private fun setObservers() {
+        viewModel.file.observe(viewLifecycleOwner, Observer { response ->
+            if(response !=null){
+                this.file = response
+            }
+        })
+        viewModel.compareFaceResponse.observe(viewLifecycleOwner, Observer { response ->
+            if (response != null ) {
+                if(response.confidence >= 0.8){
+                    Log.e("Authen","OK")
+                    viewModel.uploadImage(file)
+                }
+            } else {
+                Log.e("setObservers",response.toString())
+                Snackbar.make(binding.root,"Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()
+            }
+        })
         viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null && response.code.toInt() == 1) {
                 adapter.updateList(response.attendances.toMutableList())

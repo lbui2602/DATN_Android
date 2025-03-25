@@ -15,6 +15,7 @@ import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.face_api.AddFaceResponse
+import com.example.datn.models.face_api.CompareFaceResponse
 import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.remote.repository.Repository
 import com.example.datn.util.SharedPreferencesManager
@@ -37,8 +38,11 @@ class AttendanceViewModel @Inject constructor(
     private val _attendanceByDateResponse = MutableLiveData<AttendanceByDateResponse?>()
     val attendanceByDateResponse: LiveData<AttendanceByDateResponse?> get() = _attendanceByDateResponse
 
-    private val _multipartFile = MutableLiveData<MultipartBody.Part?>()
-    val multipartFile: LiveData<MultipartBody.Part?> get() = _multipartFile
+    private val _compareFaceResponse = MutableLiveData<CompareFaceResponse?>()
+    val compareFaceResponse: LiveData<CompareFaceResponse?> get() = _compareFaceResponse
+
+    private val _file = MutableLiveData<File?>()
+    val file: LiveData<File?> get() = _file
 
     private val _isLoading = MutableLiveData<Boolean?>()
     val isLoading: LiveData<Boolean?> get() = _isLoading
@@ -54,21 +58,29 @@ class AttendanceViewModel @Inject constructor(
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     Log.e("CameraFragment", "capture2")
                     val resizedFile = Util.resizeImageFile(file)
-                    uploadImage(resizedFile)
+                    _file.value = resizedFile
+                    uploadImageToCompare(resizedFile)
                 }
                 override fun onError(exception: ImageCaptureException) {
                     Log.e("CameraFragment", "Photo capture failed: ${exception.message}", exception)
                 }
             })
     }
-    private fun uploadImage(file: File) {
+    fun uploadImage(file: File) {
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
         val body = MultipartBody.Part.createFormData("image_file", file.name, requestFile)
         val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getUserId().toString())
         val time = RequestBody.create("text/plain".toMediaTypeOrNull(), Util.formatTime())
         val date = RequestBody.create("text/plain".toMediaTypeOrNull(),Util.formatDate())
-        _multipartFile.value = body
         attendance("Bearer "+sharedPreferencesManager.getAuthToken().toString(),userId,time,date,body)
+    }
+    private fun uploadImageToCompare(file: File){
+        val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+        val body = MultipartBody.Part.createFormData("image_file1", file.name, requestFile)
+        val faceToken = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getFaceToken().toString())
+        val apiKey = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_key)
+        val apiSecret = RequestBody.create("text/plain".toMediaTypeOrNull(), BuildConfig.face_api_secret)
+        compareFaces(body,faceToken, apiKey, apiSecret)
     }
 
     fun attendance(token: String,userId: RequestBody,time : RequestBody,date : RequestBody,image :MultipartBody.Part){
@@ -87,6 +99,26 @@ class AttendanceViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("attendance ",e.toString())
                 _attendanceResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
+    fun compareFaces(image: MultipartBody.Part,faceToken : RequestBody, apiKey: RequestBody, apiSecret: RequestBody){
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.compareFaces(image,faceToken, apiKey, apiSecret)
+                if(response!=null ){
+                    _compareFaceResponse.postValue(response)
+                }
+                else{
+                    Log.e("attendance ","null")
+                    _compareFaceResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                Log.e("attendance ",e.toString())
+                _compareFaceResponse.postValue(null)
             }
             _isLoading.postValue(false)
         }

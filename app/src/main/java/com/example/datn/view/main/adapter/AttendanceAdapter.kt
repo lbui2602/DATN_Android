@@ -1,4 +1,4 @@
-package com.example.datn.view.auth.adapter
+package com.example.datn.view.main.adapter
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
@@ -38,13 +38,13 @@ class AttendanceAdapter(
             holder.binding.tvDate.text = data.date
             if(data.type.equals("check_in")){
                 holder.binding.llItem.backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(holder.itemView.context, R.color.green)
+                    ContextCompat.getColor(holder.itemView.context, R.color.green_light)
                 )
                 holder.binding.imgType.setImageResource(R.drawable.check_in)
             }else{
                 holder.binding.imgType.setImageResource(R.drawable.check_out)
                 holder.binding.llItem.backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(holder.itemView.context, R.color.red)
+                    ContextCompat.getColor(holder.itemView.context, R.color.red_light)
                 )
             }
             Glide.with(holder.itemView.context).load(Util.url+data.image).into(holder.binding.imgAttendance)

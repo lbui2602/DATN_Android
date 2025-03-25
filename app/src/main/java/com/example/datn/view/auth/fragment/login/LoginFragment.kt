@@ -50,9 +50,10 @@ class LoginFragment : Fragment() {
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
                 print(response.toString())
-                Glide.with(requireContext()).load("http://192.168.52.52:3000"+response.image).into(binding.imgLogo)
+                Glide.with(requireContext()).load("http://172.20.10.4:3000"+response.image).into(binding.imgLogo)
                 sharedPreferencesManager.saveAuthToken(response.token)
                 sharedPreferencesManager.saveUserId(response._id)
+                sharedPreferencesManager.saveFaceToken(response.face_token)
                 startActivity(Intent(requireContext(),MainActivity::class.java))
                 requireActivity().finish()
             } else {
@@ -65,10 +66,10 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val email = binding.edtEmail.text.toString().trim()
             val password = binding.edtPassword.text.toString().trim()
-//            validate(email,password) {
-//                viewModel.login(LoginRequest(email, password))
-//            }
-            startActivity(Intent(requireContext(),MainActivity::class.java))
+            validate(email,password) {
+                viewModel.login(LoginRequest(email, password))
+            }
+//            startActivity(Intent(requireContext(),MainActivity::class.java))
         }
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)

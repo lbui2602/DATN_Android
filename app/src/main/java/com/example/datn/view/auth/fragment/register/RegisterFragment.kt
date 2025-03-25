@@ -73,20 +73,20 @@ class RegisterFragment : Fragment() {
             val passwordConfirm = binding.edtPasswordConfirm.text.toString().trim()
             val phone = binding.edtPhone.text.toString().trim()
             val address = binding.edtAddress.text.toString().trim()
-//            validate(fullname,email,password,passwordConfirm,phone,address) {
-//                viewModel.register(
-//                    RegisterRequest(
-//                        fullname,
-//                        email,
-//                        password,
-//                        phone,
-//                        address,
-//                        selectedDepartmentId,
-//                        selectedRoleID
-//                    )
-//                )
-//            }
-            findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
+            validate(fullname,email,password,passwordConfirm,phone,address) {
+                viewModel.register(
+                    RegisterRequest(
+                        fullname,
+                        email,
+                        password,
+                        phone,
+                        address,
+                        selectedDepartmentId,
+                        selectedRoleID
+                    )
+                )
+            }
+//            findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
         }
     }
     private fun setObservers(){

@@ -13,9 +13,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.example.datn.R
 import com.example.datn.databinding.FragmentHomeBinding
 import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -43,6 +45,13 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         binding.lifecycleOwner = this
         requestLocationPermission()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.btnAttendance.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_attendanceFragment)
+        }
     }
 
     private fun requestLocationPermission() {
@@ -102,6 +111,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
+            Log.e("enableMyLocation", "Bắt đầu lấy vị trí")
             mMap.isMyLocationEnabled = true
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
         } else {
@@ -110,6 +120,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun updateLocationOnMap(currentLatLng: LatLng) {
+        Log.e("updateLocationOnMap","start")
         mMap.clear()
 
 
@@ -126,7 +137,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
             currentLatLng.latitude, currentLatLng.longitude,
             fixedLocation.latitude, fixedLocation.longitude
         )
-        binding.tvDistance.text = "Khoảng cách của bạn tới công ty là: ${"%.2f".format(distance)} km"
+        binding.tvDistance.text = "Khoảng cách của bạn tới công ty là: ${"%.2f".format(distance)} mét"
         if(distance < 1){
             binding.btnAttendance.isEnabled = true
             binding.btnAttendance.backgroundTintList = ColorStateList.valueOf(
@@ -142,6 +153,7 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
         val padding = 100 // Độ đệm cho camera (pixels)
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+        Log.e("updateLocationOnMap","end")
     }
 
     // Hàm vẽ đường đi giữa hai điểm
@@ -156,15 +168,16 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
 
     // Hàm tính khoảng cách giữa hai tọa độ (km)
     private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val R = 6371 // Bán kính trái đất (km)
+        val R = 6371000 // Bán kính trái đất (mét)
         val dLat = Math.toRadians(lat2 - lat1)
         val dLon = Math.toRadians(lon2 - lon1)
         val a = sin(dLat / 2) * sin(dLat / 2) +
                 cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
                 sin(dLon / 2) * sin(dLon / 2)
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        return R * c // Khoảng cách (km)
+        return R * c // Khoảng cách (mét)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

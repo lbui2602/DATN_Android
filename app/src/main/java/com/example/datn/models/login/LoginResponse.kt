@@ -11,5 +11,6 @@ data class LoginResponse(
     val roleId: String,
     val idDepartment: String,
     val image: String,
+    val face_token: String,
     val token: String
 )

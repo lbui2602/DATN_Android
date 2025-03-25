@@ -15,7 +15,7 @@
             android:id="@+id/llProfile"
             android:background="@drawable/bg_rounded"
             android:backgroundTint="@color/green"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -28,10 +28,10 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/ll"
+            android:id="@+id/llLogout"
             android:background="@drawable/bg_rounded"
             android:backgroundTint="@color/green"
-            android:layout_margin="10dp"
+            android:layout_margin="5dp"
             android:padding="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -39,7 +39,7 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-                android:text="Thông tin cá nhân"
+                android:text="Đăng xuất"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
