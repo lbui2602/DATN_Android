@@ -36,5 +36,20 @@
         android:id="@+id/profileFragment"
         android:name="com.example.datn.view.main.fragment.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_updateUserInfoFragment"
+            app:destination="@id/updateUserInfoFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateUserInfoFragment"
+        android:name="com.example.datn.view.main.fragment.update_user_info.UpdateUserInfoFragment"
+        android:label="UpdateUserInfoFragment" />
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.example.datn.view.main.fragment.change_password.ChangePasswordFragment"
+        android:label="ChangePasswordFragment" />
 </navigation>

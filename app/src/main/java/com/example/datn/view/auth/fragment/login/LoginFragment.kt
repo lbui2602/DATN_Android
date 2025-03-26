@@ -67,7 +67,6 @@ class LoginFragment : BaseFragment() {
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
                 print(response.toString())
-                Glide.with(requireContext()).load("http://172.20.10.4:3000"+response.image).into(binding.imgLogo)
                 sharedPreferencesManager.saveAuthToken(response.token)
                 sharedPreferencesManager.saveUserId(response._id)
                 sharedPreferencesManager.saveFaceToken(response.face_token)

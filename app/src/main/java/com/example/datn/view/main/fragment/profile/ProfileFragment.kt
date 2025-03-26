@@ -50,7 +50,12 @@ class ProfileFragment : BaseFragment() {
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()
         }
-
+        binding.btnUpdate.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_updateUserInfoFragment)
+        }
+        binding.btnChangPass.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_changePasswordFragment)
+        }
     }
     override fun setTabBar(){
         (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
@@ -60,7 +65,12 @@ class ProfileFragment : BaseFragment() {
         viewModel.profileResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null && response.code.toInt() ==1 ) {
                 Glide.with(requireActivity()).load(Util.url+response.user.image).into(binding.imgAvatar)
-                Log.e("setObservers Profile",response.toString())
+                binding.tvEmail.text = response.user.email
+                binding.tvFullname.text = response.user.fullName
+                binding.tvDepartment.text = response.user.department
+                binding.tvRole.text = response.user.role
+                binding.tvAddress.text = response.user.address
+                binding.tvPhone.text = response.user.phone
             } else {
                 Log.e("setObservers",response.toString())
                 Snackbar.make(binding.root,"Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()

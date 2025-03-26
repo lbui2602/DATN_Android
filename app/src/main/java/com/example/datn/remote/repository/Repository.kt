@@ -13,6 +13,7 @@ import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.role.RolesResponse
@@ -63,7 +64,7 @@ class Repository @Inject constructor(
     suspend fun getAttendanceByUserIdAndDate(token:String,request : GetAttendanceByUserIdRequest) : AttendanceByDateResponse{
         return apiService.getAttendanceByUserIdAndDate(token,request)
     }
-    suspend fun getProfile(token : String) : RegisterResponse{
+    suspend fun getProfile(token : String) : ProfileResponse{
         return apiService.getProfile(token)
     }
 }

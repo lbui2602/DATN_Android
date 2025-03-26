@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.remote.repository.Repository
 import com.example.datn.util.SharedPreferencesManager
@@ -19,8 +20,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val repository: Repository,private val sharedPreferencesManager: SharedPreferencesManager
 ) : ViewModel() {
-    private val _profileResponse = MutableLiveData<RegisterResponse?>()
-    val profileResponse: LiveData<RegisterResponse?> get() = _profileResponse
+    private val _profileResponse = MutableLiveData<ProfileResponse?>()
+    val profileResponse: LiveData<ProfileResponse?> get() = _profileResponse
 
     private val _isLoading = MutableLiveData<Boolean?>()
     val isLoading: LiveData<Boolean?> get() = _isLoading

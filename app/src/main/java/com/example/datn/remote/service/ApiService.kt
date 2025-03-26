@@ -10,6 +10,7 @@ import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
 import okhttp3.MultipartBody
@@ -71,5 +72,5 @@ interface ApiService {
     @GET("api/auth/getProfile")
     suspend fun getProfile(
         @Header("Authorization") token: String,
-    ) : RegisterResponse
+    ) : ProfileResponse
 }
