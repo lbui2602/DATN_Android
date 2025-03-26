@@ -25,6 +25,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.datn.BuildConfig
 import com.example.datn.R
+import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentUploadAvatarBinding
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.util.SharedPreferencesManager
@@ -44,7 +45,7 @@ import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
 @AndroidEntryPoint
-class UploadAvatarFragment : Fragment() {
+class UploadAvatarFragment : BaseFragment() {
     private lateinit var binding : FragmentUploadAvatarBinding
     private lateinit var imageCapture: ImageCapture
     private val viewModel: UploadAvatarViewModel by viewModels()
@@ -73,12 +74,20 @@ class UploadAvatarFragment : Fragment() {
         }else{
             startCamera()
         }
+
+    }
+
+    override fun setView() {
+
+    }
+
+    override fun setAction() {
         binding.imgCapture.setOnClickListener {
             viewModel.capturePhoto(requireContext(),imageCapture)
         }
-        setObservers()
     }
-    private fun setObservers() {
+
+    override fun setObserves() {
         viewModel.multipartFile.observe(viewLifecycleOwner, Observer { file->
             if(file !=null){
                 this.file = file
@@ -141,6 +150,11 @@ class UploadAvatarFragment : Fragment() {
             }
         })
     }
+
+    override fun setTabBar() {
+
+    }
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 

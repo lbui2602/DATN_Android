@@ -15,7 +15,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.example.datn.R
+import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentHomeBinding
+import com.example.datn.view.main.MainActivity
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,7 +28,7 @@ import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
 import kotlin.math.*
 
-class HomeFragment : Fragment(), OnMapReadyCallback {
+class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: FragmentHomeBinding
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
@@ -47,11 +49,32 @@ class HomeFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun setView() {
+
+    }
+
+    override fun setAction() {
         binding.btnAttendance.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_attendanceFragment)
         }
+    }
+
+    override fun setObserves() {
+
+    }
+
+    override fun setTabBar() {
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.VISIBLE
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.e("Home","onViewCreated")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.e("Home","onResume")
     }
 
     private fun requestLocationPermission() {

@@ -63,4 +63,7 @@ class Repository @Inject constructor(
     suspend fun getAttendanceByUserIdAndDate(token:String,request : GetAttendanceByUserIdRequest) : AttendanceByDateResponse{
         return apiService.getAttendanceByUserIdAndDate(token,request)
     }
+    suspend fun getProfile(token : String) : RegisterResponse{
+        return apiService.getProfile(token)
+    }
 }

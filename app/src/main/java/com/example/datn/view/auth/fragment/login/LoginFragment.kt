@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.datn.BuildConfig
 import com.example.datn.R
+import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentLoginBinding
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.util.SharedPreferencesManager
@@ -23,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class LoginFragment : Fragment() {
+class LoginFragment : BaseFragment() {
     lateinit var binding : FragmentLoginBinding
     private val viewModel: LoginViewModel by viewModels()
     @Inject
@@ -42,11 +43,27 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setAction()
-        setObserver()
     }
 
-    private fun setObserver() {
+    override fun setView() {
+
+    }
+
+    override fun setAction(){
+        binding.btnLogin.setOnClickListener {
+            val email = binding.edtEmail.text.toString().trim()
+            val password = binding.edtPassword.text.toString().trim()
+            validate(email,password) {
+                viewModel.login(LoginRequest(email, password))
+            }
+//            startActivity(Intent(requireContext(),MainActivity::class.java))
+        }
+        binding.tvRegister.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+        }
+    }
+
+    override fun setObserves() {
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
                 print(response.toString())
@@ -62,19 +79,10 @@ class LoginFragment : Fragment() {
         })
     }
 
-    private fun setAction(){
-        binding.btnLogin.setOnClickListener {
-            val email = binding.edtEmail.text.toString().trim()
-            val password = binding.edtPassword.text.toString().trim()
-            validate(email,password) {
-                viewModel.login(LoginRequest(email, password))
-            }
-//            startActivity(Intent(requireContext(),MainActivity::class.java))
-        }
-        binding.tvRegister.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-        }
+    override fun setTabBar() {
+
     }
+
     private fun validate(email:String,password:String,action : () -> Unit){
         if(email.isNullOrBlank()){
             Util.showDialog(requireContext(),getString(R.string.msg_login_email))

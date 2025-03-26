@@ -1,13 +1,15 @@
-package com.example.datn.view.main.fragment
+package com.example.datn.view.main.fragment.history
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.datn.R
+import com.example.datn.base.BaseFragment
+import com.example.datn.view.main.MainActivity
 
-class HistoryFragment : Fragment() {
+class HistoryFragment : BaseFragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,5 +23,21 @@ class HistoryFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_history, container, false)
+    }
+
+    override fun setView() {
+
+    }
+
+    override fun setAction() {
+
+    }
+
+    override fun setObserves() {
+
+    }
+
+    override fun setTabBar() {
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.VISIBLE
     }
 }

@@ -67,4 +67,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request : GetAttendanceByUserIdRequest
     ):AttendanceByDateResponse
+
+    @GET("api/auth/getProfile")
+    suspend fun getProfile(
+        @Header("Authorization") token: String,
+    ) : RegisterResponse
 }

@@ -5,5 +5,5 @@ data class AttendanceResponse(
     val attendances: List<Attendance>,
     val code: String,
     val message: String,
-    val totalHours: Double
+    val totalHours: Double?
 )

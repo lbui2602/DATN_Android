@@ -12,14 +12,18 @@
         tools:layout="@layout/fragment_attendance" />
     <fragment
         android:id="@+id/historyFragment"
-        android:name="com.example.datn.view.main.fragment.HistoryFragment"
+        android:name="com.example.datn.view.main.fragment.history.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history" />
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.example.datn.view.main.fragment.setting.SettingFragment"
         android:label="fragment_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.datn.view.main.fragment.home.HomeFragment"
@@ -28,4 +32,9 @@
             android:id="@+id/action_homeFragment_to_attendanceFragment"
             app:destination="@id/attendanceFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.datn.view.main.fragment.profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

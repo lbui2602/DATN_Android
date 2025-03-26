@@ -11,29 +11,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.main.MainActivity">
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
-            android:weightSum="10"
             android:layout_height="match_parent">
             <androidx.fragment.app.FragmentContainerView
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/bnvMain"
                 android:id="@+id/nav_host_fragment"
                 android:name="androidx.navigation.fragment.NavHostFragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="9.2"
                 app:defaultNavHost="true"
                 app:navGraph="@navigation/nav" />
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bnvMain"
+                app:layout_constraintTop_toBottomOf="@id/nav_host_fragment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="50dp"
                 android:background="#F2EEC4"
-                android:layout_weight="0.8"
                 app:labelVisibilityMode="unlabeled"
                 app:itemIconTint="@drawable/menu_selector"
                 app:itemTextColor="@drawable/menu_selector"
                 app:menu="@menu/menu_main" />
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </layout>

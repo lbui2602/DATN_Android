@@ -15,13 +15,16 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datn.base.BaseFragment
 import com.example.datn.click.IClickAttendance
 import com.example.datn.databinding.FragmentAttendanceBinding
 import com.example.datn.models.attendance.Attendance
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
+import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.AttendanceAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +33,7 @@ import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class AttendanceFragment : Fragment(),IClickAttendance {
+class AttendanceFragment : BaseFragment(),IClickAttendance {
     lateinit var binding : FragmentAttendanceBinding
     private val viewModel: AttendanceViewModel by viewModels()
     private lateinit var imageCapture: ImageCapture
@@ -58,19 +61,25 @@ class AttendanceFragment : Fragment(),IClickAttendance {
         }else{
             startCamera()
         }
-        binding.imgCapture.setOnClickListener {
-            viewModel.capturePhoto(requireContext(),imageCapture)
-        }
-        setView()
-        setRecyclerView()
-        setObservers()
-    }
-
-    private fun setView() {
         val request = GetAttendanceByUserIdRequest(
             sharedPreferencesManager.getUserId().toString(),Util.formatDate()
         )
         viewModel.getAttendanceByUserIdAndDate("Bearer "+sharedPreferencesManager.getAuthToken().toString(),request)
+
+
+    }
+
+    override fun setView() {
+        setRecyclerView()
+    }
+
+    override fun setAction() {
+        binding.imgCapture.setOnClickListener {
+            viewModel.capturePhoto(requireContext(),imageCapture)
+        }
+        binding.imgBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     private fun setRecyclerView() {
@@ -79,7 +88,14 @@ class AttendanceFragment : Fragment(),IClickAttendance {
         binding.rcv.adapter = adapter
     }
 
-    private fun setObservers() {
+    override fun setObserves() {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
         viewModel.file.observe(viewLifecycleOwner, Observer { response ->
             if(response !=null){
                 this.file = response
@@ -87,9 +103,11 @@ class AttendanceFragment : Fragment(),IClickAttendance {
         })
         viewModel.compareFaceResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null ) {
-                if(response.confidence >= 0.8){
+                if(response.confidence >= 80){
                     Log.e("Authen","OK")
                     viewModel.uploadImage(file)
+                }else{
+                    Util.showDialog(requireContext(),"Không xác minh khuôn mặt","OK")
                 }
             } else {
                 Log.e("setObservers",response.toString())
@@ -111,6 +129,10 @@ class AttendanceFragment : Fragment(),IClickAttendance {
                 }
             }
         })
+    }
+
+    override fun setTabBar() {
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
     }
 
     private fun startCamera() {
