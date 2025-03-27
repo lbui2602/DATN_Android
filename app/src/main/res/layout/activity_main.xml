@@ -16,6 +16,7 @@
             android:orientation="vertical"
             android:layout_height="match_parent">
             <androidx.fragment.app.FragmentContainerView
+                android:background="@color/xanh_nhat"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +35,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#F2EEC4"
+                android:background="@color/green"
                 app:labelVisibilityMode="unlabeled"
                 app:itemIconTint="@drawable/menu_selector"
                 app:itemTextColor="@drawable/menu_selector"

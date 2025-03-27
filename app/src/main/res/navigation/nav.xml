@@ -52,4 +52,13 @@
         android:id="@+id/changePasswordFragment"
         android:name="com.example.datn.view.main.fragment.change_password.ChangePasswordFragment"
         android:label="ChangePasswordFragment" />
+    <fragment
+        android:id="@+id/workingDayHistoryFragment"
+        android:name="com.example.datn.view.main.fragment.history.working_day.WorkingDayHistoryFragment"
+        android:label="WorkingDayHistoryFragment" />
+    <fragment
+        android:id="@+id/attendanceHistoryFragment"
+        android:name="com.example.datn.view.main.fragment.history.attendance.AttendanceHistoryFragment"
+        android:label="fragment_attendance_history"
+        tools:layout="@layout/fragment_attendance_history" />
 </navigation>
