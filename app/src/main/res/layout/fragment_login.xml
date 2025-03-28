@@ -7,81 +7,90 @@
 
     </data>
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:background="@color/green"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.auth.fragment.login.LoginFragment">
-        <ImageView
-            android:id="@+id/imgLogo"
-            android:src="@color/white"
-            android:layout_marginTop="70dp"
-            android:layout_gravity="center"
-            android:layout_width="100dp"
-            android:layout_height="100dp"/>
+        android:layout_height="match_parent">
         <LinearLayout
-            android:padding="10dp"
             android:orientation="vertical"
-            android:background="@drawable/bg_rounded"
-            android:layout_marginTop="20dp"
-            android:layout_marginHorizontal="20dp"
+            android:background="@color/green"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:text="Đăng nhập"
-                android:textStyle="bold"
-                android:textSize="25sp"
+            android:layout_height="match_parent"
+            tools:context=".view.auth.fragment.login.LoginFragment">
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:src="@color/white"
+                android:layout_marginTop="70dp"
                 android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:textColor="@color/black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <EditText
-                android:id="@+id/edtEmail"
-                android:hint="Nhập vào email"
-                android:textColor="@color/black"
-                android:inputType="text"
-                android:layout_margin="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <FrameLayout
-                android:layout_margin="5dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
+            <LinearLayout
+                android:padding="10dp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_rounded"
+                android:layout_marginTop="20dp"
+                android:layout_marginHorizontal="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/edtPassword"
-                    android:inputType="textPassword"
-                    android:hint="Nhập vào mật khẩu"
-                    android:layout_margin="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <ImageView
-                    android:id="@+id/imgVisible"
-                    android:layout_gravity="center|end"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/ic_visible"
+                <TextView
+                    android:text="Đăng nhập"
+                    android:textStyle="bold"
+                    android:textSize="25sp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-            </FrameLayout>
-            <TextView
-                android:id="@+id/tvRegister"
-                android:text="Đăng kí nhân viên mới"
-                android:layout_gravity="end"
-                android:layout_marginRight="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <Button
-                android:id="@+id/btnLogin"
-                android:background="@drawable/bg_rounded"
-                android:backgroundTint="@color/green"
-                android:text="Đăng nhập"
-                android:paddingHorizontal="20dp"
-                android:layout_margin="20dp"
-                android:textColor="@color/white"
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                <EditText
+                    android:id="@+id/edtEmail"
+                    android:hint="Nhập vào email"
+                    android:textColor="@color/black"
+                    android:inputType="text"
+                    android:layout_margin="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <FrameLayout
+                    android:layout_margin="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/edtPassword"
+                        android:inputType="textPassword"
+                        android:hint="Nhập vào mật khẩu"
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:id="@+id/imgVisible"
+                        android:layout_gravity="center|end"
+                        android:layout_margin="20dp"
+                        android:src="@drawable/ic_visible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </FrameLayout>
+                <TextView
+                    android:id="@+id/tvRegister"
+                    android:text="Đăng kí nhân viên mới"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:background="@drawable/bg_rounded"
+                    android:backgroundTint="@color/green"
+                    android:text="Đăng nhập"
+                    android:paddingHorizontal="20dp"
+                    android:layout_margin="20dp"
+                    android:textColor="@color/white"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:visibility="gone"/>
+    </FrameLayout>
 </layout>

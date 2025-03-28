@@ -33,6 +33,9 @@ class RegisterViewModel @Inject constructor(
     private val _isVisibleConfirm = MutableLiveData<Boolean?>()
     val isVisibleConfirm: LiveData<Boolean?> get() = _isVisibleConfirm
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean?> get() = _isLoading
+
     init {
         _isVisible.value = false
         _isVisibleConfirm.value = false
@@ -56,23 +59,23 @@ class RegisterViewModel @Inject constructor(
 
     fun register(registerRequest: RegisterRequest){
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val response = repository.register(registerRequest)
-                Log.e("response",response.toString())
                 if(response.code.toInt() == 1){
-                    Log.e("loginResponse",response.toString())
                     _registerResponse.postValue(response)
                 }
 
             } catch (e: Exception) {
-                Log.e("response",e.toString())
                 _registerResponse.postValue(null)
             }
+            _isLoading.postValue(false)
         }
     }
 
     fun getRoles(){
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val response = repository.getRoles()
                 if(response!=null){
@@ -83,11 +86,13 @@ class RegisterViewModel @Inject constructor(
                 print(e.toString())
                 _rolesResponse.postValue(null)
             }
+            _isLoading.postValue(false)
         }
     }
 
     fun getDepartments(){
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val response = repository.getDepartments()
                 if(response!=null){
@@ -98,9 +103,7 @@ class RegisterViewModel @Inject constructor(
                 print(e.toString())
                 _departmentsResponse.postValue(null)
             }
+            _isLoading.postValue(false)
         }
     }
-
-
-
 }

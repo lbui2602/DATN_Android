@@ -10,6 +10,8 @@ import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.password.ChangePasswordRequest
+import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
@@ -73,4 +75,10 @@ interface ApiService {
     suspend fun getProfile(
         @Header("Authorization") token: String,
     ) : ProfileResponse
+
+    @PUT("api/auth/change-password")
+    suspend fun changePassword(
+        @Header("Authorization") token: String,
+        @Body request : ChangePasswordRequest
+    ): ChangePasswordResponse
 }

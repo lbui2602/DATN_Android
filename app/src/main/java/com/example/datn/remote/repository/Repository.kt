@@ -13,6 +13,8 @@ import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.password.ChangePasswordRequest
+import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
@@ -66,5 +68,8 @@ class Repository @Inject constructor(
     }
     suspend fun getProfile(token : String) : ProfileResponse{
         return apiService.getProfile(token)
+    }
+    suspend fun changePassword(token: String,request: ChangePasswordRequest) : ChangePasswordResponse{
+        return apiService.changePassword(token,request)
     }
 }

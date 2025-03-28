@@ -23,6 +23,9 @@ class LoginViewModel @Inject constructor(
     private val _isVisible = MutableLiveData<Boolean>()
     val isVisible: LiveData<Boolean?> get() = _isVisible
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean?> get() = _isLoading
+
     init {
         _isVisible.value = false
     }
@@ -38,6 +41,7 @@ class LoginViewModel @Inject constructor(
     fun login(loginRequest: LoginRequest){
         Log.e("login",loginRequest.toString())
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val response = repository.login(loginRequest)
                 if(response!=null){
@@ -49,6 +53,7 @@ class LoginViewModel @Inject constructor(
                 print(e.toString())
                 _loginResponse.postValue(null)
             }
+            _isLoading.postValue(false)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.datn.view.auth.fragment.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -61,20 +62,44 @@ class LoginFragment : BaseFragment() {
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
+        binding.imgVisible.setOnClickListener {
+            viewModel.changVisiblePassword()
+        }
     }
 
     override fun setObserves() {
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null) {
-                print(response.toString())
-                sharedPreferencesManager.saveAuthToken(response.token)
-                sharedPreferencesManager.saveUserId(response._id)
-                sharedPreferencesManager.saveFaceToken(response.face_token)
-                startActivity(Intent(requireContext(),MainActivity::class.java))
-                requireActivity().finish()
+            if (response != null ) {
+                if(response.code.toInt()==1){
+                    sharedPreferencesManager.saveAuthToken(response.token)
+                    sharedPreferencesManager.saveUserId(response._id)
+                    sharedPreferencesManager.saveFaceToken(response.face_token)
+                    startActivity(Intent(requireContext(),MainActivity::class.java))
+                    requireActivity().finish()
+                }else{
+                    Util.showDialog(requireContext(),response.message)
+                }
             } else {
                 Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
             }
+        })
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }
+            else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
+        viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->
+            if (isVisible == true) {
+                binding.imgVisible.setImageResource(R.drawable.ic_visible_off)
+                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                binding.imgVisible.setImageResource(R.drawable.ic_visible)
+                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtPassword.setSelection(binding.edtPassword.text!!.length)
         })
     }
 
