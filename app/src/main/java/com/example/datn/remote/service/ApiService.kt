@@ -1,5 +1,6 @@
 package com.example.datn.remote.service
 
+import com.example.datn.models.Message
 import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
@@ -81,4 +82,7 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request : ChangePasswordRequest
     ): ChangePasswordResponse
+
+    @GET("api/messages/{groupId}")
+    suspend fun getMessages(@Path("groupId") groupId: String): List<Message>
 }

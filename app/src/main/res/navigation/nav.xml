@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_homeFragment_to_attendanceFragment"
             app:destination="@id/attendanceFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -61,4 +64,8 @@
         android:name="com.example.datn.view.main.fragment.history.attendance.AttendanceHistoryFragment"
         android:label="fragment_attendance_history"
         tools:layout="@layout/fragment_attendance_history" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.datn.view.main.fragment.chat.ChatFragment"
+        android:label="ChatFragment" />
 </navigation>
