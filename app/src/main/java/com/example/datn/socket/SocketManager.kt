@@ -1,26 +1,23 @@
 package com.example.datn.socket
 
-import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object SocketManager {
-    private const val SERVER_URL = "http://192.168.52.52:3000"
-    val socket: Socket = IO.socket(SERVER_URL)
-
-    fun connect() {
-        socket.connect()
-    }
+@Singleton
+class SocketManager @Inject constructor(val socket: Socket) {
 
     fun joinGroup(groupId: String) {
         socket.emit("join_group", groupId)
     }
 
     fun sendMessage(groupId: String, senderId: String, message: String) {
-        val json = JSONObject()
-        json.put("groupId", groupId)
-        json.put("senderId", senderId)
-        json.put("message", message)
+        val json = JSONObject().apply {
+            put("groupId", groupId)
+            put("senderId", senderId)
+            put("message", message)
+        }
         socket.emit("send_message", json)
     }
 }

@@ -16,6 +16,7 @@ import com.example.datn.databinding.FragmentChatBinding
 import com.example.datn.models.Message
 import com.example.datn.socket.SocketManager
 import com.example.datn.util.SharedPreferencesManager
+import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.ChatAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,15 +31,14 @@ class ChatFragment : BaseFragment() {
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     private lateinit var groupId : String
-    private val senderId = sharedPreferencesManager.getUserId().toString()
+    lateinit var senderId :String
     private val messages = mutableListOf<Message>()
     private lateinit var chatAdapter: ChatAdapter
     private val viewModel: ChatViewModel by viewModels()
 
-    @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        groupId = arguments!!.getString("groupId","")
+        groupId = arguments?.getString("groupId", "") ?: ""
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,78 +49,43 @@ class ChatFragment : BaseFragment() {
     }
 
     override fun setView() {
+        binding.tvTitle.setText(groupId)
+        senderId = sharedPreferencesManager.getUserId().toString()
         viewModel.getMessages(groupId)
+        viewModel.joinChatGroup(groupId)
         setupRecyclerView()
-        setupSocket()
     }
 
     override fun setAction() {
         binding.sendButton.setOnClickListener {
-            val message = binding.editText.text.toString().trim()
-            if (message.isNotEmpty()) {
-                SocketManager.sendMessage(groupId, senderId, message)
+            val messageText = binding.editText.text.toString().trim()
+            if (messageText.isNotEmpty()) {
+                viewModel.sendMessage(groupId, senderId, messageText)
                 binding.editText.text.clear()
             }
         }
     }
 
     override fun setObserves() {
-        viewModel.messages.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null) {
+        viewModel.messages.observe(viewLifecycleOwner) { response ->
+            response?.let {
                 messages.clear()
-                messages.addAll(response)
+                messages.addAll(it)
                 chatAdapter.updateMessages(messages)
-            } else {
-                Snackbar.make(binding.root, "Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()
-            }
-        })
+            } ?: Snackbar.make(binding.root, "Lấy tin nhắn thất bại", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     override fun setTabBar() {
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
     }
 
     private fun setupRecyclerView() {
         chatAdapter = ChatAdapter(messages)
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerView.adapter = chatAdapter
-    }
-
-
-    private fun setupSocket() {
-        SocketManager.connect()
-        SocketManager.joinGroup(groupId)
-
-        SocketManager.socket.on("receive_message") { args ->
-            val messageJson = args[0] as JSONObject
-            val message = Message(
-                messageJson.getString("_id"),
-                messageJson.getString("groupId"),
-                messageJson.getString("senderId"),
-                messageJson.getString("message"),
-                messageJson.getString("createdAt"),
-                messageJson.getString("updatedAt")
-            )
-
-            // Đảm bảo Fragment vẫn còn tồn tại trước khi cập nhật UI
-            if (isAdded && view != null) {
-                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                    Log.e("Message", message.toString())
-                    messages.add(message)
-                    chatAdapter.updateMessages(messages)
-                }
-            }
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = chatAdapter
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Hủy lắng nghe socket khi Fragment bị hủy
-        SocketManager.socket.off("receive_message")
-    }
 }

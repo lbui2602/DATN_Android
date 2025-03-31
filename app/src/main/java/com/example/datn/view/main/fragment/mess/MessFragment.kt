@@ -27,7 +27,10 @@ class MessFragment : BaseFragment() {
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val bundle = Bundle().apply {
+            putString("groupId","67e8b69bf5444ce17495a213")
+        }
+        findNavController().navigate(R.id.action_messFragment_to_chatFragment,bundle)
     }
 
     override fun onCreateView(
