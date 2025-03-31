@@ -12,6 +12,7 @@ import com.example.datn.models.face_api.CreateFaceSetResponse
 import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
+import com.example.datn.models.group.GroupsResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.password.ChangePasswordRequest
@@ -75,5 +76,8 @@ class Repository @Inject constructor(
     }
     suspend fun getMessages(groupId : String) : List<Message>{
         return apiService.getMessages(groupId)
+    }
+    suspend fun getGroupByUserId(userId : String) : GroupsResponse{
+        return apiService.getGroupsByUserId(userId)
     }
 }

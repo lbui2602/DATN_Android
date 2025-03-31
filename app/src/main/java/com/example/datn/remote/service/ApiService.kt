@@ -8,6 +8,7 @@ import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
+import com.example.datn.models.group.GroupsResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
@@ -85,4 +86,7 @@ interface ApiService {
 
     @GET("api/messages/{groupId}")
     suspend fun getMessages(@Path("groupId") groupId: String): List<Message>
+
+    @GET("api/groups/{userId}")
+    suspend fun getGroupsByUserId(@Path("userId") userId : String) : GroupsResponse
 }

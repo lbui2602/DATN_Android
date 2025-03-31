@@ -14,8 +14,11 @@
         android:layout_height="match_parent"
         tools:context=".view.main.fragment.home.HomeFragment">
         <LinearLayout
+            android:orientation="horizontal"
             android:background="@color/green"
             android:layout_width="match_parent"
+            android:weightSum="10"
+            android:gravity="center"
             android:layout_height="wrap_content">
             <TextView
                 android:textStyle="bold"
@@ -24,6 +27,13 @@
                 android:layout_gravity="center"
                 android:text="Trang chủ"
                 android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_weight="9"
+                android:layout_height="wrap_content"/>
+            <ImageView
+                android:layout_gravity="center"
+                android:id="@+id/imgMess"
+                android:src="@drawable/mess_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

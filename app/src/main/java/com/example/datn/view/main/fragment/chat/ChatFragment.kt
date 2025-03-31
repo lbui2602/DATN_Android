@@ -1,5 +1,6 @@
 package com.example.datn.view.main.fragment.chat
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,52 +9,90 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.example.datn.R
+import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentChatBinding
 import com.example.datn.models.Message
 import com.example.datn.socket.SocketManager
-import com.example.datn.util.Util
+import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.view.main.adapter.ChatAdapter
-import com.example.datn.view.main.fragment.profile.ProfileViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChatFragment : Fragment() {
-    lateinit var binding : FragmentChatBinding
-    private val groupId = "67e8b69bf5444ce17495a213"
-    private val senderId = "67e8b63ef5444ce17495a209"
+class ChatFragment : BaseFragment() {
+    private lateinit var binding: FragmentChatBinding
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+    private lateinit var groupId : String
+    private val senderId = sharedPreferencesManager.getUserId().toString()
     private val messages = mutableListOf<Message>()
     private lateinit var chatAdapter: ChatAdapter
     private val viewModel: ChatViewModel by viewModels()
+
+    @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        groupId = arguments!!.getString("groupId","")
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentChatBinding.inflate(layoutInflater,container,false)
-        binding.lifecycleOwner = this
+    ): View {
+        binding = FragmentChatBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun setView() {
+        viewModel.getMessages(groupId)
+        setupRecyclerView()
+        setupSocket()
+    }
+
+    override fun setAction() {
+        binding.sendButton.setOnClickListener {
+            val message = binding.editText.text.toString().trim()
+            if (message.isNotEmpty()) {
+                SocketManager.sendMessage(groupId, senderId, message)
+                binding.editText.text.clear()
+            }
+        }
+    }
+
+    override fun setObserves() {
+        viewModel.messages.observe(viewLifecycleOwner, Observer { response ->
+            if (response != null) {
+                messages.clear()
+                messages.addAll(response)
+                chatAdapter.updateMessages(messages)
+            } else {
+                Snackbar.make(binding.root, "Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    override fun setTabBar() {
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+    }
+
+    private fun setupRecyclerView() {
         chatAdapter = ChatAdapter(messages)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = chatAdapter
+    }
 
-        viewModel.getMessages(groupId)
 
-        setObserves()
-
+    private fun setupSocket() {
         SocketManager.connect()
         SocketManager.joinGroup(groupId)
 
@@ -64,32 +103,24 @@ class ChatFragment : Fragment() {
                 messageJson.getString("groupId"),
                 messageJson.getString("senderId"),
                 messageJson.getString("message"),
-                messageJson.getString("timestamp")
+                messageJson.getString("createdAt"),
+                messageJson.getString("updatedAt")
             )
-            requireActivity().runOnUiThread {
-                Log.e("Message",message.toString())
-                messages.add(message)
-                chatAdapter.updateMessages(messages)
+
+            // Đảm bảo Fragment vẫn còn tồn tại trước khi cập nhật UI
+            if (isAdded && view != null) {
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                    Log.e("Message", message.toString())
+                    messages.add(message)
+                    chatAdapter.updateMessages(messages)
+                }
             }
         }
-
-        binding.sendButton.setOnClickListener {
-            val message = binding.editText.text.toString()
-            SocketManager.sendMessage(groupId, senderId, message)
-            binding.editText.text.clear()
-        }
-
     }
 
-    private fun setObserves() {
-        viewModel.messages.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null ) {
-                messages.addAll(response)
-                chatAdapter.updateMessages(messages)
-            } else {
-                Log.e("setObservers",response.toString())
-                Snackbar.make(binding.root,"Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()
-            }
-        })
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Hủy lắng nghe socket khi Fragment bị hủy
+        SocketManager.socket.off("receive_message")
     }
 }

@@ -40,7 +40,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private val fixedLocation = LatLng(21.02295, 105.80137)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        findNavController().navigate(R.id.action_homeFragment_to_chatFragment)
+        findNavController().navigate(R.id.action_homeFragment_to_messFragment)
     }
 
     override fun onCreateView(
@@ -59,8 +59,11 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun setAction() {
         binding.btnAttendance.setOnClickListener {
-//            findNavController().navigate(R.id.action_homeFragment_to_attendanceFragment)
-            findNavController().navigate(R.id.action_homeFragment_to_chatFragment)
+            findNavController().navigate(R.id.action_homeFragment_to_attendanceFragment)
+//            findNavController().navigate(R.id.action_homeFragment_to_chatFragment)
+        }
+        binding.imgMess.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_messFragment)
         }
     }
 

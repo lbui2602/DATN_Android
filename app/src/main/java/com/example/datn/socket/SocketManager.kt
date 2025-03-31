@@ -5,7 +5,7 @@ import io.socket.client.Socket
 import org.json.JSONObject
 
 object SocketManager {
-    private const val SERVER_URL = "http://192.168.1.101:3000"
+    private const val SERVER_URL = "http://192.168.52.52:3000"
     val socket: Socket = IO.socket(SERVER_URL)
 
     fun connect() {
