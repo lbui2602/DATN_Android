@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datn.R
+import com.example.datn.databinding.ItemMessageReceivedBinding
+import com.example.datn.databinding.ItemMessageSentBinding
 import com.example.datn.models.message.Message
+import com.example.datn.util.Util
 
 class ChatAdapter(private var messages: List<Message>, private val userId: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -23,20 +26,36 @@ class ChatAdapter(private var messages: List<Message>, private val userId: Strin
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_SENT) {
-            val view = inflater.inflate(R.layout.item_message_sent, parent, false)
-            SentMessageViewHolder(view)
+            val binding = ItemMessageSentBinding.inflate(inflater, parent, false)
+            SentMessageViewHolder(binding)
         } else {
-            val view = inflater.inflate(R.layout.item_message_received, parent, false)
-            ReceivedMessageViewHolder(view)
+            val binding = ItemMessageReceivedBinding.inflate(inflater, parent, false)
+            ReceivedMessageViewHolder(binding)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
         if (holder is SentMessageViewHolder) {
-            holder.bind(message)
+            if(position==0){
+                holder.bind(message,1)
+            }else if(!message.senderId.equals(messages[position-1].senderId)){
+                holder.bind(message,1)
+            }else if(position < messages.size && message.senderId.equals(messages[position+1].senderId)){
+                holder.bind(message,2)
+            }else{
+                holder.bind(message,3)
+            }
         } else if (holder is ReceivedMessageViewHolder) {
-            holder.bind(message)
+            if(position==0){
+                holder.bind(message,1)
+            }else if(!message.senderId.equals(messages[position-1].senderId)){
+                holder.bind(message,1)
+            }else if(position < messages.size-1 && message.senderId.equals(messages[position+1].senderId)){
+                holder.bind(message,2)
+            }else{
+                holder.bind(message,3)
+            }
         }
     }
 
@@ -47,17 +66,22 @@ class ChatAdapter(private var messages: List<Message>, private val userId: Strin
         notifyDataSetChanged()
     }
 
-    class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val messageText: TextView = itemView.findViewById(R.id.tvMessageSent)
-        fun bind(message: Message) {
-            messageText.text = message.message
+    class SentMessageViewHolder(private val binding: ItemMessageSentBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message,type : Int) {
+            binding.tvMessageSent.text = message.message
         }
     }
 
-    class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val messageText: TextView = itemView.findViewById(R.id.tvMessageReceived)
-        fun bind(message: Message) {
-            messageText.text = message.message
+    class ReceivedMessageViewHolder(private val binding: ItemMessageReceivedBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(message: Message,type : Int) {
+            binding.tvMessageReceived.text = message.message
+            binding.tvTimeReceived.text = Util.formatTime(message.createdAt)
+            if(type ==1){
+                binding.tvName.text = message.senderName
+                binding.tvName.visibility = View.VISIBLE
+            }
         }
     }
 }

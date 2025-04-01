@@ -17,7 +17,7 @@ import java.util.Locale
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://192.168.52.52:3000"
+    val url = "http://192.168.1.101:3000"
     fun showDialog(
         context: Context,
         message: String,
@@ -51,6 +51,12 @@ object Util {
         val date = Date()
         val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         return timeFormat.format(date)
+    }
+    fun formatTime(input: String): String {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        val date = inputFormat.parse(input)
+        return outputFormat.format(date ?: Date())
     }
     fun resizeImageFile(file: File, maxSize: Int = 4096, maxFileSize: Int = 2 * 1024 * 1024): File {
         val bitmap = BitmapFactory.decodeFile(file.absolutePath)
