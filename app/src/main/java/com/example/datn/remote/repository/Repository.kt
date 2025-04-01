@@ -1,7 +1,6 @@
 package com.example.datn.remote.repository
 
 import android.util.Log
-import com.example.datn.models.Message
 import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
@@ -15,6 +14,7 @@ import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.group.GroupsResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.message.MessageResponse
 import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.profile.ProfileResponse
@@ -74,7 +74,7 @@ class Repository @Inject constructor(
     suspend fun changePassword(token: String,request: ChangePasswordRequest) : ChangePasswordResponse{
         return apiService.changePassword(token,request)
     }
-    suspend fun getMessages(groupId : String) : List<Message>{
+    suspend fun getMessages(groupId : String) : MessageResponse{
         return apiService.getMessages(groupId)
     }
     suspend fun getGroupByUserId(userId : String) : GroupsResponse{

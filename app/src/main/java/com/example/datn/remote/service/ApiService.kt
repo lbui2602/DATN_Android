@@ -1,6 +1,5 @@
 package com.example.datn.remote.service
 
-import com.example.datn.models.Message
 import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
@@ -12,6 +11,7 @@ import com.example.datn.models.group.GroupsResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.message.MessageResponse
 import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.profile.ProfileResponse
@@ -85,7 +85,7 @@ interface ApiService {
     ): ChangePasswordResponse
 
     @GET("api/messages/{groupId}")
-    suspend fun getMessages(@Path("groupId") groupId: String): List<Message>
+    suspend fun getMessages(@Path("groupId") groupId: String): MessageResponse
 
     @GET("api/groups/{userId}")
     suspend fun getGroupsByUserId(@Path("userId") userId : String) : GroupsResponse

@@ -1,10 +1,12 @@
 package com.example.datn.view.main.fragment.chat
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datn.models.Message
+import com.example.datn.models.message.Message
+import com.example.datn.models.message.MessageResponse
 import com.example.datn.remote.repository.Repository
 import com.example.datn.socket.SocketManager
 import com.example.datn.util.SharedPreferencesManager
@@ -19,8 +21,8 @@ class ChatViewModel @Inject constructor(
     private val sharedPreferencesManager: SharedPreferencesManager,
     private val socketManager: SocketManager
 ) : ViewModel() {
-    private val _messages = MutableLiveData<List<Message>>()
-    val messages: LiveData<List<Message>> get() = _messages
+    private val _messages = MutableLiveData<MessageResponse?>()
+    val messages: LiveData<MessageResponse?> get() = _messages
 
     init {
         listenForIncomingMessages()
@@ -30,9 +32,13 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = repository.getMessages(groupId)
-                _messages.postValue(response ?: emptyList())
+                if(response != null){
+                    _messages.postValue(response)
+                }else{
+                    _messages.postValue(null)
+                }
             } catch (e: Exception) {
-                _messages.postValue(emptyList())
+                _messages.postValue(null)
             }
         }
     }
@@ -48,22 +54,31 @@ class ChatViewModel @Inject constructor(
     private fun listenForIncomingMessages() {
         socketManager.socket.on("receive_message") { args ->
             val messageJson = args[0] as JSONObject
+            Log.e("Socket", messageJson.toString())
+
             val newMessage = Message(
                 messageJson.getString("_id"),
                 messageJson.getString("groupId"),
-                messageJson.getString("senderId"),
                 messageJson.getString("message"),
+                messageJson.getString("senderId"),
+                messageJson.getString("senderImage"),
+                messageJson.getString("senderName"),
                 messageJson.getString("createdAt"),
                 messageJson.getString("updatedAt")
             )
 
             viewModelScope.launch {
-                val currentMessages = _messages.value?.toMutableList() ?: mutableListOf()
-                currentMessages.add(newMessage)
-                _messages.postValue(currentMessages)
+                val currentMessagesResponse = _messages.value
+                val updatedMessages = currentMessagesResponse?.messages?.toMutableList() ?: mutableListOf()
+                updatedMessages.add(newMessage)
+                _messages.postValue(
+                    _messages.value?.copy(messages = updatedMessages)
+                )
+                Log.e("Message", _messages.value.toString())
             }
         }
     }
+
 
     override fun onCleared() {
         super.onCleared()

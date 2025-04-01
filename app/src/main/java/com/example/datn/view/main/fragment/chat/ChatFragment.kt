@@ -8,21 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentChatBinding
-import com.example.datn.models.Message
-import com.example.datn.socket.SocketManager
+import com.example.datn.models.message.Message
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.ChatAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.json.JSONObject
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -64,13 +59,17 @@ class ChatFragment : BaseFragment() {
                 binding.editText.text.clear()
             }
         }
+        binding.imgBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 
     override fun setObserves() {
         viewModel.messages.observe(viewLifecycleOwner) { response ->
             response?.let {
+                Log.e("Mesage Réponse",response.toString())
                 messages.clear()
-                messages.addAll(it)
+                messages.addAll(response.messages)
                 chatAdapter.updateMessages(messages)
             } ?: Snackbar.make(binding.root, "Lấy tin nhắn thất bại", Snackbar.LENGTH_SHORT).show()
         }
@@ -81,7 +80,7 @@ class ChatFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-        chatAdapter = ChatAdapter(messages)
+        chatAdapter = ChatAdapter(messages,sharedPreferencesManager.getUserId().toString())
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = chatAdapter

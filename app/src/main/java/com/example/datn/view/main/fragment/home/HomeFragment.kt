@@ -40,7 +40,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private val fixedLocation = LatLng(21.02295, 105.80137)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        findNavController().navigate(R.id.action_homeFragment_to_messFragment)
+//        findNavController().navigate(R.id.action_homeFragment_to_messFragment)
     }
 
     override fun onCreateView(
@@ -101,6 +101,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun setupMap() {
+        Log.e("setupMap","true")
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
