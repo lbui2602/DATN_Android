@@ -1,10 +1,14 @@
 package com.example.datn.view.main.adapter
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.UiContext
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.databinding.ItemMessageReceivedBinding
 import com.example.datn.databinding.ItemMessageSentBinding
@@ -27,35 +31,25 @@ class ChatAdapter(private var messages: List<Message>, private val userId: Strin
         val inflater = LayoutInflater.from(parent.context)
         return if (viewType == VIEW_TYPE_SENT) {
             val binding = ItemMessageSentBinding.inflate(inflater, parent, false)
-            SentMessageViewHolder(binding)
+            SentMessageViewHolder(binding,parent.context)
         } else {
             val binding = ItemMessageReceivedBinding.inflate(inflater, parent, false)
-            ReceivedMessageViewHolder(binding)
+            ReceivedMessageViewHolder(binding,parent.context)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val message = messages[position]
         if (holder is SentMessageViewHolder) {
-            if(position==0){
-                holder.bind(message,1)
-            }else if(!message.senderId.equals(messages[position-1].senderId)){
-                holder.bind(message,1)
-            }else if(position < messages.size && message.senderId.equals(messages[position+1].senderId)){
-                holder.bind(message,2)
-            }else{
-                holder.bind(message,3)
-            }
+            holder.bind(message)
         } else if (holder is ReceivedMessageViewHolder) {
-            if(position==0){
-                holder.bind(message,1)
-            }else if(!message.senderId.equals(messages[position-1].senderId)){
-                holder.bind(message,1)
-            }else if(position < messages.size-1 && message.senderId.equals(messages[position+1].senderId)){
-                holder.bind(message,2)
-            }else{
-                holder.bind(message,3)
+            val type = if (position == 0 || messages[position].senderId != messages[position - 1].senderId) {
+                1 // Tin nhắn đầu tiên của một nhóm
+            } else {
+                0 // Các tin nhắn tiếp theo trong nhóm
             }
+            Log.e("Receiver",message.message.toString()+position+" - "+type)
+            holder.bind(message, type)
         }
     }
 
@@ -66,21 +60,27 @@ class ChatAdapter(private var messages: List<Message>, private val userId: Strin
         notifyDataSetChanged()
     }
 
-    class SentMessageViewHolder(private val binding: ItemMessageSentBinding) :
+    class SentMessageViewHolder(private val binding: ItemMessageSentBinding,val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(message: Message,type : Int) {
+        fun bind(message: Message) {
             binding.tvMessageSent.text = message.message
+            binding.tvTimeSent.text = Util.formatTime(message.createdAt)
         }
     }
 
-    class ReceivedMessageViewHolder(private val binding: ItemMessageReceivedBinding) :
+    class ReceivedMessageViewHolder(private val binding: ItemMessageReceivedBinding,val context: Context) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(message: Message,type : Int) {
             binding.tvMessageReceived.text = message.message
             binding.tvTimeReceived.text = Util.formatTime(message.createdAt)
-            if(type ==1){
+            if(type == 1){
+                binding.cvAvatar.visibility = View.VISIBLE
+                Glide.with(context).load(Util.url+message.senderImage).into(binding.imgAvatar)
                 binding.tvName.text = message.senderName
                 binding.tvName.visibility = View.VISIBLE
+            }else{
+                binding.tvName.visibility = View.GONE
+                binding.cvAvatar.visibility = View.INVISIBLE
             }
         }
     }

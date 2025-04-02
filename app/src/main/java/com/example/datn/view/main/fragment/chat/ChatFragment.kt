@@ -30,6 +30,7 @@ class ChatFragment : BaseFragment() {
     private val messages = mutableListOf<Message>()
     private lateinit var chatAdapter: ChatAdapter
     private val viewModel: ChatViewModel by viewModels()
+    var isScroll = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +58,7 @@ class ChatFragment : BaseFragment() {
             if (messageText.isNotEmpty()) {
                 viewModel.sendMessage(groupId, senderId, messageText)
                 binding.editText.text.clear()
+                isScroll = true
             }
         }
         binding.imgBack.setOnClickListener {
@@ -71,6 +73,11 @@ class ChatFragment : BaseFragment() {
                 messages.clear()
                 messages.addAll(response.messages)
                 chatAdapter.updateMessages(messages)
+                Log.e("isScroll",isScroll.toString())
+                if(isScroll == true){
+                    binding.recyclerView.scrollToPosition(messages.size - 1)
+                    isScroll = false
+                }
             } ?: Snackbar.make(binding.root, "Lấy tin nhắn thất bại", Snackbar.LENGTH_SHORT).show()
         }
     }

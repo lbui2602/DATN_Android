@@ -27,6 +27,8 @@
                 android:layout_height="wrap_content">
 
                 <androidx.cardview.widget.CardView
+                    android:visibility="invisible"
+                    android:id="@+id/cvAvatar"
                     app:cardCornerRadius="20dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp">
