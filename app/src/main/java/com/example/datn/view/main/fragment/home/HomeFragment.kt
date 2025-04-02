@@ -13,11 +13,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.datn.R
 import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentHomeBinding
+import com.example.datn.util.SharedPreferencesManager
+import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
+import com.example.datn.view.main.fragment.change_password.ChangePasswordViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,8 +31,10 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.math.*
-
+@AndroidEntryPoint
 class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: FragmentHomeBinding
@@ -37,10 +44,16 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
+    private val viewModel: HomeViewModel by viewModels()
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
+
+
     private val fixedLocation = LatLng(21.02295, 105.80137)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        findNavController().navigate(R.id.action_homeFragment_to_messFragment)
+        viewModel.getGroupsByUserId(sharedPreferencesManager.getUserId().toString())
     }
 
     override fun onCreateView(
@@ -68,7 +81,26 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun setObserves() {
-
+        viewModel.groupsResponse.observe(viewLifecycleOwner, Observer { response->
+            if (response != null) {
+                if(response.code.toInt() == 1){
+                    response.groups.forEach { gr->
+                        viewModel.joinChatGroup(gr._id)
+                    }
+                }else{
+                    Util.showDialog(requireContext(),response.message)
+                }
+            } else {
+                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.message.observe(viewLifecycleOwner, Observer { message->
+            if (message != null) {
+                Snackbar.make(binding.root,message.message, Snackbar.LENGTH_SHORT).show()
+            } else {
+                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun setTabBar() {
@@ -213,6 +245,6 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+//        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 }
