@@ -1,12 +1,20 @@
 package com.example.datn.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
+import android.media.MediaPlayer
+import android.view.LayoutInflater
+import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
+import com.example.datn.R
+import com.example.datn.databinding.CustomSnackbarBinding
+import com.google.android.material.snackbar.Snackbar
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -17,7 +25,33 @@ import java.util.Locale
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://192.168.1.101:3000"
+    val url = "http://192.168.52.52:3000"
+    @SuppressLint("RestrictedApi")
+    fun showCustomSnackbar(
+        view: View,
+        message: String,
+        actionText: String?,
+        duration: Int = Snackbar.LENGTH_SHORT,
+        action: (() -> Unit)? = null
+    ) {
+        val snackbar = Snackbar.make(view, "", duration)
+
+        val inflater = LayoutInflater.from(view.context)
+        val binding: CustomSnackbarBinding =
+            DataBindingUtil.inflate(inflater, R.layout.custom_snackbar, null, false)
+
+        binding.snackbarText.text = message
+        binding.snackbarAction.text = actionText
+
+        val snackbarLayout = snackbar.view as Snackbar.SnackbarLayout
+        snackbarLayout.setPadding(0, 0, 0, 0) // Xóa padding mặc định
+        snackbarLayout.addView(binding.root, 0)
+        binding.snackbarAction.setOnClickListener {
+            action?.invoke()
+            snackbar.dismiss()
+        }
+        snackbar.show()
+    }
     fun showDialog(
         context: Context,
         message: String,
@@ -45,6 +79,11 @@ object Util {
         val date = Date()
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         return dateFormat.format(date)
+    }
+
+    fun playTingTingSound(context: Context) {
+        val mediaPlayer = MediaPlayer.create(context, R.raw.tingting)
+        mediaPlayer.start()
     }
 
     fun formatTime(): String {

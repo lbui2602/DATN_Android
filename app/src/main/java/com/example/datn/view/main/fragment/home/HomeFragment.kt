@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
@@ -96,9 +97,17 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         })
         viewModel.message.observe(viewLifecycleOwner, Observer { message->
             if (message != null) {
-                Snackbar.make(binding.root,message.message, Snackbar.LENGTH_SHORT).show()
-            } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+//                Snackbar.make(binding.root,message.message, Snackbar.LENGTH_SHORT).show()
+                Util.showCustomSnackbar(
+                    view = binding.root,  // Truyền view gốc của Fragment/Activity
+                    message = message.message,
+                    actionText = message.senderName,
+                    action = {
+                        Toast.makeText(requireContext(), "Đã hoàn tác!", Toast.LENGTH_SHORT).show()
+                    }
+                )
+                Util.playTingTingSound(requireContext())
+                viewModel.clearMessage()
             }
         })
     }
@@ -114,7 +123,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        Log.e("Home","onResume")
+        viewModel.listenForIncomingMessages()
     }
 
     private fun requestLocationPermission() {
@@ -246,5 +255,12 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
 //        fusedLocationClient.removeLocationUpdates(locationCallback)
+        viewModel.clearMessage()
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.clear()
     }
 }

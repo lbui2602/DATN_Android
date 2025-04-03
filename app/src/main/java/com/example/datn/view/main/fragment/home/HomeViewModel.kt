@@ -21,10 +21,6 @@ class HomeViewModel @Inject constructor(
     private val socketManager: SocketManager
 ) : ViewModel() {
 
-    init {
-        listenForIncomingMessages()
-    }
-
     private val _isLoading = MutableLiveData<Boolean?>()
     val isLoading: LiveData<Boolean?> get() = _isLoading
 
@@ -52,12 +48,17 @@ class HomeViewModel @Inject constructor(
             _isLoading.postValue(false)
         }
     }
+    fun clearMessage(){
+        viewModelScope.launch {
+            _message.postValue(null)
+        }
+    }
 
     fun joinChatGroup(groupId: String) {
         socketManager.joinGroup(groupId)
     }
 
-    private fun listenForIncomingMessages() {
+    fun listenForIncomingMessages() {
         socketManager.socket.on("receive_message") { args ->
             val messageJson = args[0] as JSONObject
             Log.e("Socket", messageJson.toString())
@@ -72,10 +73,12 @@ class HomeViewModel @Inject constructor(
                 messageJson.getString("createdAt"),
                 messageJson.getString("updatedAt")
             )
-
             viewModelScope.launch {
                 _message.postValue(newMessage)
             }
         }
+    }
+    fun clear(){
+        socketManager.socket.off("receive_message")
     }
 }
