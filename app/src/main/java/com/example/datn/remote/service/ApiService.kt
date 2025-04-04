@@ -1,6 +1,7 @@
 package com.example.datn.remote.service
 
 import com.example.datn.models.attendance.AttendanceByDateResponse
+import com.example.datn.models.attendance.AttendanceByUserIdResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
@@ -89,4 +90,10 @@ interface ApiService {
 
     @GET("api/groups/{userId}")
     suspend fun getGroupsByUserId(@Path("userId") userId : String) : GroupsResponse
+
+    @GET("api/attendance/{userId}")
+    suspend fun getAttendanceByUserId(
+        @Header("Authorization") token: String,
+        @Path("userId") userId : String
+    ): AttendanceByUserIdResponse
 }

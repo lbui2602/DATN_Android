@@ -2,6 +2,7 @@ package com.example.datn.remote.repository
 
 import android.util.Log
 import com.example.datn.models.attendance.AttendanceByDateResponse
+import com.example.datn.models.attendance.AttendanceByUserIdResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.department.DepartmentsResponses
@@ -79,5 +80,8 @@ class Repository @Inject constructor(
     }
     suspend fun getGroupByUserId(userId : String) : GroupsResponse{
         return apiService.getGroupsByUserId(userId)
+    }
+    suspend fun getAttendanceByUserId(token:String,userId : String) : AttendanceByUserIdResponse{
+        return apiService.getAttendanceByUserId(token,userId)
     }
 }

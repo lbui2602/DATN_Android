@@ -12,8 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.databinding.CustomSnackbarBinding
+import com.example.datn.models.message.Message
 import com.google.android.material.snackbar.Snackbar
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -29,8 +31,7 @@ object Util {
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,
-        message: String,
-        actionText: String?,
+        message: Message,
         duration: Int = Snackbar.LENGTH_SHORT,
         action: (() -> Unit)? = null
     ) {
@@ -40,13 +41,15 @@ object Util {
         val binding: CustomSnackbarBinding =
             DataBindingUtil.inflate(inflater, R.layout.custom_snackbar, null, false)
 
-        binding.snackbarText.text = message
-        binding.snackbarAction.text = actionText
+        binding.tvMessage.text = message.message
+        binding.tvName.text = message.senderName
+        Glide.with(view).load(url+message.senderImage).into(binding.imgAvatar)
 
         val snackbarLayout = snackbar.view as Snackbar.SnackbarLayout
         snackbarLayout.setPadding(0, 0, 0, 0) // Xóa padding mặc định
         snackbarLayout.addView(binding.root, 0)
-        binding.snackbarAction.setOnClickListener {
+
+        binding.llMessage.setOnClickListener {
             action?.invoke()
             snackbar.dismiss()
         }

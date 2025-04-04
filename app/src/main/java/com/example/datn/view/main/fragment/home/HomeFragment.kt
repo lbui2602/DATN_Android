@@ -53,8 +53,6 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private val fixedLocation = LatLng(21.02295, 105.80137)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        findNavController().navigate(R.id.action_homeFragment_to_messFragment)
-        viewModel.getGroupsByUserId(sharedPreferencesManager.getUserId().toString())
     }
 
     override fun onCreateView(
@@ -74,7 +72,6 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     override fun setAction() {
         binding.btnAttendance.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_attendanceFragment)
-//            findNavController().navigate(R.id.action_homeFragment_to_chatFragment)
         }
         binding.imgMess.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_messFragment)
@@ -82,34 +79,6 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     override fun setObserves() {
-        viewModel.groupsResponse.observe(viewLifecycleOwner, Observer { response->
-            if (response != null) {
-                if(response.code.toInt() == 1){
-                    response.groups.forEach { gr->
-                        viewModel.joinChatGroup(gr._id)
-                    }
-                }else{
-                    Util.showDialog(requireContext(),response.message)
-                }
-            } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
-            }
-        })
-        viewModel.message.observe(viewLifecycleOwner, Observer { message->
-            if (message != null) {
-//                Snackbar.make(binding.root,message.message, Snackbar.LENGTH_SHORT).show()
-                Util.showCustomSnackbar(
-                    view = binding.root,  // Truyền view gốc của Fragment/Activity
-                    message = message.message,
-                    actionText = message.senderName,
-                    action = {
-                        Toast.makeText(requireContext(), "Đã hoàn tác!", Toast.LENGTH_SHORT).show()
-                    }
-                )
-                Util.playTingTingSound(requireContext())
-                viewModel.clearMessage()
-            }
-        })
     }
 
     override fun setTabBar() {
@@ -123,7 +92,6 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        viewModel.listenForIncomingMessages()
     }
 
     private fun requestLocationPermission() {
@@ -254,13 +222,11 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
-//        fusedLocationClient.removeLocationUpdates(locationCallback)
-        viewModel.clearMessage()
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
 
     override fun onStop() {
         super.onStop()
-        viewModel.clear()
     }
 }

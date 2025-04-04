@@ -5,56 +5,82 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
+import com.example.datn.base.BaseFragment
+import com.example.datn.click.IClickAttendance
+import com.example.datn.click.IClickMess
+import com.example.datn.databinding.FragmentAttendanceBinding
+import com.example.datn.databinding.FragmentAttendanceHistoryBinding
+import com.example.datn.models.attendance.Attendance
+import com.example.datn.util.SharedPreferencesManager
+import com.example.datn.view.main.adapter.AttendanceAdapter
+import com.example.datn.view.main.fragment.chat.ChatViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
+import kotlin.getValue
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AttendanceHistoryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class AttendanceHistoryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
+@AndroidEntryPoint
+class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
+    private val viewModel: AttendanceHistoryViewModel by viewModels()
+    private lateinit var binding : FragmentAttendanceHistoryBinding
+    lateinit var adapter: AttendanceAdapter
+    private var list = mutableListOf<Attendance>()
+    @Inject
+    lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_attendance_history, container, false)
+        binding = FragmentAttendanceHistoryBinding.inflate(layoutInflater,container,false)
+        binding.lifecycleOwner = this
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AttendanceHistoryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AttendanceHistoryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getAttendanceByUserId(
+            "Bearer "+sharedPreferencesManager.getAuthToken().toString(),
+            sharedPreferencesManager.getUserId().toString())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAttendanceByUserId(
+            "Bearer "+sharedPreferencesManager.getAuthToken().toString(),
+            sharedPreferencesManager.getUserId().toString())
+    }
+    private fun setRecyclerView() {
+        binding.rcv.layoutManager = LinearLayoutManager(requireContext())
+        adapter = AttendanceAdapter(list,this)
+        binding.rcv.adapter = adapter
+    }
+
+    override fun setView() {
+        setRecyclerView()
+    }
+
+    override fun setAction() {
+
+    }
+
+    override fun setObserves() {
+        viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
+            if (response != null && response.code.toInt() == 1) {
+                if(response.attendances !=null){
+                    adapter.updateList(response.attendances.toMutableList())
                 }
             }
+        })
+    }
+
+    override fun setTabBar() {
+
     }
 }
