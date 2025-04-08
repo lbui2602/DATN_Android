@@ -22,6 +22,7 @@ import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.role.RolesResponse
+import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.remote.service.ApiService
 import com.example.datn.remote.service.FaceApiService
@@ -83,5 +84,8 @@ class Repository @Inject constructor(
     }
     suspend fun getAttendanceByUserId(token:String,userId : String) : AttendanceByUserIdResponse{
         return apiService.getAttendanceByUserId(token,userId)
+    }
+    suspend fun updateUser(token : String,request: UpdateUserRequest) : RegisterResponse {
+        return apiService.updateUser(token,request)
     }
 }

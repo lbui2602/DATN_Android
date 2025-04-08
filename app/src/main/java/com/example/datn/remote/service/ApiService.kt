@@ -18,6 +18,7 @@ import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
+import com.example.datn.models.update_user.UpdateUserRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -96,4 +97,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("userId") userId : String
     ): AttendanceByUserIdResponse
+
+    @PUT("api/auth/update")
+    suspend fun updateUser(
+        @Header("Authorization") token: String,
+        @Body request : UpdateUserRequest) : RegisterResponse
 }

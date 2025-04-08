@@ -120,6 +120,6 @@ class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
     }
 
     override fun setTabBar() {
-        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.VISIBLE
     }
 }
