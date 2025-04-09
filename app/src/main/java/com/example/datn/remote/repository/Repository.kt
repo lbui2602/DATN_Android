@@ -18,6 +18,8 @@ import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.message.MessageResponse
 import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
+import com.example.datn.models.password.CheckPasswordRequest
+import com.example.datn.models.password.CheckPasswordResponse
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
@@ -87,5 +89,8 @@ class Repository @Inject constructor(
     }
     suspend fun updateUser(token : String,request: UpdateUserRequest) : RegisterResponse {
         return apiService.updateUser(token,request)
+    }
+    suspend fun checkPassword(token : String, password : CheckPasswordRequest) : CheckPasswordResponse {
+        return apiService.checkPassword(token,password)
     }
 }

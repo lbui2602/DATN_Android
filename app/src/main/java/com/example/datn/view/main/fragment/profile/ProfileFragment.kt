@@ -18,6 +18,7 @@ import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.fragment.attendance.AttendanceViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue
@@ -28,6 +29,7 @@ class ProfileFragment : BaseFragment() {
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     private val viewModel: ProfileViewModel by viewModels()
+    var userString = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -51,7 +53,9 @@ class ProfileFragment : BaseFragment() {
             findNavController().popBackStack()
         }
         binding.btnUpdate.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_updateUserInfoFragment)
+            val bundle = Bundle()
+            bundle.putString("user",userString)
+            findNavController().navigate(R.id.action_profileFragment_to_updateUserInfoFragment,bundle)
         }
         binding.btnChangPass.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_changePasswordFragment)
@@ -71,6 +75,8 @@ class ProfileFragment : BaseFragment() {
                 binding.tvRole.text = response.user.role
                 binding.tvAddress.text = response.user.address
                 binding.tvPhone.text = response.user.phone
+                val gson = Gson()
+                userString = gson.toJson(response.user)
             } else {
                 Log.e("setObservers",response.toString())
                 Snackbar.make(binding.root,"Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()

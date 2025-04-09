@@ -15,6 +15,8 @@ import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.message.MessageResponse
 import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
+import com.example.datn.models.password.CheckPasswordRequest
+import com.example.datn.models.password.CheckPasswordResponse
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
@@ -22,6 +24,7 @@ import com.example.datn.models.update_user.UpdateUserRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -101,5 +104,12 @@ interface ApiService {
     @PUT("api/auth/update")
     suspend fun updateUser(
         @Header("Authorization") token: String,
-        @Body request : UpdateUserRequest) : RegisterResponse
+        @Body request : UpdateUserRequest
+    ) : RegisterResponse
+
+    @POST("api/auth/check-password")
+    suspend fun checkPassword(
+        @Header("Authorization") token: String,
+        @Body request : CheckPasswordRequest
+    ) : CheckPasswordResponse
 }

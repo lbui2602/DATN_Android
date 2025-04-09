@@ -12,5 +12,6 @@ data class User(
     val face_token: String,
     val status : Boolean,
     val createAt: String,
-    val updateAt : String
+    val updateAt : String,
+    val __v : Int
 )
