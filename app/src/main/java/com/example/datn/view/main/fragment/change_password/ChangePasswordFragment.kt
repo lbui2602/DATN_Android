@@ -61,13 +61,14 @@ class ChangePasswordFragment : BaseFragment() {
 
     override fun setObserves() {
         viewModel.changePasswordResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null && response.code.toInt() == 1) {
-                Util.showDialog(requireContext(),response.message,"OK",{
-                    findNavController().popBackStack()
-                })
-            } else {
-                Log.e("setObservers",response.toString())
-                Snackbar.make(binding.root,response?.message.toString(), Snackbar.LENGTH_SHORT).show()
+            if(response != null){
+                if ( response.code.toInt() == 1) {
+                    Util.showDialog(requireContext(),response.message,"OK",{
+                        findNavController().popBackStack()
+                    })
+                } else {
+                    Util.showDialog(requireContext(),response.message)
+                }
             }
         })
     }

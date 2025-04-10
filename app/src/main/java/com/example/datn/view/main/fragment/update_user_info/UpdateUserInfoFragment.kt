@@ -128,6 +128,9 @@ class UpdateUserInfoFragment : BaseFragment() {
                         findNavController().popBackStack()
                     })
                 }
+                else{
+                    Util.showDialog(requireContext(),response.message)
+                }
             } else {
                 Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
             }
@@ -141,6 +144,9 @@ class UpdateUserInfoFragment : BaseFragment() {
                     if (position != -1) {
                         binding.spnRole.setSelection(position)
                     }
+                }
+                else{
+                    Util.showDialog(requireContext(),response.message)
                 }
             } else {
                 Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()

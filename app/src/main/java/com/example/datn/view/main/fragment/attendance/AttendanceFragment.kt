@@ -115,17 +115,20 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
             }
         })
         viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null && response.code.toInt() == 1) {
-                adapter.updateList(response.attendances.toMutableList())
-            } else {
-                Log.e("setObservers",response.toString())
-                Snackbar.make(binding.root,"Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()
+            if(response != null){
+                if (response.code.toInt() == 1) {
+                    adapter.updateList(response.attendances.toMutableList())
+                } else {
+                    Util.showDialog(requireContext(),response.message.toString())
+                }
             }
         })
         viewModel.attendanceByDateResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null && response.code.toInt() == 1) {
-                if(response.attendances !=null){
-                    adapter.updateList(response.attendances.toMutableList())
+            if(response != null){
+                if (response.code.toInt() == 1) {
+                    if(response.attendances !=null){
+                        adapter.updateList(response.attendances.toMutableList())
+                    }
                 }
             }
         })

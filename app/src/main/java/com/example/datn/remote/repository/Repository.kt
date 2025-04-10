@@ -21,11 +21,13 @@ import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.password.CheckPasswordRequest
 import com.example.datn.models.password.CheckPasswordResponse
 import com.example.datn.models.profile.ProfileResponse
+import com.example.datn.models.profile.User
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.role.RolesResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
+import com.example.datn.models.working_day.WorkingDayByMonthResponse
 import com.example.datn.remote.service.ApiService
 import com.example.datn.remote.service.FaceApiService
 import okhttp3.MultipartBody
@@ -35,62 +37,124 @@ import javax.inject.Inject
 class Repository @Inject constructor(
     private val apiService: ApiService, private val faceApiService: FaceApiService
 ) {
-    suspend fun compareFaces(image: MultipartBody.Part,faceToken : RequestBody, apiKey: RequestBody, apiSecret: RequestBody) : CompareFaceResponse{
-        return faceApiService.compareFaces(image,faceToken,apiKey,apiSecret)
+    suspend fun compareFaces(
+        image: MultipartBody.Part,
+        faceToken: RequestBody,
+        apiKey: RequestBody,
+        apiSecret: RequestBody
+    ): CompareFaceResponse {
+        return faceApiService.compareFaces(image, faceToken, apiKey, apiSecret)
     }
-    suspend fun createFaceSet(apiKey: String,apiSecret:String,outerId:String,displayName : String,tags : String) : CreateFaceSetResponse{
+
+    suspend fun createFaceSet(
+        apiKey: String,
+        apiSecret: String,
+        outerId: String,
+        displayName: String,
+        tags: String
+    ): CreateFaceSetResponse {
         return faceApiService.createFaceSet(apiKey, apiSecret, outerId, displayName, tags)
     }
-    suspend fun detectFace(image: MultipartBody.Part, apiKey: RequestBody, apiSecret: RequestBody) : DetectFaceResponse {
-        return faceApiService.detectFace(image,apiKey, apiSecret)
+
+    suspend fun detectFace(
+        image: MultipartBody.Part,
+        apiKey: RequestBody,
+        apiSecret: RequestBody
+    ): DetectFaceResponse {
+        return faceApiService.detectFace(image, apiKey, apiSecret)
     }
-    suspend fun addFaceToFaceSet(apiKey: String,apiSecret:String,outerId:String,faceTokens:String) : AddFaceResponse {
+
+    suspend fun addFaceToFaceSet(
+        apiKey: String,
+        apiSecret: String,
+        outerId: String,
+        faceTokens: String
+    ): AddFaceResponse {
         return faceApiService.addFaceToFaceSet(apiKey, apiSecret, outerId, faceTokens)
     }
-    suspend fun login(loginRequest: LoginRequest) : LoginResponse {
-        Log.e("repository",loginRequest.toString())
+
+    suspend fun login(loginRequest: LoginRequest): LoginResponse {
+        Log.e("repository", loginRequest.toString())
         return apiService.login(loginRequest)
     }
-    suspend fun register(registerRequest: RegisterRequest) : RegisterResponse {
+
+    suspend fun register(registerRequest: RegisterRequest): RegisterResponse {
         return apiService.register(registerRequest)
     }
-    suspend fun getRoles() : RolesResponse {
+
+    suspend fun getRoles(): RolesResponse {
         return apiService.getRoles()
     }
-    suspend fun getDepartments() : DepartmentsResponses {
+
+    suspend fun getDepartments(): DepartmentsResponses {
         return apiService.getDepartments()
     }
-    suspend fun uploadAvatar(userId : RequestBody, image : MultipartBody.Part) : UploadAvatarResponse{
-        return apiService.uploadAvatar(userId,image)
+
+    suspend fun uploadAvatar(userId: RequestBody, image: MultipartBody.Part): UploadAvatarResponse {
+        return apiService.uploadAvatar(userId, image)
     }
-    suspend fun updateFaceToken(request : FaceTokenRequest) : FaceTokenResponse{
+
+    suspend fun updateFaceToken(request: FaceTokenRequest): FaceTokenResponse {
         return apiService.updateFaceToken(request)
     }
-    suspend fun attendance(token:String,userId: RequestBody,time : RequestBody,date : RequestBody,image :MultipartBody.Part) : AttendanceResponse{
-        return apiService.attendance(token,userId,time,date,image)
+
+    suspend fun attendance(
+        token: String,
+        userId: RequestBody,
+        time: RequestBody,
+        date: RequestBody,
+        image: MultipartBody.Part
+    ): AttendanceResponse {
+        return apiService.attendance(token, userId, time, date, image)
     }
-    suspend fun getAttendanceByUserIdAndDate(token:String,request : GetAttendanceByUserIdRequest) : AttendanceByDateResponse{
-        return apiService.getAttendanceByUserIdAndDate(token,request)
+
+    suspend fun getAttendanceByUserIdAndDate(
+        token: String,
+        request: GetAttendanceByUserIdRequest
+    ): AttendanceByDateResponse {
+        return apiService.getAttendanceByUserIdAndDate(token, request)
     }
-    suspend fun getProfile(token : String) : ProfileResponse{
+
+    suspend fun getProfile(token: String): ProfileResponse {
         return apiService.getProfile(token)
     }
-    suspend fun changePassword(token: String,request: ChangePasswordRequest) : ChangePasswordResponse{
-        return apiService.changePassword(token,request)
+
+    suspend fun changePassword(
+        token: String,
+        request: ChangePasswordRequest
+    ): ChangePasswordResponse {
+        return apiService.changePassword(token, request)
     }
-    suspend fun getMessages(groupId : String) : MessageResponse{
+
+    suspend fun getMessages(groupId: String): MessageResponse {
         return apiService.getMessages(groupId)
     }
-    suspend fun getGroupByUserId(userId : String) : GroupsResponse{
+
+    suspend fun getGroupByUserId(userId: String): GroupsResponse {
         return apiService.getGroupsByUserId(userId)
     }
-    suspend fun getAttendanceByUserId(token:String,userId : String) : AttendanceByUserIdResponse{
-        return apiService.getAttendanceByUserId(token,userId)
+
+    suspend fun getAttendanceByUserId(token: String, userId: String): AttendanceByUserIdResponse {
+        return apiService.getAttendanceByUserId(token, userId)
     }
-    suspend fun updateUser(token : String,request: UpdateUserRequest) : RegisterResponse {
-        return apiService.updateUser(token,request)
+
+    suspend fun updateUser(token: String, request: UpdateUserRequest): RegisterResponse {
+        return apiService.updateUser(token, request)
     }
-    suspend fun checkPassword(token : String, password : CheckPasswordRequest) : CheckPasswordResponse {
-        return apiService.checkPassword(token,password)
+
+    suspend fun checkPassword(
+        token: String,
+        password: CheckPasswordRequest
+    ): CheckPasswordResponse {
+        return apiService.checkPassword(token, password)
+    }
+
+    suspend fun getWorkingDayByUserIdAndMonth(
+        token: String,
+        userId: String,
+        month: String,
+        year: String
+    ): WorkingDayByMonthResponse {
+        return apiService.getWorkingDayByUserIdAndMonth(token, userId, month, year)
     }
 }

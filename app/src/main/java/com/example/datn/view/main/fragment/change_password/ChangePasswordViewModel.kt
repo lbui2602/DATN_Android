@@ -31,7 +31,7 @@ class ChangePasswordViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val response = repository.changePassword(token,request)
-                if(response!=null  && response.code.toInt() ==1){
+                if(response != null){
                     _changePasswordResponse.postValue(response)
                 }
                 else{

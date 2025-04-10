@@ -62,7 +62,7 @@ class RegisterViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val response = repository.register(registerRequest)
-                if(response.code.toInt() == 1){
+                if(response != null){
                     _registerResponse.postValue(response)
                 }
 

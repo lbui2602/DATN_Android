@@ -105,17 +105,19 @@ class UploadAvatarFragment : BaseFragment() {
             }
         })
         viewModel.updateFaceTokenResponse.observe(viewLifecycleOwner, Observer { response->
-            if (response != null && response.code.toInt() ==1) {
-                lifecycleScope.launch {
-                    delay(500)
-                    viewModel.addFaceToFaceSet(
-                        BuildConfig.face_api_key,
-                        BuildConfig.face_api_secret,
-                        BuildConfig.outer_id,
-                        face_token)
+            if(response != null){
+                if (response.code.toInt() ==1) {
+                    lifecycleScope.launch {
+                        delay(500)
+                        viewModel.addFaceToFaceSet(
+                            BuildConfig.face_api_key,
+                            BuildConfig.face_api_secret,
+                            BuildConfig.outer_id,
+                            face_token)
+                    }
+                } else {
+                    Util.showDialog(requireContext(),response?.message.toString())
                 }
-            } else {
-                Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.addFaceResponse.observe(viewLifecycleOwner, Observer { response->
@@ -125,8 +127,6 @@ class UploadAvatarFragment : BaseFragment() {
                     if(file !=null){
                         val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getUserId().toString())
                         viewModel.uploadAvatar(userId,file)
-                    }else{
-                        Log.e("hi","hi")
                     }
                 }
             } else {
@@ -134,12 +134,14 @@ class UploadAvatarFragment : BaseFragment() {
             }
         })
         viewModel.uploadAvatarResponse.observe(viewLifecycleOwner, Observer { response->
-            if (response != null && response.code.toInt() ==1) {
-                Util.showDialog(requireContext(),response.message,"OK",{
-                    findNavController().popBackStack(R.id.loginFragment,true)
-                })
-            } else {
-                Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
+            if(response != null){
+                if (response.code.toInt() == 1) {
+                    Util.showDialog(requireContext(),response.message,"OK",{
+                        findNavController().popBackStack(R.id.loginFragment,true)
+                    })
+                } else {
+                    Util.showDialog(requireContext(),response.message)
+                }
             }
         })
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->

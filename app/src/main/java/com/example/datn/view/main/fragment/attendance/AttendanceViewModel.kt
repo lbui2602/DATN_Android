@@ -88,7 +88,7 @@ class AttendanceViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val response = repository.attendance(token,userId, time, date, image)
-                if(response!=null  && response.code.toInt() ==1){
+                if(response != null){
                     _attendanceResponse.postValue(response)
                 }
                 else{

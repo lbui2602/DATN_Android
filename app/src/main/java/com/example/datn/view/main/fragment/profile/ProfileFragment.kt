@@ -67,19 +67,20 @@ class ProfileFragment : BaseFragment() {
 
     override fun setObserves() {
         viewModel.profileResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null && response.code.toInt() ==1 ) {
-                Glide.with(requireActivity()).load(Util.url+response.user.image).into(binding.imgAvatar)
-                binding.tvEmail.text = response.user.email
-                binding.tvFullname.text = response.user.fullName
-                binding.tvDepartment.text = response.user.department
-                binding.tvRole.text = response.user.role
-                binding.tvAddress.text = response.user.address
-                binding.tvPhone.text = response.user.phone
-                val gson = Gson()
-                userString = gson.toJson(response.user)
-            } else {
-                Log.e("setObservers",response.toString())
-                Snackbar.make(binding.root,"Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()
+            if(response != null){
+                if ( response.code.toInt() ==1 ) {
+                    Glide.with(requireActivity()).load(Util.url+response.user.image).into(binding.imgAvatar)
+                    binding.tvEmail.text = response.user.email
+                    binding.tvFullname.text = response.user.fullName
+                    binding.tvDepartment.text = response.user.department
+                    binding.tvRole.text = response.user.role
+                    binding.tvAddress.text = response.user.address
+                    binding.tvPhone.text = response.user.phone
+                    val gson = Gson()
+                    userString = gson.toJson(response.user)
+                } else {
+                    Util.showDialog(requireContext(),response.message)
+                }
             }
         })
     }

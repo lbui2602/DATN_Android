@@ -104,9 +104,14 @@ class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
 
     override fun setObserves() {
         viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null && response.code.toInt() == 1) {
-                if(response.attendances !=null){
-                    adapter.updateList(response.attendances.toMutableList())
+            if(response != null){
+                if (response.code.toInt() == 1) {
+                    if(response.attendances !=null){
+                        adapter.updateList(response.attendances.toMutableList())
+                    }
+                }
+                else{
+                    Util.showDialog(requireContext(),response.message.toString())
                 }
             }
         })

@@ -21,6 +21,7 @@ import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
 import com.example.datn.models.update_user.UpdateUserRequest
+import com.example.datn.models.working_day.WorkingDayByMonthResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -38,7 +39,7 @@ interface ApiService {
     //auth
     @POST("api/auth/register")
     suspend fun register(
-        @Body request : RegisterRequest
+        @Body request: RegisterRequest
     ): RegisterResponse
 
     @POST("api/auth/login")
@@ -55,12 +56,13 @@ interface ApiService {
     suspend fun updateFaceToken(
         @Body request: FaceTokenRequest
     ): FaceTokenResponse
+
     //system
     @GET("api/roles")
-    suspend fun getRoles() : RolesResponse
+    suspend fun getRoles(): RolesResponse
 
     @GET("api/departments")
-    suspend fun getDepartments() : DepartmentsResponses
+    suspend fun getDepartments(): DepartmentsResponses
 
     @Multipart
     @POST("api/attendance")
@@ -75,41 +77,49 @@ interface ApiService {
     @POST("api/attendance/getByDate")
     suspend fun getAttendanceByUserIdAndDate(
         @Header("Authorization") token: String,
-        @Body request : GetAttendanceByUserIdRequest
-    ):AttendanceByDateResponse
+        @Body request: GetAttendanceByUserIdRequest
+    ): AttendanceByDateResponse
 
     @GET("api/auth/getProfile")
     suspend fun getProfile(
         @Header("Authorization") token: String,
-    ) : ProfileResponse
+    ): ProfileResponse
 
     @PUT("api/auth/change-password")
     suspend fun changePassword(
         @Header("Authorization") token: String,
-        @Body request : ChangePasswordRequest
+        @Body request: ChangePasswordRequest
     ): ChangePasswordResponse
 
     @GET("api/messages/{groupId}")
     suspend fun getMessages(@Path("groupId") groupId: String): MessageResponse
 
     @GET("api/groups/{userId}")
-    suspend fun getGroupsByUserId(@Path("userId") userId : String) : GroupsResponse
+    suspend fun getGroupsByUserId(@Path("userId") userId: String): GroupsResponse
 
     @GET("api/attendance/{userId}")
     suspend fun getAttendanceByUserId(
         @Header("Authorization") token: String,
-        @Path("userId") userId : String
+        @Path("userId") userId: String
     ): AttendanceByUserIdResponse
 
     @PUT("api/auth/update")
     suspend fun updateUser(
         @Header("Authorization") token: String,
-        @Body request : UpdateUserRequest
-    ) : RegisterResponse
+        @Body request: UpdateUserRequest
+    ): RegisterResponse
 
     @POST("api/auth/check-password")
     suspend fun checkPassword(
         @Header("Authorization") token: String,
-        @Body request : CheckPasswordRequest
-    ) : CheckPasswordResponse
+        @Body request: CheckPasswordRequest
+    ): CheckPasswordResponse
+
+    @GET("api/working-days")
+    suspend fun getWorkingDayByUserIdAndMonth(
+        @Header("Authorization") token: String,
+        @Query("userId") userId: String,
+        @Query("month") month: String,
+        @Query("year") year: String,
+    ): WorkingDayByMonthResponse
 }
