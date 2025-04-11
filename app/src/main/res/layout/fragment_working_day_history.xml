@@ -10,6 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.main.fragment.history.working_day.WorkingDayHistoryFragment">
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rcv"/>
+        </LinearLayout>
     </FrameLayout>
 </layout>

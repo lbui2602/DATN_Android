@@ -9,12 +9,17 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
 import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentWorkingDayHistoryBinding
+import com.example.datn.models.attendance.Attendance
+import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
+import com.example.datn.view.main.adapter.AttendanceAdapter
+import com.example.datn.view.main.adapter.WorkingDayAdapter
 import com.example.datn.view.main.fragment.history.attendance.AttendanceHistoryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.DayOfWeek
@@ -25,6 +30,8 @@ import kotlin.getValue
 class WorkingDayHistoryFragment : BaseFragment() {
     private lateinit var binding : FragmentWorkingDayHistoryBinding
     private val viewModel: WorkingDayHistoryViewModel by viewModels()
+    lateinit var adapter: WorkingDayAdapter
+    private var list = mutableListOf<WorkingDay >()
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,9 +60,14 @@ class WorkingDayHistoryFragment : BaseFragment() {
         binding.lifecycleOwner = this
         return binding.root
     }
+    private fun setRecyclerView() {
+        binding.rcv.layoutManager = LinearLayoutManager(requireContext())
+        adapter = WorkingDayAdapter(list)
+        binding.rcv.adapter = adapter
+    }
 
     override fun setView() {
-
+        setRecyclerView()
     }
 
     override fun setAction() {
@@ -66,7 +78,7 @@ class WorkingDayHistoryFragment : BaseFragment() {
         viewModel.workingDayResponse.observe(viewLifecycleOwner, Observer { response ->
             if(response != null){
                 if (response.code.toInt() == 1) {
-
+                    adapter.updateList(response.workingDays.toMutableList())
                 }else{
                     Util.showDialog(requireContext(),"")
                 }
