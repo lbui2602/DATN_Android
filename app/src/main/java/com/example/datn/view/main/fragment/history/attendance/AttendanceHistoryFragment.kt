@@ -52,9 +52,9 @@ class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAttendanceByUserId(
-            "Bearer "+sharedPreferencesManager.getAuthToken().toString(),
-            sharedPreferencesManager.getUserId().toString())
+//        viewModel.getAttendanceByUserId(
+//            "Bearer "+sharedPreferencesManager.getAuthToken().toString(),
+//            sharedPreferencesManager.getUserId().toString())
     }
 
     override fun onResume() {
@@ -103,6 +103,13 @@ class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
     }
 
     override fun setObserves() {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
         viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
             if(response != null){
                 if (response.code.toInt() == 1) {

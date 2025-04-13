@@ -6,6 +6,6 @@ data class WorkingDay(
     val attendances: List<Attendance>,
     val date: String,
     val status: Int,
-    val totalHours: Int,
+    val totalHours: Double,
     val userId: String
 )

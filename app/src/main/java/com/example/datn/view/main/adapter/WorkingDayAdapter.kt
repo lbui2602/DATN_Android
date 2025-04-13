@@ -14,7 +14,6 @@ import com.example.datn.databinding.LayoutAttendanceItemBinding
 import com.example.datn.databinding.LayoutWorkingDayItemBinding
 import com.example.datn.models.attendance.Attendance
 import com.example.datn.models.working_day.WorkingDay
-import com.example.datn.models.working_day.WorkingDayByMonthResponse
 import com.example.datn.util.Util
 
 class WorkingDayAdapter(
@@ -55,6 +54,7 @@ class WorkingDayAdapter(
                 }
             }
             val inflater = LayoutInflater.from(holder.itemView.context)
+            holder.binding.flexboxLayout.removeAllViews()
             pairedTimes.forEach { (checkIn, checkOut) ->
                 val itemView = inflater.inflate(R.layout.time_item, holder.binding.flexboxLayout, false)
                 val tvTime = itemView.findViewById<TextView>(R.id.tvTimeInOut)

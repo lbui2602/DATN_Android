@@ -1,5 +1,6 @@
 package com.example.datn.view.main.fragment.history.working_day
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,7 @@ class WorkingDayHistoryViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val response = repository.getWorkingDayByUserIdAndMonth(token,userId,month,year)
+                Log.e("respon viewmodel",response.toString())
                 if(response!=null){
                     _workingDayResponse.postValue(response)
                 }

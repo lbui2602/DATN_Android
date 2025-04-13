@@ -21,13 +21,14 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://192.168.52.52:3000"
+    val url = "http://172.20.10.4:3000"
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,
@@ -99,6 +100,15 @@ object Util {
         val outputFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         val date = inputFormat.parse(input)
         return outputFormat.format(date ?: Date())
+    }
+    fun getCurrentMonth(): String {
+        val calendar = Calendar.getInstance()
+        return (calendar.get(Calendar.MONTH) + 1).toString() // Lưu ý: Tháng bắt đầu từ 0, nên +1
+    }
+
+    fun getCurrentYear(): String {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.YEAR).toString()
     }
     fun resizeImageFile(file: File, maxSize: Int = 4096, maxFileSize: Int = 2 * 1024 * 1024): File {
         val bitmap = BitmapFactory.decodeFile(file.absolutePath)

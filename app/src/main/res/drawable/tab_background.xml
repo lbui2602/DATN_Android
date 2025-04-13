@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Nền trắng cho tab được chọn -->
-    <item android:drawable="@drawable/bg_rounded_xanh_nhat" android:state_selected="true"/>
+    <item android:drawable="@drawable/bg_rounded" android:state_selected="true"/>
     <!-- Nền trong suốt cho tab không được chọn -->
     <item android:drawable="@color/green" android:state_selected="false"/>
 </selector>
