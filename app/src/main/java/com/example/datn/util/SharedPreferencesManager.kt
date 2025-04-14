@@ -43,9 +43,22 @@ class SharedPreferencesManager @Inject constructor(private val prefs: SharedPref
         prefs.edit().remove(USER_ID).apply()
     }
 
+    fun saveUserRole(userRole: String) {
+        prefs.edit().putString(USER_ROLE, userRole).apply()
+    }
+
+    fun getUserRole(): String? {
+        return prefs.getString(USER_ROLE, null)
+    }
+
+    fun clearUserRole() {
+        prefs.edit().remove(USER_ROLE).apply()
+    }
+
     companion object {
         private const val AUTH_TOKEN = "AUTH_TOKEN"
         private const val FACE_TOKEN = "FACE_TOKEN"
         private const val USER_ID = "USER_ID"
+        private const val USER_ROLE = "USER_ROLE"
     }
 }

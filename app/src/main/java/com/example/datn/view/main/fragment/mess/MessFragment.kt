@@ -93,6 +93,7 @@ class MessFragment : BaseFragment(), IClickMess {
     override fun clickGr(group: Group) {
         val bundle = Bundle().apply {
             putString("groupId",group._id)
+            putString("groupName",group.name)
         }
         findNavController().navigate(R.id.action_messFragment_to_chatFragment,bundle)
     }

@@ -26,6 +26,7 @@ class ChatFragment : BaseFragment() {
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     private lateinit var groupId : String
+    private lateinit var groupName : String
     lateinit var senderId :String
     private val messages = mutableListOf<Message>()
     private lateinit var chatAdapter: ChatAdapter
@@ -35,6 +36,7 @@ class ChatFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString("groupId", "") ?: ""
+        groupName = arguments?.getString("groupName", "") ?: ""
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +47,7 @@ class ChatFragment : BaseFragment() {
     }
 
     override fun setView() {
-        binding.tvTitle.setText(groupId)
+        binding.tvTitle.setText(groupName)
         senderId = sharedPreferencesManager.getUserId().toString()
         viewModel.getMessages(groupId)
         viewModel.joinChatGroup(groupId)

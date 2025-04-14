@@ -35,7 +35,7 @@
                     android:textSize="20sp"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Thay đổi mật khẩu"
+                    android:text="Cập nhật thông tin"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

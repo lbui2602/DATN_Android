@@ -125,6 +125,7 @@ class UpdateUserInfoFragment : BaseFragment() {
             if (response != null) {
                 if(response.code.toInt() == 1){
                     Util.showDialog(requireContext(),response.message,"OK",{
+                        sharedPreferencesManager.saveUserRole(response.user.roleId)
                         findNavController().popBackStack()
                     })
                 }
@@ -184,7 +185,6 @@ class UpdateUserInfoFragment : BaseFragment() {
 
             }
         }
-
     }
 
     override fun setTabBar() {

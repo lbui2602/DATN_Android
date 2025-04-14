@@ -34,7 +34,11 @@ class SettingFragment : BaseFragment() {
     }
 
     override fun setView() {
-
+        if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc") || sharedPreferencesManager.getUserRole().toString().equals("truong_phong")){
+            binding.llManageStaff.visibility = View.VISIBLE
+        }else{
+            binding.llManageStaff.visibility = View.GONE
+        }
     }
 
     override fun setAction() {
@@ -64,6 +68,7 @@ class SettingFragment : BaseFragment() {
                     sharedPreferencesManager.clearUserId()
                     sharedPreferencesManager.clearAuthToken()
                     sharedPreferencesManager.clearFaceToken()
+                    sharedPreferencesManager.clearUserRole()
                     startActivity(Intent(requireActivity(),AuthActivity::class.java))
                     requireActivity().finish()
                 })
