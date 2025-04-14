@@ -45,7 +45,7 @@ class UpdateUserInfoViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val response = repository.updateUser(token,request)
-                if(response.code.toInt() == 1){
+                if(response != null){
                     _updateUserResponse.postValue(response)
                 }
 

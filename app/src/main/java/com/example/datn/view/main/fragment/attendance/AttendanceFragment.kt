@@ -84,7 +84,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
 
     private fun setRecyclerView() {
         binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = AttendanceAdapter(list,this)
+        adapter = AttendanceAdapter(this)
         binding.rcv.adapter = adapter
     }
 
@@ -117,7 +117,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
         viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
             if(response != null){
                 if (response.code.toInt() == 1) {
-                    adapter.updateList(response.attendances.toMutableList())
+                    adapter.submitList(response.attendances.toMutableList())
                 } else {
                     Util.showDialog(requireContext(),response.message.toString())
                 }
@@ -127,7 +127,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
             if(response != null){
                 if (response.code.toInt() == 1) {
                     if(response.attendances !=null){
-                        adapter.updateList(response.attendances.toMutableList())
+                        adapter.submitList(response.attendances.toMutableList())
                     }
                 }
             }

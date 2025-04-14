@@ -8,9 +8,11 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/llItem"
         android:elevation="8dp"
         android:orientation="vertical"
         android:layout_margin="5dp"
+        android:paddingHorizontal="10dp"
         android:background="@drawable/bg_rounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

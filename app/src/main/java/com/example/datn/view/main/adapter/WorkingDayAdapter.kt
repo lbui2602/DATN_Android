@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.click.IClickAttendance
+import com.example.datn.click.IClickWorkingDay
 import com.example.datn.databinding.LayoutAttendanceItemBinding
 import com.example.datn.databinding.LayoutWorkingDayItemBinding
 import com.example.datn.models.attendance.Attendance
@@ -17,7 +18,8 @@ import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.util.Util
 
 class WorkingDayAdapter(
-    var list : MutableList<WorkingDay>
+    var list : MutableList<WorkingDay>,
+    var iClickWorkingDay: IClickWorkingDay
 ) : RecyclerView.Adapter<WorkingDayAdapter.WorkingDayViewHolder>() {
     class WorkingDayViewHolder(val binding: LayoutWorkingDayItemBinding): RecyclerView.ViewHolder(binding.root)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkingDayViewHolder {
@@ -60,6 +62,9 @@ class WorkingDayAdapter(
                 val tvTime = itemView.findViewById<TextView>(R.id.tvTimeInOut)
                 tvTime.text = "$checkIn - $checkOut"
                 holder.binding.flexboxLayout.addView(itemView)
+            }
+            holder.binding.llItem.setOnClickListener {
+                iClickWorkingDay.selectWorkingDay(data)
             }
         }
     }

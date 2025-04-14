@@ -27,6 +27,8 @@ import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.role.RolesResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
+import com.example.datn.models.working_day.DetailWorkingDayResponse
+import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
 import com.example.datn.remote.service.ApiService
 import com.example.datn.remote.service.FaceApiService
@@ -156,5 +158,12 @@ class Repository @Inject constructor(
         year: String
     ): WorkingDayByMonthResponse {
         return apiService.getWorkingDayByUserIdAndMonth(token, userId, month, year)
+    }
+
+    suspend fun getDetailWorkingDay(
+        token : String,
+        workingDayId:String
+    ) : DetailWorkingDayResponse {
+        return apiService.getDetailWorkingDay(token,workingDayId)
     }
 }

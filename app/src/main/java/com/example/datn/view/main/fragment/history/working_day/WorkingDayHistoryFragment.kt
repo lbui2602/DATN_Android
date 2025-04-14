@@ -12,9 +12,11 @@ import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
 import com.example.datn.base.BaseFragment
+import com.example.datn.click.IClickWorkingDay
 import com.example.datn.databinding.FragmentWorkingDayHistoryBinding
 import com.example.datn.models.attendance.Attendance
 import com.example.datn.models.working_day.WorkingDay
@@ -30,7 +32,7 @@ import java.time.YearMonth
 import javax.inject.Inject
 import kotlin.getValue
 @AndroidEntryPoint
-class WorkingDayHistoryFragment : BaseFragment() {
+class WorkingDayHistoryFragment : BaseFragment(), IClickWorkingDay {
     private lateinit var binding : FragmentWorkingDayHistoryBinding
     private val viewModel: WorkingDayHistoryViewModel by viewModels()
     lateinit var adapter: WorkingDayAdapter
@@ -77,7 +79,7 @@ class WorkingDayHistoryFragment : BaseFragment() {
     }
     private fun setRecyclerView() {
         binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = WorkingDayAdapter(list)
+        adapter = WorkingDayAdapter(list,this)
         binding.rcv.adapter = adapter
     }
 
@@ -143,5 +145,11 @@ class WorkingDayHistoryFragment : BaseFragment() {
 
     override fun setTabBar() {
         (requireActivity() as MainActivity).binding.bnvMain.visibility = View.VISIBLE
+    }
+
+    override fun selectWorkingDay(workingDay: WorkingDay) {
+        val bundle = Bundle()
+        bundle.putString("workingDayId",workingDay._id)
+        findNavController().navigate(R.id.action_historyFragment_to_detailWorkingDayFragment,bundle)
     }
 }
