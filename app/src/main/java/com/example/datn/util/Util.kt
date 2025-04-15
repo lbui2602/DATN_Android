@@ -28,7 +28,7 @@ import java.util.Locale
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://192.168.1.101:3000"
+    val url = "http://192.168.52.52:3000"
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,

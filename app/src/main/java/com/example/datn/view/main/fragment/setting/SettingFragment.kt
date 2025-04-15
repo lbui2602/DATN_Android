@@ -69,22 +69,18 @@ class SettingFragment : BaseFragment() {
                     sharedPreferencesManager.clearAuthToken()
                     sharedPreferencesManager.clearFaceToken()
                     sharedPreferencesManager.clearUserRole()
+                    sharedPreferencesManager.clearDepartment()
                     startActivity(Intent(requireActivity(),AuthActivity::class.java))
                     requireActivity().finish()
                 })
+        }
+        binding.llManageStaff.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
+            findNavController().navigate(R.id.action_settingFragment_to_listStaffFragment,bundle)
         }
         binding.llProfile.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_profileFragment)
         }
     }
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-            }
-        })
-    }
-
-
 }

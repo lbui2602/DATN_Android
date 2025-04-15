@@ -39,7 +39,6 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
     private lateinit var imageCapture: ImageCapture
     lateinit var file : File
     lateinit var adapter: AttendanceAdapter
-    private var list = mutableListOf<Attendance>()
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {

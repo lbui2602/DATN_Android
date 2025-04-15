@@ -126,6 +126,7 @@ class UpdateUserInfoFragment : BaseFragment() {
                 if(response.code.toInt() == 1){
                     Util.showDialog(requireContext(),response.message,"OK",{
                         sharedPreferencesManager.saveUserRole(response.user.roleId)
+                        sharedPreferencesManager.saveDepartment(response.user.idDepartment)
                         findNavController().popBackStack()
                     })
                 }

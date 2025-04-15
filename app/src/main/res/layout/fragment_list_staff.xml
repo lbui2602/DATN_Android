@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.main.fragment.staff.ListStaffFragment">
+        tools:context=".view.main.fragment.for_manage.staff.ListStaffFragment">
 
         <LinearLayout
             android:orientation="vertical"
@@ -50,8 +50,7 @@
                 android:layout_height="match_parent">
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
-                    android:layout_marginHorizontal="20dp"
-                    android:layout_marginVertical="10dp"
+                    android:layout_margin="10dp"
                     android:id="@+id/rcv"
                     android:layout_height="match_parent"/>
             </LinearLayout>

@@ -20,6 +20,9 @@ import com.example.datn.models.password.CheckPasswordResponse
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
+import com.example.datn.models.staff.AcceptUserRequest
+import com.example.datn.models.staff.AcceptUserResponse
+import com.example.datn.models.staff.StaffsResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
@@ -130,4 +133,16 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("workingDayId") workingDayId : String
     ) : DetailWorkingDayResponse
+
+    @GET("api/auth/staff/{idDepartment}")
+    suspend fun getListUserByDepartmentID(
+        @Header("Authorization") token: String,
+        @Path("idDepartment") idDepartment : String
+    ) : StaffsResponse
+
+    @PUT("api/auth/accept")
+    suspend fun acceptUser(
+        @Header("Authorization") token: String,
+        @Body request: AcceptUserRequest,
+    ): AcceptUserResponse
 }

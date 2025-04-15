@@ -1,6 +1,7 @@
 package com.example.datn.util
 
 import android.content.SharedPreferences
+import com.example.datn.models.working_day.IdDepartment
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -55,10 +56,23 @@ class SharedPreferencesManager @Inject constructor(private val prefs: SharedPref
         prefs.edit().remove(USER_ROLE).apply()
     }
 
+    fun saveDepartment(idDepartment: String) {
+        prefs.edit().putString(ID_DEPARTMENT, idDepartment).apply()
+    }
+
+    fun getDepartment(): String? {
+        return prefs.getString(ID_DEPARTMENT, null)
+    }
+
+    fun clearDepartment() {
+        prefs.edit().remove(ID_DEPARTMENT).apply()
+    }
+
     companion object {
         private const val AUTH_TOKEN = "AUTH_TOKEN"
         private const val FACE_TOKEN = "FACE_TOKEN"
         private const val USER_ID = "USER_ID"
         private const val USER_ROLE = "USER_ROLE"
+        private const val ID_DEPARTMENT = "ID_DEPARTMENT"
     }
 }

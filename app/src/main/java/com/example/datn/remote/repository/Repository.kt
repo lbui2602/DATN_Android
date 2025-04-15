@@ -25,6 +25,9 @@ import com.example.datn.models.profile.User
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.role.RolesResponse
+import com.example.datn.models.staff.AcceptUserRequest
+import com.example.datn.models.staff.AcceptUserResponse
+import com.example.datn.models.staff.StaffsResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
@@ -161,9 +164,22 @@ class Repository @Inject constructor(
     }
 
     suspend fun getDetailWorkingDay(
-        token : String,
-        workingDayId:String
-    ) : DetailWorkingDayResponse {
-        return apiService.getDetailWorkingDay(token,workingDayId)
+        token: String,
+        workingDayId: String
+    ): DetailWorkingDayResponse {
+        return apiService.getDetailWorkingDay(token, workingDayId)
+    }
+
+    suspend fun getListUserByDepartmentID(
+        token: String,
+        idDepartment: String
+    ) : StaffsResponse {
+        return apiService.getListUserByDepartmentID(token,idDepartment)
+    }
+    suspend fun acceptUser(
+        token: String,
+        request : AcceptUserRequest
+    ) : AcceptUserResponse {
+        return apiService.acceptUser(token,request)
     }
 }

@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_settingFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_listStaffFragment"
+            app:destination="@id/listStaffFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -84,4 +87,8 @@
         android:id="@+id/detailWorkingDayFragment"
         android:name="com.example.datn.view.main.fragment.working_day.DetailWorkingDayFragment"
         android:label="DetailWorkingDayFragment" />
+    <fragment
+        android:id="@+id/listStaffFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.staff.ListStaffFragment"
+        android:label="ListStaffFragment" />
 </navigation>

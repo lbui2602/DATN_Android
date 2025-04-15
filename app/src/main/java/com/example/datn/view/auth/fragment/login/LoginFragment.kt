@@ -75,6 +75,7 @@ class LoginFragment : BaseFragment() {
                     sharedPreferencesManager.saveUserId(response._id)
                     sharedPreferencesManager.saveFaceToken(response.face_token)
                     sharedPreferencesManager.saveUserRole(response.roleId)
+                    sharedPreferencesManager.saveDepartment(response.idDepartment)
                     startActivity(Intent(requireContext(),MainActivity::class.java))
                     requireActivity().finish()
                 }else{
