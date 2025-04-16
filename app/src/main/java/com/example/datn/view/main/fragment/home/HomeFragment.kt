@@ -222,7 +222,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        fusedLocationClient.removeLocationUpdates(locationCallback)
+//        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
 
