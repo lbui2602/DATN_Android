@@ -60,4 +60,19 @@ class ListStaffViewModel @Inject constructor(
             _isLoading.postValue(false)
         }
     }
+
+    fun searchUser(token : String,name: String){
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.searchUser(token, name)
+                if(response != null){
+                    _staffsResponse.postValue(response)
+                }
+            } catch (e: Exception) {
+                _staffsResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
 }

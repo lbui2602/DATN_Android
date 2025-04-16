@@ -176,6 +176,14 @@ class Repository @Inject constructor(
     ) : StaffsResponse {
         return apiService.getListUserByDepartmentID(token,idDepartment)
     }
+
+    suspend fun searchUser(
+        token: String,
+        name: String
+    ) : StaffsResponse {
+        return apiService.searchUser(token,name)
+    }
+
     suspend fun acceptUser(
         token: String,
         request : AcceptUserRequest

@@ -3,10 +3,12 @@ package com.example.datn.view.main.fragment.for_manage.staff
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -109,6 +111,20 @@ class ListStaffFragment : BaseFragment(), IClickUser {
                 binding.progressBar.visibility = View.GONE
             }
         })
+        binding.edtSearch.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
+                val name = binding.edtSearch.text.toString()
+                viewModel.searchUser(
+                    "Bearer "+sharedPreferencesManager.getAuthToken(),
+                    name
+                )
+                Util.hideKeyboard(requireActivity())
+                true // Đã xử lý sự kiện
+            } else {
+                false
+            }
+        }
     }
 
     override fun setTabBar() {
@@ -116,7 +132,6 @@ class ListStaffFragment : BaseFragment(), IClickUser {
     }
 
     override fun clickUser(user: User) {
-
     }
 
     override fun confirmUser(user: User) {
@@ -127,5 +142,4 @@ class ListStaffFragment : BaseFragment(), IClickUser {
             )
         })
     }
-
 }

@@ -140,6 +140,12 @@ interface ApiService {
         @Path("idDepartment") idDepartment : String
     ) : StaffsResponse
 
+    @GET("api/auth/search")
+    suspend fun searchUser(
+        @Header("Authorization") token: String,
+        @Query("name") name : String
+    ) : StaffsResponse
+
     @PUT("api/auth/accept")
     suspend fun acceptUser(
         @Header("Authorization") token: String,
