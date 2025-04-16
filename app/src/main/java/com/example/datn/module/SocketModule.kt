@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SocketModule {
 
-    private const val SERVER_URL = "http://192.168.52.52:3000"
+    private const val SERVER_URL = "http://172.20.10.4:3000"
 
     @Provides
     @Singleton

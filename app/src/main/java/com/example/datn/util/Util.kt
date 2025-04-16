@@ -30,7 +30,7 @@ import java.util.Locale
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://192.168.52.52:3000"
+    val url = "http://172.20.10.4:3000"
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,
@@ -175,5 +175,12 @@ object Util {
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
+    }
+    fun formatDate(input: String): String {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+
+        val date = inputFormat.parse(input)
+        return outputFormat.format(date!!)
     }
 }

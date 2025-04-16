@@ -22,7 +22,7 @@ class UserAdapter(var iClickUser: IClickUser) : ListAdapter<User, UserAdapter.Us
             binding.tvFullName.text = user.fullName
             binding.tvEmail.text = user.email
             binding.tvAddress.text = user.address
-            binding.tvDate.text = "Tham gia từ "+user.createdAt
+            binding.tvDate.text = "Tham gia từ "+Util.formatDate(user.createdAt)
             Glide.with(context).load(Util.url+user.image).into(binding.imgAvatar)
             if(user.status){
                 binding.btnConfirm.setText("Đã xác nhận")
