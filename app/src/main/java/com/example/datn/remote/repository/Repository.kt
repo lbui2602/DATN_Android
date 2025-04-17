@@ -28,55 +28,20 @@ import com.example.datn.models.role.RolesResponse
 import com.example.datn.models.staff.AcceptUserRequest
 import com.example.datn.models.staff.AcceptUserResponse
 import com.example.datn.models.staff.StaffsResponse
+import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
 import com.example.datn.remote.service.ApiService
-import com.example.datn.remote.service.FaceApiService
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 
 class Repository @Inject constructor(
-    private val apiService: ApiService, private val faceApiService: FaceApiService
+    private val apiService: ApiService
 ) {
-    suspend fun compareFaces(
-        image: MultipartBody.Part,
-        faceToken: RequestBody,
-        apiKey: RequestBody,
-        apiSecret: RequestBody
-    ): CompareFaceResponse {
-        return faceApiService.compareFaces(image, faceToken, apiKey, apiSecret)
-    }
-
-    suspend fun createFaceSet(
-        apiKey: String,
-        apiSecret: String,
-        outerId: String,
-        displayName: String,
-        tags: String
-    ): CreateFaceSetResponse {
-        return faceApiService.createFaceSet(apiKey, apiSecret, outerId, displayName, tags)
-    }
-
-    suspend fun detectFace(
-        image: MultipartBody.Part,
-        apiKey: RequestBody,
-        apiSecret: RequestBody
-    ): DetectFaceResponse {
-        return faceApiService.detectFace(image, apiKey, apiSecret)
-    }
-
-    suspend fun addFaceToFaceSet(
-        apiKey: String,
-        apiSecret: String,
-        outerId: String,
-        faceTokens: String
-    ): AddFaceResponse {
-        return faceApiService.addFaceToFaceSet(apiKey, apiSecret, outerId, faceTokens)
-    }
 
     suspend fun login(loginRequest: LoginRequest): LoginResponse {
         Log.e("repository", loginRequest.toString())
@@ -95,22 +60,34 @@ class Repository @Inject constructor(
         return apiService.getDepartments()
     }
 
-    suspend fun uploadAvatar(userId: RequestBody, image: MultipartBody.Part): UploadAvatarResponse {
-        return apiService.uploadAvatar(userId, image)
+//    suspend fun uploadAvatar(userId: RequestBody, image: MultipartBody.Part): UploadAvatarResponse {
+//        return apiService.uploadAvatar(userId, image)
+//    }
+    suspend fun uploadAvatar(name: RequestBody, image: MultipartBody.Part): TrainingResponse {
+        return apiService.uploadAvatar( name,image)
     }
 
     suspend fun updateFaceToken(request: FaceTokenRequest): FaceTokenResponse {
         return apiService.updateFaceToken(request)
     }
 
+//    suspend fun attendance(
+//        token: String,
+//        userId: RequestBody,
+//        time: RequestBody,
+//        date: RequestBody,
+//        image: MultipartBody.Part
+//    ): AttendanceResponse {
+//        return apiService.attendance(token, userId, time, date, image)
+//    }
     suspend fun attendance(
         token: String,
+        file: MultipartBody.Part,
         userId: RequestBody,
         time: RequestBody,
         date: RequestBody,
-        image: MultipartBody.Part
     ): AttendanceResponse {
-        return apiService.attendance(token, userId, time, date, image)
+        return apiService.attendance(token, file,userId, time, date)
     }
 
     suspend fun getAttendanceByUserIdAndDate(

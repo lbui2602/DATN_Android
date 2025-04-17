@@ -30,7 +30,7 @@ import java.util.Locale
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://172.20.10.4:3000"
+    val url = "http://192.168.52.52:3000"
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,
@@ -118,7 +118,7 @@ object Util {
         var resizedBitmap = resizeBitmap(rotatedBitmap, maxSize)
 
         val resizedFile = File(file.parent, "resized_${file.name}")
-        var quality = 80 // Bắt đầu với chất lượng nén 90%
+        var quality = 60 // Bắt đầu với chất lượng nén 90%
 
         do {
             val outputStream = ByteArrayOutputStream()
@@ -132,7 +132,7 @@ object Util {
             }
 
             // Nếu kích thước file vẫn lớn, giảm chất lượng nén
-            quality -= 10
+            quality -= 20
         } while (quality > 10) // Tránh giảm chất lượng quá thấp gây mất hình ảnh
 
         return resizedFile

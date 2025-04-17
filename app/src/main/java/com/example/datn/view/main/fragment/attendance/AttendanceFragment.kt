@@ -41,6 +41,8 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
     lateinit var adapter: AttendanceAdapter
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
+    var startTime: Long = 0
+    var endTime : Long = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -75,6 +77,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
     override fun setAction() {
         binding.imgCapture.setOnClickListener {
             viewModel.capturePhoto(requireContext(),imageCapture)
+            startTime = System.currentTimeMillis()
         }
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()
@@ -100,22 +103,12 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
                 this.file = response
             }
         })
-        viewModel.compareFaceResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null ) {
-                if(response.confidence >= 80){
-                    Log.e("Authen","OK")
-                    viewModel.uploadImage(file)
-                }else{
-                    Util.showDialog(requireContext(),"Không xác minh khuôn mặt","OK")
-                }
-            } else {
-                Log.e("setObservers",response.toString())
-                Snackbar.make(binding.root,"Điểm danh thất bại", Snackbar.LENGTH_SHORT).show()
-            }
-        })
         viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
             if(response != null){
                 if (response.code.toInt() == 1) {
+                    endTime = System.currentTimeMillis()
+                    val elapsedTime = endTime - startTime
+                    Log.d("ExecutionTime", "Chạy hết $elapsedTime ms")
                     adapter.submitList(response.attendances.toMutableList())
                 } else {
                     Util.showDialog(requireContext(),response.message.toString())

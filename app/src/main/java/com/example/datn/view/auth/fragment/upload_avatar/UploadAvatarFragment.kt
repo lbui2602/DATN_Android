@@ -88,51 +88,6 @@ class UploadAvatarFragment : BaseFragment() {
     }
 
     override fun setObserves() {
-        viewModel.multipartFile.observe(viewLifecycleOwner, Observer { file->
-            if(file !=null){
-                this.file = file
-            }
-        })
-        viewModel.detectFaceResponse.observe(viewLifecycleOwner, Observer { response->
-            if (response != null) {
-                print(response.toString())
-                face_token =response.faces.get(0).face_token
-                lifecycleScope.launch {
-                    viewModel.updateFaceToken(FaceTokenRequest(sharedPreferencesManager.getUserId().toString(),response.faces.get(0).face_token))
-                }
-            } else {
-                Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
-            }
-        })
-        viewModel.updateFaceTokenResponse.observe(viewLifecycleOwner, Observer { response->
-            if(response != null){
-                if (response.code.toInt() ==1) {
-                    lifecycleScope.launch {
-                        delay(500)
-                        viewModel.addFaceToFaceSet(
-                            BuildConfig.face_api_key,
-                            BuildConfig.face_api_secret,
-                            BuildConfig.outer_id,
-                            face_token)
-                    }
-                } else {
-                    Util.showDialog(requireContext(),response?.message.toString())
-                }
-            }
-        })
-        viewModel.addFaceResponse.observe(viewLifecycleOwner, Observer { response->
-            if (response != null) {
-                print(response.toString())
-                lifecycleScope.launch {
-                    if(file !=null){
-                        val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getUserId().toString())
-                        viewModel.uploadAvatar(userId,file)
-                    }
-                }
-            } else {
-                Snackbar.make(binding.root,"Thất bại", Snackbar.LENGTH_SHORT).show()
-            }
-        })
         viewModel.uploadAvatarResponse.observe(viewLifecycleOwner, Observer { response->
             if(response != null){
                 if (response.code.toInt() == 1) {

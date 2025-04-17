@@ -23,6 +23,7 @@ import com.example.datn.models.role.RolesResponse
 import com.example.datn.models.staff.AcceptUserRequest
 import com.example.datn.models.staff.AcceptUserResponse
 import com.example.datn.models.staff.StaffsResponse
+import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
@@ -50,12 +51,12 @@ interface ApiService {
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
 
-    @Multipart
-    @POST("api/auth/uploadAvatar")
-    suspend fun uploadAvatar(
-        @Part("userId") userId: RequestBody,
-        @Part image: MultipartBody.Part
-    ): UploadAvatarResponse
+//    @Multipart
+//    @POST("api/auth/uploadAvatar")
+//    suspend fun uploadAvatar(
+//        @Part("userId") userId: RequestBody,
+//        @Part image: MultipartBody.Part
+//    ): UploadAvatarResponse
 
     @PUT("api/auth/updateFaceToken")
     suspend fun updateFaceToken(
@@ -69,14 +70,24 @@ interface ApiService {
     @GET("api/departments")
     suspend fun getDepartments(): DepartmentsResponses
 
+//    @Multipart
+//    @POST("api/attendance")
+//    suspend fun attendance(
+//        @Header("Authorization") token: String,
+//        @Part("userId") userId: RequestBody,
+//        @Part("time") time: RequestBody,
+//        @Part("date") date: RequestBody,
+//        @Part image: MultipartBody.Part
+//    ): AttendanceResponse
+
     @Multipart
-    @POST("api/attendance")
+    @POST("/api/face/verify-face")
     suspend fun attendance(
         @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part,
         @Part("userId") userId: RequestBody,
         @Part("time") time: RequestBody,
-        @Part("date") date: RequestBody,
-        @Part image: MultipartBody.Part
+        @Part("date") date: RequestBody
     ): AttendanceResponse
 
     @POST("api/attendance/getByDate")
@@ -151,4 +162,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request: AcceptUserRequest,
     ): AcceptUserResponse
+
+    @Multipart
+    @POST("/api/training/upload-file")
+    suspend fun uploadAvatar(
+        @Part("name") name: RequestBody,
+        @Part file: MultipartBody.Part
+    ): TrainingResponse
 }
