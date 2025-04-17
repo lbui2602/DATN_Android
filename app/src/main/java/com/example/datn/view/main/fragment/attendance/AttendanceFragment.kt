@@ -3,6 +3,7 @@ package com.example.datn.view.main.fragment.attendance
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -138,7 +139,9 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(binding.previewView.surfaceProvider)
             }
-            imageCapture = ImageCapture.Builder().build()
+            imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(391, 522)) // ép ảnh đầu ra thành 640x480
+                .build()
 
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 

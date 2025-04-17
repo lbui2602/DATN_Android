@@ -60,26 +60,10 @@ class Repository @Inject constructor(
         return apiService.getDepartments()
     }
 
-//    suspend fun uploadAvatar(userId: RequestBody, image: MultipartBody.Part): UploadAvatarResponse {
-//        return apiService.uploadAvatar(userId, image)
-//    }
     suspend fun uploadAvatar(name: RequestBody, image: MultipartBody.Part): TrainingResponse {
         return apiService.uploadAvatar( name,image)
     }
 
-    suspend fun updateFaceToken(request: FaceTokenRequest): FaceTokenResponse {
-        return apiService.updateFaceToken(request)
-    }
-
-//    suspend fun attendance(
-//        token: String,
-//        userId: RequestBody,
-//        time: RequestBody,
-//        date: RequestBody,
-//        image: MultipartBody.Part
-//    ): AttendanceResponse {
-//        return apiService.attendance(token, userId, time, date, image)
-//    }
     suspend fun attendance(
         token: String,
         file: MultipartBody.Part,

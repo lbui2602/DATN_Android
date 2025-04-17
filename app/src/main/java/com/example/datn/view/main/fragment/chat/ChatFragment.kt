@@ -72,13 +72,15 @@ class ChatFragment : BaseFragment() {
         viewModel.messages.observe(viewLifecycleOwner) { response ->
             response?.let {
                 Log.e("Mesage Réponse",response.toString())
-                messages.clear()
-                messages.addAll(response.messages)
-                chatAdapter.updateMessages(messages)
-                Log.e("isScroll",isScroll.toString())
-                if(isScroll == true){
-                    binding.recyclerView.scrollToPosition(messages.size - 1)
-                    isScroll = false
+                if(response.code.toInt() ==1){
+                    messages.clear()
+                    messages.addAll(response.messages)
+                    chatAdapter.updateMessages(messages)
+                    Log.e("isScroll",isScroll.toString())
+                    if(isScroll == true){
+                        binding.recyclerView.scrollToPosition(messages.size - 1)
+                        isScroll = false
+                    }
                 }
             } ?: Snackbar.make(binding.root, "Lấy tin nhắn thất bại", Snackbar.LENGTH_SHORT).show()
         }

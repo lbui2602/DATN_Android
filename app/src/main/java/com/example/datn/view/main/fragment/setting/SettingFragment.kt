@@ -67,7 +67,6 @@ class SettingFragment : BaseFragment() {
             Util.showDialog(requireContext(),"Bạn có muốn đăng xuất?","OK", {
                     sharedPreferencesManager.clearUserId()
                     sharedPreferencesManager.clearAuthToken()
-                    sharedPreferencesManager.clearFaceToken()
                     sharedPreferencesManager.clearUserRole()
                     sharedPreferencesManager.clearDepartment()
                     startActivity(Intent(requireActivity(),AuthActivity::class.java))

@@ -73,7 +73,6 @@ class LoginFragment : BaseFragment() {
                 if(response.code.toInt()==1){
                     sharedPreferencesManager.saveAuthToken(response.token)
                     sharedPreferencesManager.saveUserId(response._id)
-                    sharedPreferencesManager.saveFaceToken(response.face_token)
                     sharedPreferencesManager.saveUserRole(response.roleId)
                     sharedPreferencesManager.saveDepartment(response.idDepartment)
                     startActivity(Intent(requireContext(),MainActivity::class.java))

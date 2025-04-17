@@ -50,35 +50,12 @@ interface ApiService {
 
     @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
-
-//    @Multipart
-//    @POST("api/auth/uploadAvatar")
-//    suspend fun uploadAvatar(
-//        @Part("userId") userId: RequestBody,
-//        @Part image: MultipartBody.Part
-//    ): UploadAvatarResponse
-
-    @PUT("api/auth/updateFaceToken")
-    suspend fun updateFaceToken(
-        @Body request: FaceTokenRequest
-    ): FaceTokenResponse
-
     //system
     @GET("api/roles")
     suspend fun getRoles(): RolesResponse
 
     @GET("api/departments")
     suspend fun getDepartments(): DepartmentsResponses
-
-//    @Multipart
-//    @POST("api/attendance")
-//    suspend fun attendance(
-//        @Header("Authorization") token: String,
-//        @Part("userId") userId: RequestBody,
-//        @Part("time") time: RequestBody,
-//        @Part("date") date: RequestBody,
-//        @Part image: MultipartBody.Part
-//    ): AttendanceResponse
 
     @Multipart
     @POST("/api/face/verify-face")

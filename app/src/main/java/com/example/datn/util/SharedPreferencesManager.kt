@@ -20,18 +20,6 @@ class SharedPreferencesManager @Inject constructor(private val prefs: SharedPref
         prefs.edit().remove(AUTH_TOKEN).apply()
     }
 
-    fun saveFaceToken(token: String) {
-        prefs.edit().putString(FACE_TOKEN, token).apply()
-    }
-
-    fun getFaceToken(): String? {
-        return prefs.getString(FACE_TOKEN, null)
-    }
-
-    fun clearFaceToken() {
-        prefs.edit().remove(FACE_TOKEN).apply()
-    }
-
     fun saveUserId(userId: String) {
         prefs.edit().putString(USER_ID, userId).apply()
     }
