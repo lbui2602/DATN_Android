@@ -13,6 +13,7 @@ import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.group.GroupsResponse
+import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.message.MessageResponse
@@ -31,6 +32,7 @@ import com.example.datn.models.staff.StaffsResponse
 import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
+import com.example.datn.models.user.UserResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
@@ -151,4 +153,25 @@ class Repository @Inject constructor(
     ) : AcceptUserResponse {
         return apiService.acceptUser(token,request)
     }
+
+    suspend fun getAllUser(
+        token: String,
+        userId: String
+    ) : UserResponse {
+        return apiService.getAllUser(token,userId)
+    }
+    suspend fun getPrivateGroup(
+        token: String,
+        userId2: String
+    ) : PrivateGroupResponse {
+        return apiService.getPrivateGroup(token,userId2)
+    }
+
+    suspend fun getGroupById(
+        token: String,
+        groupId: String
+    ) : PrivateGroupResponse {
+        return apiService.getGroupById(token,groupId)
+    }
+
 }

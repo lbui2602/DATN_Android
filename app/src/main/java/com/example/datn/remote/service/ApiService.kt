@@ -9,6 +9,7 @@ import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.group.GroupsResponse
+import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
@@ -25,6 +26,7 @@ import com.example.datn.models.staff.AcceptUserResponse
 import com.example.datn.models.staff.StaffsResponse
 import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
+import com.example.datn.models.user.UserResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
 import com.example.datn.view.main.fragment.working_day.DetailWorkingDayViewModel
@@ -146,4 +148,22 @@ interface ApiService {
         @Part("name") name: RequestBody,
         @Part file: MultipartBody.Part
     ): TrainingResponse
+
+    @GET("api/auth/getAll/{userId}")
+    suspend fun getAllUser(
+        @Header("Authorization") token: String,
+        @Path("userId") userId : String
+    ) : UserResponse
+
+    @GET("api/groups/getPrivateGroup/{userId2}")
+    suspend fun getPrivateGroup(
+        @Header("Authorization") token: String,
+        @Path("userId2") userId2 : String
+    ) : PrivateGroupResponse
+
+    @GET("api/groups/getById/{groupId}")
+    suspend fun getGroupById(
+        @Header("Authorization") token: String,
+        @Path("groupId") groupId : String
+    ) : PrivateGroupResponse
 }

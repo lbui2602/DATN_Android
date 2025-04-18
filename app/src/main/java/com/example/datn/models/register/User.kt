@@ -12,5 +12,6 @@ data class User(
     val password: String,
     val phone: String,
     val roleId: String,
-    val updatedAt: String
+    val updatedAt: String,
+    val isOnline : Boolean?
 )

@@ -140,7 +140,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
                 it.setSurfaceProvider(binding.previewView.surfaceProvider)
             }
             imageCapture = ImageCapture.Builder()
-                .setTargetResolution(Size(391, 522)) // ép ảnh đầu ra thành 640x480
+                .setTargetResolution(Size(186, 261)) // ép ảnh đầu ra thành 640x480
                 .build()
 
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA

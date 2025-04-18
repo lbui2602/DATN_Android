@@ -6,5 +6,6 @@ data class Group(
     val createdAt: String,
     val members: List<String>,
     val name: String,
+    val image: String?,
     val updatedAt: String
 )

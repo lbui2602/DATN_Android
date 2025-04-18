@@ -20,4 +20,14 @@ class SocketManager @Inject constructor(val socket: Socket) {
         }
         socket.emit("send_message", json)
     }
+    fun connect(userId: String) {
+        socket.connect()
+        socket.on(Socket.EVENT_CONNECT) {
+            socket.emit("user_connected", userId)
+        }
+    }
+
+    fun disconnect() {
+        socket.disconnect()
+    }
 }

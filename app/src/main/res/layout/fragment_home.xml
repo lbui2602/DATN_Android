@@ -30,7 +30,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="9"
                 android:layout_height="wrap_content"/>
-            <ImageView
+            <ImageButton
+                android:background="@android:color/transparent"
                 android:layout_gravity="center"
                 android:id="@+id/imgMess"
                 android:src="@drawable/mess_icon"

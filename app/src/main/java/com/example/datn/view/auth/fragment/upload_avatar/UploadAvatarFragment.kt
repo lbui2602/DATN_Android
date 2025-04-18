@@ -9,6 +9,7 @@ import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -120,7 +121,9 @@ class UploadAvatarFragment : BaseFragment() {
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(binding.previewView.surfaceProvider)
             }
-            imageCapture = ImageCapture.Builder().build()
+            imageCapture = ImageCapture.Builder()
+                .setTargetResolution(Size(186, 261)) // ép ảnh đầu ra thành 640x480
+                .build()
 
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 

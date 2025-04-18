@@ -26,7 +26,7 @@ class MessViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val response = repository.getGroupByUserId(userId)
-                if(response!=null  && response.code.toInt() ==1){
+                if(response!=null){
                     _groupsResponse.postValue(response)
                 }
                 else{

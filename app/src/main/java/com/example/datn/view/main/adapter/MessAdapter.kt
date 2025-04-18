@@ -41,6 +41,9 @@ class MessAdapter(
             holder.binding.llItem.setOnClickListener {
                 iClick.clickGr(data)
             }
+            if(data.image !=null){
+                Glide.with(holder.itemView.context).load(Util.url+data.image).into(holder.binding.imgAvatar)
+            }
         }
     }
 

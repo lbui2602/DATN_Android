@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.models.group.GroupsResponse
+import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.message.Message
 import com.example.datn.remote.repository.Repository
 import com.example.datn.socket.SocketManager
@@ -32,6 +33,17 @@ class MainViewModel @Inject constructor(
 
     init {
         listenForIncomingMessages()
+    }
+    suspend fun getGroupById(token: String, groupId: String): PrivateGroupResponse? {
+        return try {
+            _isLoading.postValue(true)
+            val response = repository.getGroupById(token, groupId)
+            response
+        } catch (e: Exception) {
+            null
+        } finally {
+            _isLoading.postValue(false)
+        }
     }
 
     fun getGroupsByUserId(userId: String){
@@ -81,6 +93,12 @@ class MainViewModel @Inject constructor(
                 _message.postValue(newMessage)
             }
         }
+    }
+    fun connect(){
+        socketManager.connect(sharedPreferencesManager.getUserId().toString())
+    }
+    fun disconnect(){
+        socketManager.disconnect()
     }
     fun clear(){
         socketManager.socket.off("receive_message")

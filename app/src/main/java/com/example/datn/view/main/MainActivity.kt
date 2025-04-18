@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -18,6 +19,7 @@ import com.example.datn.util.Util
 import com.example.datn.view.main.fragment.home.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.getValue
 
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     private lateinit var navHostFragment: NavHostFragment
     private lateinit var navController : NavController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -38,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         binding.bnvMain.setupWithNavController(navController)
         joinGroup()
+        viewModel.connect()
         setObserves()
     }
     private fun getCurrentFragmentTag(): String? {
@@ -51,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.clear()
+        viewModel.disconnect()
     }
     private fun setObserves(){
         viewModel.groupsResponse.observe(this, Observer { response->
@@ -75,10 +80,19 @@ class MainActivity : AppCompatActivity() {
                         message = message,
                         action = {
                             if (navController.currentDestination?.id != R.id.chatFragment) {
-                                val bundle = Bundle().apply {
-                                    putString("groupId",message.groupId)
+                                lifecycleScope.launch {
+                                    val response = viewModel.getGroupById(
+                                        "Bearer "+sharedPreferencesManager.getAuthToken().toString(),
+                                        message.groupId
+                                    )
+                                    if(response != null && response.code.toInt() == 1){
+                                        val bundle = Bundle().apply {
+                                            putString("groupId",response.group._id)
+                                            putString("groupName",response.group.name)
+                                        }
+                                        navController.navigate(R.id.chatFragment,bundle)
+                                    }
                                 }
-                                navController.navigate(R.id.chatFragment,bundle)
                             }
                         }
                     )

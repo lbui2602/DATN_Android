@@ -2,7 +2,6 @@ package com.example.datn.view.main.fragment.mess
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,8 +16,9 @@ import com.example.datn.databinding.FragmentMessBinding
 import com.example.datn.models.group.Group
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
+import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.MessAdapter
-import com.example.datn.view.main.fragment.change_password.ChangePasswordViewModel
+import com.example.datn.view.main.fragment.mess.dialog_list_user.DialogUserFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -69,6 +69,11 @@ class MessFragment : BaseFragment(), IClickMess {
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding.imgList.setOnClickListener {
+            // Mở DialogFragment
+            val dialog = DialogUserFragment()
+            dialog.show(parentFragmentManager, dialog.tag)
+        }
     }
 
     override fun setObserves() {
@@ -87,7 +92,7 @@ class MessFragment : BaseFragment(), IClickMess {
     }
 
     override fun setTabBar() {
-
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
     }
 
     override fun clickGr(group: Group) {
@@ -97,5 +102,4 @@ class MessFragment : BaseFragment(), IClickMess {
         }
         findNavController().navigate(R.id.action_messFragment_to_chatFragment,bundle)
     }
-
 }

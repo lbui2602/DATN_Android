@@ -18,6 +18,8 @@
             app:cardCornerRadius="20dp"
             android:layout_height="40dp">
             <ImageView
+                android:id="@+id/imgAvatar"
+                android:scaleType="centerCrop"
                 android:src="@color/green"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
