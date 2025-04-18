@@ -3,6 +3,7 @@ package com.example.datn.view.main.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -25,10 +26,12 @@ class OnlineUserAdapter(var iClickUser: IClickUserOnline) : ListAdapter<User, On
         fun bind(user: User, context: Context) {
             binding.tvName.text = user.fullName
             Glide.with(context).load(Util.url+user.image).into(binding.imgAvatar)
-            if(user.isOnline == true){
-                binding.llOnline.setBackgroundColor(R.color.green)
+            if(user.isOnline!!){
+                binding.llOnline.setBackgroundColor(ContextCompat.getColor(context, R.color.green))
+
             }else{
-                binding.llOnline.setBackgroundColor(R.color.grey)
+                binding.llOnline.setBackgroundColor(ContextCompat.getColor(context, R.color.green))
+
             }
             binding.llItem.setOnClickListener {
                 iClickUser.clickUser(user)
