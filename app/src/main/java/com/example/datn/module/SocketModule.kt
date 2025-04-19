@@ -12,11 +12,20 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object SocketModule {
 
-    private const val SERVER_URL = "http://192.168.52.52:3000"
+    private const val SERVER_URL = "http://192.168.1.101:3000"
 
     @Provides
     @Singleton
     fun provideSocket(): Socket {
-        return IO.socket(SERVER_URL).apply { connect() }
+        return try {
+            val options = IO.Options().apply {
+                reconnection = true
+                reconnectionAttempts = Int.MAX_VALUE
+                reconnectionDelay = 1000 // 1s delay giữa mỗi lần reconnect
+            }
+            IO.socket(SERVER_URL, options)
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to connect socket", e)
+        }
     }
 }

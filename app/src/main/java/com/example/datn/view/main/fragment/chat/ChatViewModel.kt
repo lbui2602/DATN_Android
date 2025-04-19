@@ -21,6 +21,7 @@ class ChatViewModel @Inject constructor(
     private val sharedPreferencesManager: SharedPreferencesManager,
     private val socketManager: SocketManager
 ) : ViewModel() {
+
     private val _messages = MutableLiveData<MessageResponse?>()
     val messages: LiveData<MessageResponse?> get() = _messages
 
@@ -32,13 +33,9 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val response = repository.getMessages(groupId)
-                if(response != null){
-                    _messages.postValue(response)
-                }else{
-                    _messages.postValue(null)
-                }
+                _messages.value = response
             } catch (e: Exception) {
-                _messages.postValue(null)
+                _messages.value = null
             }
         }
     }
@@ -54,7 +51,7 @@ class ChatViewModel @Inject constructor(
     private fun listenForIncomingMessages() {
         socketManager.socket.on("receive_message") { args ->
             val messageJson = args[0] as JSONObject
-            Log.e("Socket", messageJson.toString())
+            Log.e("Socket 2", messageJson.toString())
 
             val newMessage = Message(
                 messageJson.getString("_id"),
@@ -71,11 +68,16 @@ class ChatViewModel @Inject constructor(
                 val currentMessagesResponse = _messages.value
                 val updatedMessages = currentMessagesResponse?.messages?.toMutableList() ?: mutableListOf()
                 updatedMessages.add(newMessage)
-                _messages.postValue(
-                    _messages.value?.copy(messages = updatedMessages)
+
+                _messages.value = MessageResponse(
+                    code = "1", // Ép thành Thành công luôn
+                    message = "Thành công",
+                    messages = updatedMessages
                 )
-                Log.e("Message", _messages.value.toString())
+
+                Log.e("Message Updated", _messages.value.toString())
             }
+
         }
     }
 }

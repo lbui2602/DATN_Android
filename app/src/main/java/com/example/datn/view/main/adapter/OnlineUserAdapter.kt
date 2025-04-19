@@ -30,7 +30,7 @@ class OnlineUserAdapter(var iClickUser: IClickUserOnline) : ListAdapter<User, On
                 binding.llOnline.setBackgroundColor(ContextCompat.getColor(context, R.color.green))
 
             }else{
-                binding.llOnline.setBackgroundColor(ContextCompat.getColor(context, R.color.green))
+                binding.llOnline.setBackgroundColor(ContextCompat.getColor(context, R.color.grey))
 
             }
             binding.llItem.setOnClickListener {

@@ -70,9 +70,8 @@ class ChatFragment : BaseFragment() {
 
     override fun setObserves() {
         viewModel.messages.observe(viewLifecycleOwner) { response ->
-            response?.let {
-                Log.e("Mesage Réponse",response.toString())
-                if(response.code.toInt() ==1){
+            if(response !=null){
+                if(response.code.toInt() == 1){
                     messages.clear()
                     messages.addAll(response.messages)
                     chatAdapter.updateMessages(messages)
@@ -82,7 +81,9 @@ class ChatFragment : BaseFragment() {
                         isScroll = false
                     }
                 }
-            } ?: Snackbar.make(binding.root, "Lấy tin nhắn thất bại", Snackbar.LENGTH_SHORT).show()
+            }else{
+                Snackbar.make(binding.root,"Lấy tin nhắn tất bại", Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -97,5 +98,4 @@ class ChatFragment : BaseFragment() {
             adapter = chatAdapter
         }
     }
-
 }

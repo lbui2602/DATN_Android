@@ -8,6 +8,8 @@ import javax.inject.Singleton
 @Singleton
 class SocketManager @Inject constructor(val socket: Socket) {
 
+    private var isUserConnected = false
+
     fun joinGroup(groupId: String) {
         socket.emit("join_group", groupId)
     }
@@ -21,13 +23,23 @@ class SocketManager @Inject constructor(val socket: Socket) {
         socket.emit("send_message", json)
     }
     fun connect(userId: String) {
-        socket.connect()
-        socket.on(Socket.EVENT_CONNECT) {
+        if (!socket.connected()) {
+            socket.connect()
+
+            socket.off(Socket.EVENT_CONNECT) // Gỡ listener cũ
+            socket.on(Socket.EVENT_CONNECT) {
+                socket.emit("user_connected", userId)
+                isUserConnected = true
+            }
+        } else {
             socket.emit("user_connected", userId)
         }
     }
 
+
+
     fun disconnect() {
         socket.disconnect()
+        isUserConnected = false
     }
 }
