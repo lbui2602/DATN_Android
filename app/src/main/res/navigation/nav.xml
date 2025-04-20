@@ -30,6 +30,9 @@
         <action
             android:id="@+id/action_settingFragment_to_listStaffFragment"
             app:destination="@id/listStaffFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_departmentFragment"
+            app:destination="@id/departmentFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -90,5 +93,21 @@
     <fragment
         android:id="@+id/listStaffFragment"
         android:name="com.example.datn.view.main.fragment.for_manage.staff.ListStaffFragment"
-        android:label="ListStaffFragment" />
+        android:label="ListStaffFragment" >
+        <action
+            android:id="@+id/action_listStaffFragment_to_detailStaffFragment"
+            app:destination="@id/detailStaffFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/departmentFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.department.DepartmentFragment"
+        android:label="DepartmentFragment" >
+        <action
+            android:id="@+id/action_departmentFragment_to_listStaffFragment"
+            app:destination="@id/listStaffFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailStaffFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.detail_staff.DetailStaffFragment"
+        android:label="DetailStaffFragment" />
 </navigation>

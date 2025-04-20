@@ -19,9 +19,9 @@ import com.example.datn.databinding.LayoutUserItemBinding
 import com.example.datn.models.register.User
 import com.example.datn.util.Util
 
-class OnlineUserAdapter(var iClickUser: IClickUserOnline) : ListAdapter<User, OnlineUserAdapter.UserViewHolder>(UserDiffCallback()) {
+class OnlineUserAdapter(var iClickUser: IClickUserOnline) : ListAdapter<User, OnlineUserAdapter.OnlineUserViewHolder>(UserDiffCallback()) {
 
-    inner class UserViewHolder(private val binding: LayoutOnlineUserItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class OnlineUserViewHolder(private val binding: LayoutOnlineUserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("ResourceAsColor")
         fun bind(user: User, context: Context) {
             binding.tvName.text = user.fullName
@@ -39,12 +39,12 @@ class OnlineUserAdapter(var iClickUser: IClickUserOnline) : ListAdapter<User, On
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OnlineUserViewHolder {
         val binding = LayoutOnlineUserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return UserViewHolder(binding)
+        return OnlineUserViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: OnlineUserViewHolder, position: Int) {
         holder.bind(getItem(position),holder.itemView.context)
     }
 

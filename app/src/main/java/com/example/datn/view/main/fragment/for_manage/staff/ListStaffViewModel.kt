@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
 import com.example.datn.models.staff.AcceptUserRequest
@@ -28,14 +29,17 @@ class ListStaffViewModel @Inject constructor(
     private val _acceptUserResponse = MutableLiveData<AcceptUserResponse?>()
     val acceptUserResponse: LiveData<AcceptUserResponse?> get() = _acceptUserResponse
 
+    private val _departmentResponse = MutableLiveData<DepartmentResponse?>()
+    val departmentResponse: LiveData<DepartmentResponse?> get() = _departmentResponse
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean?> get() = _isLoading
 
-    fun getListUserByDepartmentID(token : String,idDepartment: String){
+    fun getListUserByDepartmentID(token : String,idDepartment: String,search : String?){
         viewModelScope.launch {
             _isLoading.postValue(true)
             try {
-                val response = repository.getListUserByDepartmentID(token, idDepartment)
+                val response = repository.getListUserByDepartmentID(token, idDepartment,search)
                 if(response != null){
                     _staffsResponse.postValue(response)
                 }
@@ -56,6 +60,20 @@ class ListStaffViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _acceptUserResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
+    fun getDepartmentById(token : String,id: String){
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.getDepartmentById(token, id)
+                if(response != null){
+                    _departmentResponse.postValue(response)
+                }
+            } catch (e: Exception) {
+                _departmentResponse.postValue(null)
             }
             _isLoading.postValue(false)
         }

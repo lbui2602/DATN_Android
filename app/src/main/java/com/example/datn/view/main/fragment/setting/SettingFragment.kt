@@ -42,7 +42,28 @@ class SettingFragment : BaseFragment() {
     }
 
     override fun setAction() {
-
+        binding.llLogout.setOnClickListener {
+            Util.showDialog(requireContext(),"Bạn có muốn đăng xuất?","OK", {
+                sharedPreferencesManager.clearUserId()
+                sharedPreferencesManager.clearAuthToken()
+                sharedPreferencesManager.clearUserRole()
+                sharedPreferencesManager.clearDepartment()
+                startActivity(Intent(requireActivity(),AuthActivity::class.java))
+                requireActivity().finish()
+            })
+        }
+        binding.llManageStaff.setOnClickListener {
+            val bundle = Bundle()
+            if(sharedPreferencesManager.getUserRole().toString().equals("truong_phong")){
+                bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
+                findNavController().navigate(R.id.action_settingFragment_to_listStaffFragment,bundle)
+            }else{
+                findNavController().navigate(R.id.action_settingFragment_to_departmentFragment)
+            }
+        }
+        binding.llProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_settingFragment_to_profileFragment)
+        }
     }
 
     override fun setObserves() {
@@ -63,23 +84,5 @@ class SettingFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.llLogout.setOnClickListener {
-            Util.showDialog(requireContext(),"Bạn có muốn đăng xuất?","OK", {
-                    sharedPreferencesManager.clearUserId()
-                    sharedPreferencesManager.clearAuthToken()
-                    sharedPreferencesManager.clearUserRole()
-                    sharedPreferencesManager.clearDepartment()
-                    startActivity(Intent(requireActivity(),AuthActivity::class.java))
-                    requireActivity().finish()
-                })
-        }
-        binding.llManageStaff.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
-            findNavController().navigate(R.id.action_settingFragment_to_listStaffFragment,bundle)
-        }
-        binding.llProfile.setOnClickListener {
-            findNavController().navigate(R.id.action_settingFragment_to_profileFragment)
-        }
     }
 }

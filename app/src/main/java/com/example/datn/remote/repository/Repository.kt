@@ -5,6 +5,7 @@ import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceByUserIdResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
+import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.CompareFaceResponse
@@ -135,9 +136,10 @@ class Repository @Inject constructor(
 
     suspend fun getListUserByDepartmentID(
         token: String,
-        idDepartment: String
+        idDepartment: String,
+        search:String?
     ) : StaffsResponse {
-        return apiService.getListUserByDepartmentID(token,idDepartment)
+        return apiService.getListUserByDepartmentID(token,idDepartment,search)
     }
 
     suspend fun searchUser(
@@ -172,6 +174,19 @@ class Repository @Inject constructor(
         groupId: String
     ) : PrivateGroupResponse {
         return apiService.getGroupById(token,groupId)
+    }
+    suspend fun getDepartmentById(
+        token: String,
+        id: String
+    ) : DepartmentResponse {
+        return apiService.getDepartmentById(token,id)
+    }
+
+    suspend fun getProfileByUserId(
+        token : String,
+        userId : String
+    ) : ProfileResponse {
+        return apiService.getProfileByUserId(token,userId)
     }
 
 }

@@ -71,6 +71,17 @@ class LoginFragment : BaseFragment() {
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null ) {
                 if(response.code.toInt()==1){
+//                    if(response.status){
+//                        sharedPreferencesManager.saveAuthToken(response.token)
+//                        sharedPreferencesManager.saveUserId(response._id)
+//                        sharedPreferencesManager.saveUserRole(response.roleId)
+//                        sharedPreferencesManager.saveDepartment(response.idDepartment)
+//                        startActivity(Intent(requireContext(),MainActivity::class.java))
+//                        requireActivity().finish()
+//                    }else{
+//                        Util.showDialog(requireContext(),"Nhân viên chưa được xác thực. Vui lòng liên hệ quản lý.")
+//                    }
+
                     sharedPreferencesManager.saveAuthToken(response.token)
                     sharedPreferencesManager.saveUserId(response._id)
                     sharedPreferencesManager.saveUserRole(response.roleId)

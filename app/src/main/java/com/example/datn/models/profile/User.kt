@@ -6,6 +6,8 @@ data class User(
     val email: String,
     val phone: String,
     val address: String,
+    val birthday: String,
+    val gender: String,
     val role: String,
     val department: String,
     val image: String,

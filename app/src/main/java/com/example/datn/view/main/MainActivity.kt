@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
                     Util.showDialog(this,response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.message.observe(this, Observer { message->

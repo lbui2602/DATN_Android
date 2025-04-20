@@ -4,6 +4,7 @@ import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceByUserIdResponse
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
+import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_token.FaceTokenRequest
@@ -127,7 +128,8 @@ interface ApiService {
     @GET("api/auth/staff/{idDepartment}")
     suspend fun getListUserByDepartmentID(
         @Header("Authorization") token: String,
-        @Path("idDepartment") idDepartment : String
+        @Path("idDepartment") idDepartment : String,
+        @Query("search") search : String?
     ) : StaffsResponse
 
     @GET("api/auth/search")
@@ -166,4 +168,16 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("groupId") groupId : String
     ) : PrivateGroupResponse
+
+    @GET("api/departments/{id}")
+    suspend fun getDepartmentById(
+        @Header("Authorization") token: String,
+        @Path("id") id : String
+    ) : DepartmentResponse
+
+    @GET("api/auth/getProfileByUserId/{userId")
+    suspend fun getProfileByUserId(
+        @Header("Authorization") token: String,
+        @Path("userId") userId : String
+    ) : ProfileResponse
 }

@@ -1,7 +1,7 @@
 package com.example.datn.models.department
 
-data class DepartmentsResponses(
+data class DepartmentResponse(
     val message : String?,
     val code: String,
-    val departments: List<Department>?
+    val department: Department?
 )

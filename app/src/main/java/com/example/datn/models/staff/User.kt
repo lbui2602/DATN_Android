@@ -3,6 +3,8 @@ package com.example.datn.models.staff
 data class User(
     val _id: String,
     val address: String,
+    val birthday: String,
+    val gender: String,
     val createdAt: String,
     val department: String,
     val email: String,

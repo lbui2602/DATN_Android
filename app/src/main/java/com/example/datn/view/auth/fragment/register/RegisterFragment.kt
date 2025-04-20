@@ -34,6 +34,16 @@ class RegisterFragment : BaseFragment() {
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     var selectedRoleID = ""
     var selectedDepartmentId = ""
+    val months = (1..12).map { it.toString() }
+
+    // Dữ liệu năm từ 2000 đến 2025
+    val years = (2025 downTo 1950).map { it.toString() }
+    val days = (1 .. 31).map { it.toString() }
+
+    var selectedDay = ""
+    var selectedMonth = ""
+    var selectedYear = ""
+    var gender = "Nam"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -48,7 +58,22 @@ class RegisterFragment : BaseFragment() {
     }
 
     override fun setView() {
+        setupSpinners()
+        binding.radioGender.check(R.id.radioNam)
+    }
+    private fun setupSpinners() {
 
+        val monthAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnMonth.adapter = monthAdapter
+
+        val yearAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, years)
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnYear.adapter = yearAdapter
+
+        val dayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, days)
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnDay.adapter = dayAdapter
     }
 
     override fun setAction() {
@@ -68,6 +93,7 @@ class RegisterFragment : BaseFragment() {
             val passwordConfirm = binding.edtPasswordConfirm.text.toString().trim()
             val phone = binding.edtPhone.text.toString().trim()
             val address = binding.edtAddress.text.toString().trim()
+            val birthday = selectedDay+"-"+selectedMonth+"-"+selectedYear
             validate(fullname,email,password,passwordConfirm,phone,address) {
                 viewModel.register(
                     RegisterRequest(
@@ -76,6 +102,8 @@ class RegisterFragment : BaseFragment() {
                         password,
                         phone,
                         address,
+                        birthday,
+                        gender,
                         selectedDepartmentId,
                         selectedRoleID
                     )
@@ -86,6 +114,41 @@ class RegisterFragment : BaseFragment() {
     }
 
     override fun setObserves() {
+        binding.radioGender.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.radioNam -> {
+                    gender = "Nam"
+                }
+                R.id.radioNu -> {
+                    gender = "Nữ"
+                }
+            }
+        }
+        binding.spnDay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val day = days[position].toInt()
+                selectedDay = if (day < 10) "0$day" else "$day"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        binding.spnMonth.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val month = months[position].toInt()
+                selectedMonth = if (month < 10) "0$month" else "$month"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        binding.spnYear.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedYear = years[position]
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
         viewModel.registerResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 if(response.code.toInt() == 1){
@@ -95,7 +158,7 @@ class RegisterFragment : BaseFragment() {
                     Util.showDialog(requireContext(),response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to register account", Snackbar.LENGTH_SHORT).show()
             }
         })
 
@@ -124,17 +187,17 @@ class RegisterFragment : BaseFragment() {
                     setRoleSpinner()
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
-                if(response.code.toInt() == 1){
+                if(response.code.toInt() == 1 && response.departments != null){
                     departments = response.departments.toMutableList()
                     setDepartmentSpinner()
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->

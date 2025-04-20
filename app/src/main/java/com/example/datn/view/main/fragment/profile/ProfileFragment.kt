@@ -75,6 +75,8 @@ class ProfileFragment : BaseFragment() {
                     binding.tvDepartment.text = response.user.department
                     binding.tvRole.text = response.user.role
                     binding.tvAddress.text = response.user.address
+                    binding.tvGender.text = response.user.gender
+                    binding.tvBirthday.text = response.user.birthday
                     binding.tvPhone.text = response.user.phone
                     val gson = Gson()
                     userString = gson.toJson(response.user)
@@ -88,6 +90,11 @@ class ProfileFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
         viewModel.getProfile("Bearer "+sharedPreferencesManager.getAuthToken().toString())
     }
 }

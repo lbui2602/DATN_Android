@@ -16,7 +16,7 @@
             android:orientation="vertical"
             android:layout_height="match_parent">
             <androidx.fragment.app.FragmentContainerView
-                android:background="@color/xanh_nhat"
+                android:background="#DEDDDD"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

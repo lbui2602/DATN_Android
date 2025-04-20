@@ -149,4 +149,12 @@ class UploadAvatarFragment : BaseFragment() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sharedPreferencesManager.clearUserId()
+        sharedPreferencesManager.clearAuthToken()
+        sharedPreferencesManager.clearUserRole()
+        sharedPreferencesManager.clearDepartment()
+    }
 }

@@ -115,6 +115,9 @@ class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
                 if(response.attendances !=null){
                     adapter.submitList(response.attendances.toMutableList())
                 }
+            }else{
+                adapter.submitList(mutableListOf())
+                Util.showDialog(requireContext(),response?.message?: "")
             }
         })
         viewModel.attendanceResponse.observe(viewLifecycleOwner, Observer { response ->
