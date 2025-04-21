@@ -49,13 +49,17 @@ class UpdateUserInfoFragment : BaseFragment() {
     var selectedMonth = ""
     var selectedYear = ""
     var gender = "Nam"
+    var isOwner = false
+    var from = ""
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val userString = arguments?.getString("user")
+        isOwner = arguments?.getBoolean("isOwner") ?: false
         val gson = Gson()
         user = gson.fromJson(userString, User::class.java)
+        from = arguments?.getString("from") ?: ""
     }
 
     override fun onCreateView(
@@ -95,6 +99,10 @@ class UpdateUserInfoFragment : BaseFragment() {
     }
     override fun setView() {
         setupSpinners()
+        if(from.equals("profile")){
+            binding.spnRole.isEnabled = false
+            binding.spnDepartment.isEnabled = false
+        }
         if(user!=null){
             binding.tvEmail.text = user.email
             binding.edtFullname.setText(user.fullName)
@@ -193,7 +201,7 @@ class UpdateUserInfoFragment : BaseFragment() {
                     val phone = binding.edtPhone.text.toString().trim().ifEmpty { null }
                     val address = binding.edtAddress.text.toString().trim().ifEmpty { null }
                     val birthday = (selectedDay+"-"+selectedMonth+"-"+selectedYear).toString().trim().ifEmpty { null }
-                    val request = UpdateUserRequest(fullName,phone,address,birthday,gender,selectedRoleID,selectedDepartmentId)
+                    val request = UpdateUserRequest(user._id,fullName,phone,address,birthday,gender,selectedRoleID,selectedDepartmentId)
                     viewModel.updateUser(
                         "Bearer "+sharedPreferencesManager.getAuthToken(),
                         request
@@ -205,8 +213,10 @@ class UpdateUserInfoFragment : BaseFragment() {
             if (response != null) {
                 if(response.code.toInt() == 1){
                     Util.showDialog(requireContext(),response.message,"OK",{
-                        sharedPreferencesManager.saveUserRole(response.user.roleId)
-                        sharedPreferencesManager.saveDepartment(response.user.idDepartment)
+                        if(isOwner){
+                            sharedPreferencesManager.saveUserRole(response.user.roleId)
+                            sharedPreferencesManager.saveDepartment(response.user.idDepartment)
+                        }
                         findNavController().popBackStack()
                     })
                 }

@@ -97,6 +97,9 @@
         <action
             android:id="@+id/action_listStaffFragment_to_detailStaffFragment"
             app:destination="@id/detailStaffFragment" />
+        <action
+            android:id="@+id/action_listStaffFragment_to_updateUserInfoFragment"
+            app:destination="@id/updateUserInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/departmentFragment"

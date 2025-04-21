@@ -8,7 +8,6 @@ data class User(
     val createdAt: String,
     val department: String,
     val email: String,
-    val face_token: String,
     val fullName: String,
     val image: String,
     val phone: String,

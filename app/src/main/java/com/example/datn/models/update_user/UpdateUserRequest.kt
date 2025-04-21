@@ -1,6 +1,7 @@
 package com.example.datn.models.update_user
 
 data class UpdateUserRequest (
+    val _id : String,
     val fullName : String?,
     val phone : String?,
     val address : String?,

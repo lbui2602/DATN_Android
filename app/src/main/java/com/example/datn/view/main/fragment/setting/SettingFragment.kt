@@ -31,9 +31,13 @@ class SettingFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         setTabBar()
+        checkRole()
     }
 
     override fun setView() {
+        checkRole()
+    }
+    private fun checkRole(){
         if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc") || sharedPreferencesManager.getUserRole().toString().equals("truong_phong")){
             binding.llManageStaff.visibility = View.VISIBLE
         }else{
@@ -44,10 +48,7 @@ class SettingFragment : BaseFragment() {
     override fun setAction() {
         binding.llLogout.setOnClickListener {
             Util.showDialog(requireContext(),"Bạn có muốn đăng xuất?","OK", {
-                sharedPreferencesManager.clearUserId()
-                sharedPreferencesManager.clearAuthToken()
-                sharedPreferencesManager.clearUserRole()
-                sharedPreferencesManager.clearDepartment()
+                Util.logout(sharedPreferencesManager)
                 startActivity(Intent(requireActivity(),AuthActivity::class.java))
                 requireActivity().finish()
             })

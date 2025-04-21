@@ -3,6 +3,7 @@ package com.example.datn.util
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.databinding.CustomSnackbarBinding
 import com.example.datn.models.message.Message
+import com.example.datn.view.auth.AuthActivity
 import com.google.android.material.snackbar.Snackbar
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -30,7 +32,7 @@ import java.util.Locale
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://192.168.1.101:3000"
+    val url = "http://192.168.52.52:3000"
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,
@@ -57,6 +59,12 @@ object Util {
             snackbar.dismiss()
         }
         snackbar.show()
+    }
+    fun logout(sharedPreferencesManager: SharedPreferencesManager){
+        sharedPreferencesManager.clearUserId()
+        sharedPreferencesManager.clearAuthToken()
+        sharedPreferencesManager.clearUserRole()
+        sharedPreferencesManager.clearDepartment()
     }
     fun showDialog(
         context: Context,

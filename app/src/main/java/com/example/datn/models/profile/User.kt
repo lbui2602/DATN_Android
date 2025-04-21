@@ -11,7 +11,6 @@ data class User(
     val role: String,
     val department: String,
     val image: String,
-    val face_token: String,
     val status : Boolean,
     val createAt: String,
     val updateAt : String,

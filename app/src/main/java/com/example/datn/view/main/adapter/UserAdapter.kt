@@ -1,5 +1,6 @@
 package com.example.datn.view.main.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
@@ -18,27 +19,33 @@ import com.example.datn.util.Util
 class UserAdapter(var iClickUser: IClickUser) : ListAdapter<User, UserAdapter.UserViewHolder>(UserDiffCallback()) {
 
     inner class UserViewHolder(private val binding: LayoutUserItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(user: User,context: Context) {
+        @SuppressLint("ResourceAsColor")
+        fun bind(user: User, context: Context) {
             binding.tvFullName.text = user.fullName
             binding.tvEmail.text = user.email
             binding.tvAddress.text = user.address
             binding.tvDate.text = "Tham gia từ "+Util.formatDate(user.createdAt)
             Glide.with(context).load(Util.url+user.image).into(binding.imgAvatar)
             if(user.status){
-                binding.btnConfirm.setText("Đã xác nhận")
-                binding.btnConfirm.isEnabled = false
-                binding.btnConfirm.backgroundTintList = ColorStateList.valueOf(
-                    ContextCompat.getColor(context, R.color.green)
-                )
-            }else{
-                binding.btnConfirm.setText("Xác nhận")
-                binding.btnConfirm.isEnabled = true
+                binding.btnConfirm.setText("Khoá")
                 binding.btnConfirm.backgroundTintList = ColorStateList.valueOf(
                     ContextCompat.getColor(context, R.color.red)
                 )
+                binding.tvStatus.text = "Tài khoản đã được xác nhận"
+                binding.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.green))
+            }else{
+                binding.btnConfirm.setText("Xác nhận")
+                binding.btnConfirm.backgroundTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(context, R.color.green)
+                )
+                binding.tvStatus.text = "Tài khoản chưa được xác nhận"
+                binding.tvStatus.setTextColor(ContextCompat.getColor(context, R.color.red))
             }
             binding.btnConfirm.setOnClickListener {
                 iClickUser.confirmUser(user)
+            }
+            binding.llItem.setOnClickListener {
+                iClickUser.clickUser(user)
             }
         }
     }

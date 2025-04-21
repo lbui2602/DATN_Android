@@ -55,6 +55,8 @@ class ProfileFragment : BaseFragment() {
         binding.btnUpdate.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("user",userString)
+            bundle.putString("from","profile")
+            bundle.putBoolean("isOwner",true)
             findNavController().navigate(R.id.action_profileFragment_to_updateUserInfoFragment,bundle)
         }
         binding.btnChangPass.setOnClickListener {
@@ -78,8 +80,8 @@ class ProfileFragment : BaseFragment() {
                     binding.tvGender.text = response.user.gender
                     binding.tvBirthday.text = response.user.birthday
                     binding.tvPhone.text = response.user.phone
-                    val gson = Gson()
-                    userString = gson.toJson(response.user)
+                                                    val gson = Gson()
+                                                    userString = gson.toJson(response.user)
                 } else {
                     Util.showDialog(requireContext(),response.message)
                 }

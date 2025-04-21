@@ -1,10 +1,16 @@
 package com.example.datn.view.main
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +22,7 @@ import com.example.datn.R
 import com.example.datn.databinding.ActivityMainBinding
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
+import com.example.datn.view.auth.AuthActivity
 import com.example.datn.view.main.fragment.home.HomeViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,6 +76,12 @@ class MainActivity : AppCompatActivity() {
                 }
             } else {
                 Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.isLogout.observe(this, Observer { isLogout->
+            if(isLogout == true){
+                startActivity(Intent(this, AuthActivity::class.java))
+                finish()
             }
         })
         viewModel.message.observe(this, Observer { message->

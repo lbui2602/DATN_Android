@@ -27,6 +27,7 @@ import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.AttendanceAdapter
 import com.example.datn.view.main.adapter.UserAdapter
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue
@@ -148,15 +149,37 @@ class ListStaffFragment : BaseFragment(), IClickUser {
     }
 
     override fun clickUser(user: User) {
-
+        val gson = Gson()
+        val userString = gson.toJson(user)
+        val bundle = Bundle()
+        bundle.putString("user",userString)
+        if(sharedPreferencesManager.getUserId().toString().equals(user._id)){
+            bundle.putBoolean("isOwner",true)
+        }
+        findNavController().navigate(R.id.action_listStaffFragment_to_updateUserInfoFragment,bundle)
     }
 
     override fun confirmUser(user: User) {
-        Util.showDialog(requireContext(),"Bạn có chắc chắn muốn xác nhận tài khoản này?","OK",{
+        val mess = if (!user.status) {
+            "Bạn có chắc chắn muốn xác nhận tài khoản này?"
+        } else {
+            "Bạn có chắc chắn muốn khóa tài khoản này?"
+        }
+        Util.showDialog(requireContext(),mess,"OK",{
             viewModel.acceptUser(
                 "Bearer "+sharedPreferencesManager.getAuthToken(),
                 AcceptUserRequest(user._id)
             )
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(sharedPreferencesManager.getUserRole().toString().equals("nhan_vien")){
+            findNavController().popBackStack()
+        }
+        if(!sharedPreferencesManager.getDepartment().toString().equals(idDepartment)){
+            findNavController().popBackStack()
+        }
     }
 }
