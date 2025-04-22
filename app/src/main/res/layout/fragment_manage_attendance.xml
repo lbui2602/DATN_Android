@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -33,6 +34,71 @@
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:id="@+id/tvTitle"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_rounded"
+                android:padding="5dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/edtSearch"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:inputType="text"
+                    android:hint="Tìm kiếm"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <FrameLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="9"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/edtDate"
+                            android:layout_gravity="center"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textColor="@color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <ImageButton
+                            android:id="@+id/imgDelete"
+                            android:src="@drawable/close"
+                            android:layout_gravity="center|end"
+                            android:layout_margin="5dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:background="@android:color/transparent"/>
+
+                    </FrameLayout>
+                    <ImageButton
+                        android:background="@drawable/bg_rounded"
+                        android:backgroundTint="@color/green"
+                        android:padding="5dp"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/imgCalendar"
+                        android:src="@drawable/calendar_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+                </LinearLayout>
+                <Button
+                    android:id="@+id/btnSearch"
+                    android:text="Tìm kiếm"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_rounded"
+                    android:backgroundTint="@color/green"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

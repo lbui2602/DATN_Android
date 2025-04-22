@@ -14,6 +14,7 @@ import com.example.datn.base.BaseFragment
 import com.example.datn.click.IClickDepartment
 import com.example.datn.databinding.FragmentDepartmentBinding
 import com.example.datn.models.department.Department
+import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.DepartmentAdapter
 import com.example.datn.view.main.adapter.UserAdapter
 import com.google.android.material.snackbar.Snackbar
@@ -74,7 +75,7 @@ class DepartmentFragment : BaseFragment(), IClickDepartment {
     }
 
     override fun setTabBar() {
-
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
     }
 
     override fun clickDepartment(department: Department) {

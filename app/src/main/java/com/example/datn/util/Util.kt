@@ -2,6 +2,7 @@ package com.example.datn.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -32,7 +33,7 @@ import java.util.Locale
 object Util {
 //    172.20.10.4
 //    192.168.52.52
-    val url = "http://192.168.52.52:3000"
+    val url = "http://192.168.1.101:3000"
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,
@@ -65,6 +66,22 @@ object Util {
         sharedPreferencesManager.clearAuthToken()
         sharedPreferencesManager.clearUserRole()
         sharedPreferencesManager.clearDepartment()
+    }
+    fun showDatePicker(context: Context, onDateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val dayFormatted = String.format("%02d", dayOfMonth)
+                val monthFormatted = String.format("%02d", month + 1)
+                val formattedDate = "$dayFormatted-$monthFormatted-$year"
+                onDateSelected(formattedDate)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
     }
     fun showDialog(
         context: Context,

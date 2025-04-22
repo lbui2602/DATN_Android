@@ -179,7 +179,9 @@ class ListStaffFragment : BaseFragment(), IClickUser {
             findNavController().popBackStack()
         }
         if(!sharedPreferencesManager.getDepartment().toString().equals(idDepartment)){
-            findNavController().popBackStack()
+            if(!sharedPreferencesManager.getDepartment().toString().equals("ban_giam_doc")){
+                findNavController().popBackStack()
+            }
         }
     }
 }

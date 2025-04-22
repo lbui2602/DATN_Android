@@ -34,7 +34,7 @@ class AttendanceForManageAdapter : ListAdapter<AttendanceX, AttendanceForManageA
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: AttendanceViewHolder, position: Int) {
         val data = getItem(position)
-        if (data != null) {
+        if (data != null && data.userId != null) {
             holder.binding.tvTime.text = data.time
             holder.binding.tvDate.text = data.date
             holder.binding.tvName.visibility = View.VISIBLE

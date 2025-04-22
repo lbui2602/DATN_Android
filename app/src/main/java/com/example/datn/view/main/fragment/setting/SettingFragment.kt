@@ -73,8 +73,12 @@ class SettingFragment : BaseFragment() {
         }
         binding.llManageAttendance.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
-            findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
+            if(!sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
+                bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
+                findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
+            }else{
+                findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
+            }
         }
     }
 

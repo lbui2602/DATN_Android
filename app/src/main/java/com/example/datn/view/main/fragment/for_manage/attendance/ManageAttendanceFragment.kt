@@ -31,6 +31,8 @@ class ManageAttendanceFragment : BaseFragment() {
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     lateinit var adapter: AttendanceForManageAdapter
+    var selectedDate = ""
+    var search = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -69,11 +71,32 @@ class ManageAttendanceFragment : BaseFragment() {
 
     override fun setView() {
         setRecyclerView()
+        binding.edtDate.setText(Util.formatDate())
     }
 
     override fun setAction() {
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()
+        }
+        binding.imgCalendar.setOnClickListener {
+            Util.showDatePicker(requireContext(),{
+                selectedDate = it
+                binding.edtDate.setText(selectedDate)
+            })
+        }
+        binding.btnSearch.setOnClickListener {
+            search = binding.edtSearch.text.toString().trim()
+            request.name = search
+            request.date = selectedDate
+            viewModel.getAllAttendance(
+                "Bearer "+sharedPreferencesManager.getAuthToken(),
+                request
+            )
+            Util.hideKeyboard(requireActivity())
+        }
+        binding.imgDelete.setOnClickListener {
+            binding.edtDate.setText("")
+            selectedDate = ""
         }
     }
 
@@ -89,7 +112,7 @@ class ManageAttendanceFragment : BaseFragment() {
             if(response != null){
                 if (response.code.toInt() == 1) {
                     adapter.submitList(response.attendances.toMutableList())
-                    binding.rcv.scrollToPosition(response.attendances.size - 1)
+//                    binding.rcv.scrollToPosition(response.attendances.size - 1)
                 }
             }
         })
