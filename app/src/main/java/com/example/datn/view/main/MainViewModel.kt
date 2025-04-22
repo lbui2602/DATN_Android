@@ -8,6 +8,7 @@
     import com.example.datn.models.group.GroupsResponse
     import com.example.datn.models.group.PrivateGroupResponse
     import com.example.datn.models.message.Message
+    import com.example.datn.models.user_info.UserInfoResponse
     import com.example.datn.remote.repository.Repository
     import com.example.datn.socket.SocketManager
     import com.example.datn.util.SharedPreferencesManager
@@ -32,6 +33,9 @@
         private val _groupsResponse = MutableLiveData<GroupsResponse?>()
         val groupsResponse: LiveData<GroupsResponse?> get() = _groupsResponse
 
+        private val _userInfoResponse = MutableLiveData<UserInfoResponse?>()
+        val userInfoResponse: LiveData<UserInfoResponse?> get() = _userInfoResponse
+
         private val _isLogout = MutableLiveData<Boolean?>()
         val isLogout: LiveData<Boolean?> get() = _isLogout
 
@@ -47,6 +51,25 @@
             } catch (e: Exception) {
                 null
             } finally {
+                _isLoading.postValue(false)
+            }
+        }
+
+        fun getUserInfo(token: String){
+            viewModelScope.launch {
+                _isLoading.postValue(true)
+                try {
+                    val response = repository.getUserInfo(token)
+                    if(response!=null){
+                        _userInfoResponse.postValue(response)
+                    }
+                    else{
+                        _userInfoResponse.postValue(null)
+                    }
+
+                } catch (e: Exception) {
+                    _userInfoResponse.postValue(null)
+                }
                 _isLoading.postValue(false)
             }
         }

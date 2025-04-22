@@ -51,6 +51,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.connect()
         setObserves()
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getUserInfo("Bearer "+sharedPreferencesManager.getAuthToken())
+    }
+
     private fun getCurrentFragmentTag(): String? {
         val currentFragment = navHostFragment.childFragmentManager.fragments.firstOrNull()
         return currentFragment?.javaClass?.simpleName
@@ -70,6 +76,21 @@ class MainActivity : AppCompatActivity() {
                 if(response.code.toInt() == 1){
                     response.groups.forEach { gr->
                         viewModel.joinChatGroup(gr._id)
+                    }
+                }else{
+                    Util.showDialog(this,response.message)
+                }
+            } else {
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.userInfoResponse.observe(this, Observer { response->
+            if (response != null) {
+                if(response.code.toInt() == 1){
+                    if(!response.user.status){
+                        Util.logout(sharedPreferencesManager)
+                        startActivity(Intent(this, AuthActivity::class.java))
+                        finish()
                     }
                 }else{
                     Util.showDialog(this,response.message)

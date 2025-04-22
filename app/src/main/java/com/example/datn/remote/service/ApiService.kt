@@ -2,7 +2,9 @@ package com.example.datn.remote.service
 
 import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceByUserIdResponse
+import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.attendance.GetAllAttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
@@ -28,6 +30,7 @@ import com.example.datn.models.staff.StaffsResponse
 import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.user.UserResponse
+import com.example.datn.models.user_info.UserInfoResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
 import com.example.datn.view.main.fragment.working_day.DetailWorkingDayViewModel
@@ -80,6 +83,11 @@ interface ApiService {
     suspend fun getProfile(
         @Header("Authorization") token: String,
     ): ProfileResponse
+
+    @GET("api/auth/getUserInfo")
+    suspend fun getUserInfo(
+        @Header("Authorization") token: String,
+    ): UserInfoResponse
 
     @PUT("api/auth/change-password")
     suspend fun changePassword(
@@ -180,4 +188,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("userId") userId : String
     ) : ProfileResponse
+
+    @POST("api/attendance/getAll")
+    suspend fun getAllAttendance(
+        @Header("Authorization") token: String,
+        @Body request: AttendanceRequest
+    ) : GetAllAttendanceResponse
 }

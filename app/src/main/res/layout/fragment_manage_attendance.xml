@@ -9,7 +9,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.main.fragment.chat.ChatFragment">
+        tools:context=".view.main.fragment.for_manage.attendance.ManageAttendanceFragment">
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -36,35 +37,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
+            <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="9"/>
-                <LinearLayout
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
-                    <EditText
-                        android:id="@+id/editText"
-                        android:layout_width="0dp"
-                        android:layout_weight="8"
-                        android:layout_height="match_parent"/>
-                    <ImageButton
-                        android:src="@drawable/send_icon"
-                        android:scaleType="fitCenter"
-                        android:layout_width="0dp"
-                        android:layout_weight="2"
-                        android:id="@+id/sendButton"
-                        android:layout_height="wrap_content"/>
-                </LinearLayout>
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:id="@+id/rcv"/>
         </LinearLayout>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
     </FrameLayout>
 </layout>

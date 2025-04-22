@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.datn.R
 import com.example.datn.base.BaseFragment
@@ -16,6 +18,7 @@ import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.example.datn.view.auth.AuthActivity
 import com.example.datn.view.main.MainActivity
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -24,14 +27,15 @@ class SettingFragment : BaseFragment() {
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     private lateinit var binding: FragmentSettingBinding
+    private val viewModel : SettingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
     override fun onResume() {
         super.onResume()
+        viewModel.getUserInfo("Bearer "+sharedPreferencesManager.getAuthToken())
         setTabBar()
-        checkRole()
     }
 
     override fun setView() {
@@ -40,8 +44,10 @@ class SettingFragment : BaseFragment() {
     private fun checkRole(){
         if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc") || sharedPreferencesManager.getUserRole().toString().equals("truong_phong")){
             binding.llManageStaff.visibility = View.VISIBLE
+            binding.llManageAttendance.visibility = View.VISIBLE
         }else{
             binding.llManageStaff.visibility = View.GONE
+            binding.llManageAttendance.visibility = View.GONE
         }
     }
 
@@ -65,10 +71,27 @@ class SettingFragment : BaseFragment() {
         binding.llProfile.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_profileFragment)
         }
+        binding.llManageAttendance.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
+            findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
+        }
     }
 
     override fun setObserves() {
-
+        viewModel.userInfoResponse.observe(this, Observer { response->
+            if (response != null) {
+                if(response.code.toInt() == 1){
+                    sharedPreferencesManager.saveUserRole(response.user.roleId)
+                    sharedPreferencesManager.saveDepartment(response.user.idDepartment)
+                    checkRole()
+                }else{
+                    Util.showDialog(requireContext(),response.message)
+                }
+            } else {
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun setTabBar() {

@@ -3,7 +3,9 @@ package com.example.datn.remote.repository
 import android.util.Log
 import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceByUserIdResponse
+import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.attendance.GetAllAttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
 import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.department.DepartmentsResponses
@@ -34,6 +36,7 @@ import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.user.UserResponse
+import com.example.datn.models.user_info.UserInfoResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
@@ -86,6 +89,10 @@ class Repository @Inject constructor(
 
     suspend fun getProfile(token: String): ProfileResponse {
         return apiService.getProfile(token)
+    }
+
+    suspend fun getUserInfo(token: String): UserInfoResponse {
+        return apiService.getUserInfo(token)
     }
 
     suspend fun changePassword(
@@ -189,4 +196,10 @@ class Repository @Inject constructor(
         return apiService.getProfileByUserId(token,userId)
     }
 
+    suspend fun getAllAttendance(
+        token : String,
+        request: AttendanceRequest
+    ) : GetAllAttendanceResponse {
+        return apiService.getAllAttendance(token,request)
+    }
 }
