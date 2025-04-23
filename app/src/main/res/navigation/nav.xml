@@ -36,6 +36,9 @@
         <action
             android:id="@+id/action_settingFragment_to_manageAttendanceFragment"
             app:destination="@id/manageAttendanceFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_manageWorkingDayFragment"
+            app:destination="@id/manageWorkingDayFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -120,4 +123,8 @@
         android:id="@+id/manageAttendanceFragment"
         android:name="com.example.datn.view.main.fragment.for_manage.attendance.ManageAttendanceFragment"
         android:label="ManageAttendanceFragment" />
+    <fragment
+        android:id="@+id/manageWorkingDayFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.working_day.ManageWorkingDayFragment"
+        android:label="ManageWorkingDayFragment" />
 </navigation>

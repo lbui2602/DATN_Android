@@ -1,7 +1,6 @@
-package com.example.datn.view.main.fragment.for_manage.attendance
+package com.example.datn.view.main.fragment.for_manage.working_day
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,65 +13,60 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
 import com.example.datn.base.BaseFragment
-import com.example.datn.databinding.FragmentManageAttendanceBinding
+import com.example.datn.click.IClickWorkingDay
+import com.example.datn.databinding.FragmentManageWorkingDayBinding
 import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.department.Department
+import com.example.datn.models.working_day.WorkingDay
+import com.example.datn.models.working_day.WorkingDayXX
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
-import com.example.datn.view.main.adapter.AttendanceAdapter
 import com.example.datn.view.main.adapter.AttendanceForManageAdapter
+import com.example.datn.view.main.adapter.WorkingDayForManageAdapter
+import com.example.datn.view.main.fragment.for_manage.attendance.ManageAttendanceFragment
+import com.example.datn.view.main.fragment.for_manage.attendance.ManageAttendanceViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-
 @AndroidEntryPoint
-class ManageAttendanceFragment : BaseFragment() {
-    private lateinit var binding: FragmentManageAttendanceBinding
+class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
+    private val viewModel : ManageWorkingDayViewModel by viewModels()
+    private lateinit var binding: FragmentManageWorkingDayBinding
     val request = AttendanceRequest("","","")
     private var departments = mutableListOf<Department>()
-    private val viewModel : ManageAttendanceViewModel by viewModels()
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
-    lateinit var adapter: AttendanceForManageAdapter
+    lateinit var adapter: WorkingDayForManageAdapter
     var selectedDate = ""
     var search = ""
     var id = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getDepartments()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentManageAttendanceBinding.inflate(layoutInflater,container,false)
+        binding = FragmentManageWorkingDayBinding.inflate(layoutInflater,container,false)
         binding.lifecycleOwner = this
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getAllWorkingDay("Bearer "+sharedPreferencesManager.getAuthToken(),request)
         id = arguments?.getString("idDepartment")?:""
         request.idDepartment = id
-        viewModel.getAllAttendance(
-            "Bearer "+sharedPreferencesManager.getAuthToken(),
-            request
-        )
         if(!id.isNullOrBlank()){
             viewModel.getDepartmentById(
                 "Bearer "+sharedPreferencesManager.getAuthToken(),
                 id
             )
         }else{
-            binding.tvTitle.text = "Quản lý chấm công"
+            binding.tvTitle.text = "Quản lý ngày công"
         }
-    }
-    private fun setRecyclerView() {
-        binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = AttendanceForManageAdapter()
-        binding.rcv.adapter = adapter
     }
 
     override fun setView() {
@@ -85,6 +79,11 @@ class ManageAttendanceFragment : BaseFragment() {
         setRecyclerView()
         binding.edtDate.setText(Util.formatDate())
     }
+    private fun setRecyclerView() {
+        binding.rcv.layoutManager = LinearLayoutManager(requireContext())
+        adapter = WorkingDayForManageAdapter(mutableListOf(),this)
+        binding.rcv.adapter = adapter
+    }
 
     override fun setAction() {
         binding.imgBack.setOnClickListener {
@@ -96,20 +95,20 @@ class ManageAttendanceFragment : BaseFragment() {
                 binding.edtDate.setText(selectedDate)
             })
         }
+        binding.imgDelete.setOnClickListener {
+            binding.edtDate.setText("")
+            selectedDate = ""
+        }
         binding.btnSearch.setOnClickListener {
             search = binding.edtSearch.text.toString().trim()
             request.idDepartment = id
             request.name = search
             request.date = selectedDate
-            viewModel.getAllAttendance(
+            viewModel.getAllWorkingDay(
                 "Bearer "+sharedPreferencesManager.getAuthToken(),
                 request
             )
             Util.hideKeyboard(requireActivity())
-        }
-        binding.imgDelete.setOnClickListener {
-            binding.edtDate.setText("")
-            selectedDate = ""
         }
     }
     private fun setDepartmentSpinner(){
@@ -130,11 +129,12 @@ class ManageAttendanceFragment : BaseFragment() {
                 binding.progressBar.visibility = View.GONE
             }
         })
-        viewModel.getAllAttendanceResponse.observe(viewLifecycleOwner, Observer { response ->
+        viewModel.workingDayResponse.observe(viewLifecycleOwner, Observer { response ->
             if(response != null){
                 if (response.code.toInt() == 1) {
-                    adapter.submitList(response.attendances.toMutableList())
+//                    adapter.submitList(response.attendances.toMutableList())
 //                    binding.rcv.scrollToPosition(response.attendances.size - 1)
+                    adapter.updateList(response.workingDays.toMutableList())
                 }
             }
         })
@@ -143,7 +143,6 @@ class ManageAttendanceFragment : BaseFragment() {
                 if(response.code.toInt()==1){
                     binding.tvTitle.text = response.department?.name
                 }else{
-                    adapter.submitList(mutableListOf())
                     Util.showDialog(requireContext(),response.message.toString())
                 }
             } else {
@@ -165,7 +164,7 @@ class ManageAttendanceFragment : BaseFragment() {
         if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
             binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    this@ManageAttendanceFragment.id = departments[position]._id
+                    this@ManageWorkingDayFragment.id = departments[position]._id
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>) {
@@ -177,5 +176,13 @@ class ManageAttendanceFragment : BaseFragment() {
 
     override fun setTabBar() {
         (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
+    }
+
+    override fun selectWorkingDay(workingDay: WorkingDay) {
+
+    }
+
+    override fun selectWorkingDay(workingDay: WorkingDayXX) {
+
     }
 }

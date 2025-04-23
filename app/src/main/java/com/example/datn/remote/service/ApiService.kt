@@ -33,6 +33,7 @@ import com.example.datn.models.user.UserResponse
 import com.example.datn.models.user_info.UserInfoResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
+import com.example.datn.models.working_day.WorkingDayForManageResponse
 import com.example.datn.view.main.fragment.working_day.DetailWorkingDayViewModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -194,4 +195,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request: AttendanceRequest
     ) : GetAllAttendanceResponse
+
+    @POST("api/working-days/getAll")
+    suspend fun getAllWorkingDay(
+        @Header("Authorization") token: String,
+        @Body request: AttendanceRequest
+    ) : WorkingDayForManageResponse
 }

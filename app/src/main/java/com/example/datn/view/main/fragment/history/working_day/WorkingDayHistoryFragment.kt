@@ -20,6 +20,7 @@ import com.example.datn.click.IClickWorkingDay
 import com.example.datn.databinding.FragmentWorkingDayHistoryBinding
 import com.example.datn.models.attendance.Attendance
 import com.example.datn.models.working_day.WorkingDay
+import com.example.datn.models.working_day.WorkingDayXX
 import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
@@ -151,5 +152,9 @@ class WorkingDayHistoryFragment : BaseFragment(), IClickWorkingDay {
         val bundle = Bundle()
         bundle.putString("workingDayId",workingDay._id)
         findNavController().navigate(R.id.action_historyFragment_to_detailWorkingDayFragment,bundle)
+    }
+
+    override fun selectWorkingDay(workingDay: WorkingDayXX) {
+
     }
 }

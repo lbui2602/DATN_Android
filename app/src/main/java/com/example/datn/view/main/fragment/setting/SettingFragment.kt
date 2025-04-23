@@ -45,8 +45,10 @@ class SettingFragment : BaseFragment() {
         if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc") || sharedPreferencesManager.getUserRole().toString().equals("truong_phong")){
             binding.llManageStaff.visibility = View.VISIBLE
             binding.llManageAttendance.visibility = View.VISIBLE
+            binding.llManageWorkingDay.visibility = View.VISIBLE
         }else{
             binding.llManageStaff.visibility = View.GONE
+            binding.llManageWorkingDay.visibility = View.GONE
             binding.llManageAttendance.visibility = View.GONE
         }
     }
@@ -78,6 +80,15 @@ class SettingFragment : BaseFragment() {
                 findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
             }else{
                 findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
+            }
+        }
+        binding.llManageWorkingDay.setOnClickListener {
+            val bundle = Bundle()
+            if(!sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
+                bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
+                findNavController().navigate(R.id.action_settingFragment_to_manageWorkingDayFragment,bundle)
+            }else{
+                findNavController().navigate(R.id.action_settingFragment_to_manageWorkingDayFragment,bundle)
             }
         }
     }

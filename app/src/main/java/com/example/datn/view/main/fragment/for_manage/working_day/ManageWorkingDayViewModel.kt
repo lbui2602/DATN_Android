@@ -1,4 +1,4 @@
-package com.example.datn.view.main.fragment.for_manage.attendance
+package com.example.datn.view.main.fragment.for_manage.working_day
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,16 +8,15 @@ import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.attendance.GetAllAttendanceResponse
 import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.department.DepartmentsResponses
-import com.example.datn.models.message.MessageResponse
+import com.example.datn.models.working_day.WorkingDayForManageResponse
 import com.example.datn.remote.repository.Repository
-import com.example.datn.socket.SocketManager
 import com.example.datn.util.SharedPreferencesManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ManageAttendanceViewModel @Inject constructor(
+class ManageWorkingDayViewModel @Inject constructor(
     private val repository: Repository,
     private val sharedPreferencesManager: SharedPreferencesManager,
 ) : ViewModel() {
@@ -31,23 +30,23 @@ class ManageAttendanceViewModel @Inject constructor(
     private val _departmentResponse = MutableLiveData<DepartmentResponse?>()
     val departmentResponse: LiveData<DepartmentResponse?> get() = _departmentResponse
 
-    private val _getAllAttendanceResponse = MutableLiveData<GetAllAttendanceResponse?>()
-    val getAllAttendanceResponse: LiveData<GetAllAttendanceResponse?> get() = _getAllAttendanceResponse
+    private val _workingDayResponse = MutableLiveData<WorkingDayForManageResponse?>()
+    val workingDayResponse: LiveData<WorkingDayForManageResponse?> get() = _workingDayResponse
 
-    fun getAllAttendance(token: String, request: AttendanceRequest){
+    fun getAllWorkingDay(token: String, request: AttendanceRequest){
         viewModelScope.launch {
             _isLoading.postValue(true)
             try {
-                val response = repository.getAllAttendance(token,request)
+                val response = repository.getAllWorkingDay(token,request)
                 if(response!=null){
-                    _getAllAttendanceResponse.postValue(response)
+                    _workingDayResponse.postValue(response)
                 }
                 else{
-                    _getAllAttendanceResponse.postValue(null)
+                    _workingDayResponse.postValue(null)
                 }
 
             } catch (e: Exception) {
-                _getAllAttendanceResponse.postValue(null)
+                _workingDayResponse.postValue(null)
             }
             _isLoading.postValue(false)
         }

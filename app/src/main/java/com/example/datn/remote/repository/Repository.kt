@@ -40,6 +40,7 @@ import com.example.datn.models.user_info.UserInfoResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
+import com.example.datn.models.working_day.WorkingDayForManageResponse
 import com.example.datn.remote.service.ApiService
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -201,5 +202,11 @@ class Repository @Inject constructor(
         request: AttendanceRequest
     ) : GetAllAttendanceResponse {
         return apiService.getAllAttendance(token,request)
+    }
+    suspend fun getAllWorkingDay(
+        token : String,
+        request: AttendanceRequest
+    ) : WorkingDayForManageResponse {
+        return apiService.getAllWorkingDay(token,request)
     }
 }
