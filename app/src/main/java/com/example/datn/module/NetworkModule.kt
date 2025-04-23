@@ -18,7 +18,7 @@ object NetworkModule {
     //192.168.1.101
     //192.168.52.52
     //172.20.10.4
-    private const val BASE_URL = "http://192.168.52.52:3000/"  // Backend chính
+    private const val BASE_URL = "http://127.0.0.1:3000/"  // Backend chính
 
     @Provides
     @Singleton
