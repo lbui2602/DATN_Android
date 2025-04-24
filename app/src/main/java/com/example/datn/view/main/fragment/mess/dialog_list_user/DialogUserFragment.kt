@@ -109,4 +109,9 @@ class DialogUserFragment : DialogFragment(), IClickUserOnline {
             }
         }
     }
+
+    override fun selectUser(user: User, isCheck: Boolean) {
+
+    }
+
 }

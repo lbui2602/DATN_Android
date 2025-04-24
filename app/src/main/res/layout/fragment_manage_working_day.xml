@@ -31,6 +31,7 @@
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:id="@+id/tvTitle"
+                    android:text="Quản lý ngày công"
                     android:textColor="@color/white"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -44,7 +45,6 @@
                 android:layout_height="wrap_content">
                 <LinearLayout
                     android:id="@+id/llDepartment"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -86,6 +86,7 @@
                         android:layout_weight="9"
                         android:layout_height="wrap_content">
                         <EditText
+                            android:hint="Ngày"
                             android:id="@+id/edtDate"
                             android:layout_gravity="center"
                             android:clickable="false"

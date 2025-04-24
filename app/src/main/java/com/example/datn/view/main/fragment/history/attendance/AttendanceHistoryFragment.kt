@@ -1,21 +1,14 @@
 package com.example.datn.view.main.fragment.history.attendance
 
-import android.app.DatePickerDialog
-import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.datn.R
 import com.example.datn.base.BaseFragment
 import com.example.datn.click.IClickAttendance
-import com.example.datn.click.IClickMess
-import com.example.datn.databinding.FragmentAttendanceBinding
 import com.example.datn.databinding.FragmentAttendanceHistoryBinding
 import com.example.datn.models.attendance.Attendance
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
@@ -23,9 +16,7 @@ import com.example.datn.util.SharedPreferencesManager
 import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.AttendanceAdapter
-import com.example.datn.view.main.fragment.chat.ChatViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Calendar
 import javax.inject.Inject
 import kotlin.getValue
 

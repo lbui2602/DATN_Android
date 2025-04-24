@@ -80,7 +80,7 @@ class WorkingDayHistoryFragment : BaseFragment(), IClickWorkingDay {
     }
     private fun setRecyclerView() {
         binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = WorkingDayAdapter(list,this)
+        adapter = WorkingDayAdapter(this)
         binding.rcv.adapter = adapter
     }
 
@@ -111,7 +111,7 @@ class WorkingDayHistoryFragment : BaseFragment(), IClickWorkingDay {
             if(response != null){
                 if (response.code.toInt() == 1) {
                     Log.e("res",response.toString())
-                    adapter.updateList(response.workingDays.toMutableList())
+                    adapter.submitList(response.workingDays.toMutableList())
                 }else{
                     Util.showDialog(requireContext(),"")
                 }

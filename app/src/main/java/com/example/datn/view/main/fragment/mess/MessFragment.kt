@@ -74,6 +74,9 @@ class MessFragment : BaseFragment(), IClickMess {
             val dialog = DialogUserFragment()
             dialog.show(parentFragmentManager, dialog.tag)
         }
+        binding.btnAdd.setOnClickListener {
+            findNavController().navigate(R.id.action_messFragment_to_createGroupFragment)
+        }
     }
 
     override fun setObserves() {

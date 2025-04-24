@@ -11,6 +11,7 @@
         android:layout_height="match_parent"
         tools:context=".view.main.fragment.history.working_day.WorkingDayHistoryFragment">
         <LinearLayout
+            android:paddingHorizontal="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">

@@ -69,6 +69,7 @@
                         android:textStyle="bold"
                         android:textColor="@color/black"/>
                     <LinearLayout
+                        android:elevation="10dp"
                         android:padding="10dp"
                         android:orientation="vertical"
                         android:background="@drawable/bg_rounded_green_light"

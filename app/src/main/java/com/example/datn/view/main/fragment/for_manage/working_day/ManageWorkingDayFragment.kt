@@ -43,6 +43,8 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
     var id = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        departments.add(Department(_id = "", name = "Xem tất cả", createdAt = null, updatedAt = null, __v = null))
+        viewModel.getDepartments()
     }
 
     override fun onCreateView(
@@ -56,32 +58,31 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAllWorkingDay("Bearer "+sharedPreferencesManager.getAuthToken(),request)
         id = arguments?.getString("idDepartment")?:""
         request.idDepartment = id
-        if(!id.isNullOrBlank()){
-            viewModel.getDepartmentById(
-                "Bearer "+sharedPreferencesManager.getAuthToken(),
-                id
-            )
-        }else{
-            binding.tvTitle.text = "Quản lý ngày công"
-        }
+        viewModel.getAllWorkingDay("Bearer "+sharedPreferencesManager.getAuthToken(),request)
+//        if(!id.isNullOrBlank()){
+//            viewModel.getDepartmentById(
+//                "Bearer "+sharedPreferencesManager.getAuthToken(),
+//                id
+//            )
+//        }else{
+//            binding.tvTitle.text = "Quản lý ngày công"
+//        }
     }
 
     override fun setView() {
-        if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-            binding.llDepartment.visibility = View.VISIBLE
-        }
-        else{
-            binding.llDepartment.visibility = View.GONE
-        }
+//        if(!sharedPreferencesManager.getUserRole().equals("giam_doc")) {
+//            binding.spnDepartment.isEnabled = false
+//        } else{
+//            binding.spnDepartment.isEnabled = true
+//        }
         setRecyclerView()
-        binding.edtDate.setText(Util.formatDate())
+//        binding.edtDate.setText(Util.formatDate())
     }
     private fun setRecyclerView() {
         binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = WorkingDayForManageAdapter(mutableListOf(),this)
+        adapter = WorkingDayForManageAdapter(this)
         binding.rcv.adapter = adapter
     }
 
@@ -119,6 +120,16 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
         )
         adapterDepartment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnDepartment.adapter = adapterDepartment
+
+        if(id.isNullOrBlank()){
+            binding.spnDepartment.isEnabled = true
+        }else{
+            val index = departments.indexOfFirst { it._id == id }
+            if (index != -1) {
+                binding.spnDepartment.setSelection(index)
+                binding.spnDepartment.isEnabled = true
+            }
+        }
     }
 
     override fun setObserves() {
@@ -134,14 +145,14 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
                 if (response.code.toInt() == 1) {
 //                    adapter.submitList(response.attendances.toMutableList())
 //                    binding.rcv.scrollToPosition(response.attendances.size - 1)
-                    adapter.updateList(response.workingDays.toMutableList())
+                    adapter.submitList(response.workingDays)
                 }
             }
         })
         viewModel.departmentResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null ) {
                 if(response.code.toInt()==1){
-                    binding.tvTitle.text = response.department?.name
+//                    binding.tvTitle.text = response.department?.name
                 }else{
                     Util.showDialog(requireContext(),response.message.toString())
                 }
@@ -152,24 +163,20 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
         viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 if(response.code.toInt() == 1 && response.departments != null){
-                    departments = response.departments.toMutableList()
-                    if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-                        setDepartmentSpinner()
-                    }
+                    departments.addAll(response.departments.toMutableList())
+                    setDepartmentSpinner()
                 }
             } else {
                 Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
-        if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-            binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    this@ManageWorkingDayFragment.id = departments[position]._id
-                }
+        binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                this@ManageWorkingDayFragment.id = departments[position]._id
+            }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
+            override fun onNothingSelected(parent: AdapterView<*>) {
 
-                }
             }
         }
     }
@@ -183,6 +190,8 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
     }
 
     override fun selectWorkingDay(workingDay: WorkingDayXX) {
-
+        val bundle = Bundle()
+        bundle.putString("workingDayId",workingDay._id)
+        findNavController().navigate(R.id.action_manageWorkingDayFragment_to_detailWorkingDayFragment,bundle)
     }
 }

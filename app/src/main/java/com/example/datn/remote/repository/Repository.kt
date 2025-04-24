@@ -15,6 +15,8 @@ import com.example.datn.models.face_api.CreateFaceSetResponse
 import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
+import com.example.datn.models.group.CreateGroupResponse
+import com.example.datn.models.group.CreateRequest
 import com.example.datn.models.group.GroupsResponse
 import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.login.LoginRequest
@@ -209,4 +211,12 @@ class Repository @Inject constructor(
     ) : WorkingDayForManageResponse {
         return apiService.getAllWorkingDay(token,request)
     }
+
+    suspend fun createGroup(
+        token : String,
+        request: CreateRequest
+    ) : CreateGroupResponse {
+        return apiService.createGroup(token,request)
+    }
+
 }

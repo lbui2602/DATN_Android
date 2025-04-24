@@ -40,6 +40,9 @@ class ManageAttendanceFragment : BaseFragment() {
     var id = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(sharedPreferencesManager.getUserRole().equals("giam_doc")){
+            departments.add(Department(_id = "", name = "Xem tất cả", createdAt = null, updatedAt = null, __v = null))
+        }
         viewModel.getDepartments()
     }
 
@@ -76,12 +79,6 @@ class ManageAttendanceFragment : BaseFragment() {
     }
 
     override fun setView() {
-        if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-            binding.llDepartment.visibility = View.VISIBLE
-        }
-        else{
-            binding.llDepartment.visibility = View.GONE
-        }
         setRecyclerView()
         binding.edtDate.setText(Util.formatDate())
     }
@@ -120,6 +117,17 @@ class ManageAttendanceFragment : BaseFragment() {
         )
         adapterDepartment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnDepartment.adapter = adapterDepartment
+
+        if(id.isNullOrBlank()){
+            binding.spnDepartment.isEnabled = true
+        }else{
+            val index = departments.indexOfFirst { it._id == id }
+            if (index != -1) {
+                binding.spnDepartment.setSelection(index)
+                binding.spnDepartment.isEnabled = true
+            }
+        }
+
     }
 
     override fun setObserves() {
@@ -141,7 +149,7 @@ class ManageAttendanceFragment : BaseFragment() {
         viewModel.departmentResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null ) {
                 if(response.code.toInt()==1){
-                    binding.tvTitle.text = response.department?.name
+//                    binding.tvTitle.text = response.department?.name
                 }else{
                     adapter.submitList(mutableListOf())
                     Util.showDialog(requireContext(),response.message.toString())
@@ -153,24 +161,21 @@ class ManageAttendanceFragment : BaseFragment() {
         viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 if(response.code.toInt() == 1 && response.departments != null){
-                    departments = response.departments.toMutableList()
-                    if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-                        setDepartmentSpinner()
-                    }
+                    departments.addAll(response.departments.toMutableList())
+                    setDepartmentSpinner()
                 }
             } else {
                 Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
-        if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-            binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    this@ManageAttendanceFragment.id = departments[position]._id
-                }
+        binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                this@ManageAttendanceFragment.id = departments[position]._id
+                Log.e("id",this@ManageAttendanceFragment.id)
+            }
 
-                override fun onNothingSelected(parent: AdapterView<*>) {
+            override fun onNothingSelected(parent: AdapterView<*>) {
 
-                }
             }
         }
     }

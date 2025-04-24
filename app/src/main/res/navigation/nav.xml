@@ -82,7 +82,7 @@
         tools:layout="@layout/fragment_attendance_history" />
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.example.datn.view.main.fragment.chat.ChatFragment"
+        android:name="com.example.datn.view.main.fragment.mess.chat.ChatFragment"
         android:label="ChatFragment" />
     <fragment
         android:id="@+id/messFragment"
@@ -91,6 +91,9 @@
         <action
             android:id="@+id/action_messFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_messFragment_to_createGroupFragment"
+            app:destination="@id/createGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailWorkingDayFragment"
@@ -126,5 +129,13 @@
     <fragment
         android:id="@+id/manageWorkingDayFragment"
         android:name="com.example.datn.view.main.fragment.for_manage.working_day.ManageWorkingDayFragment"
-        android:label="ManageWorkingDayFragment" />
+        android:label="ManageWorkingDayFragment" >
+        <action
+            android:id="@+id/action_manageWorkingDayFragment_to_detailWorkingDayFragment"
+            app:destination="@id/detailWorkingDayFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createGroupFragment"
+        android:name="com.example.datn.view.main.fragment.mess.create_group.CreateGroupFragment"
+        android:label="CreateGroupFragment" />
 </navigation>
