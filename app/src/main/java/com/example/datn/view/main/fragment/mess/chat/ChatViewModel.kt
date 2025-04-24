@@ -1,4 +1,4 @@
-package com.example.datn.view.main.fragment.chat
+package com.example.datn.view.main.fragment.mess.chat
 
 import android.util.Log
 import androidx.lifecycle.LiveData

@@ -42,4 +42,16 @@ class SocketManager @Inject constructor(val socket: Socket) {
         socket.disconnect()
         isUserConnected = false
     }
+    fun onBlockAccount(callback: (userId: String) -> Unit) {
+        socket.off("block_account")
+        socket.on("block_account") { args ->
+            if (args.isNotEmpty()) {
+                val data = args[0] as? JSONObject
+                val userId = data?.optString("userId")
+                userId?.let {
+                    callback(it)
+                }
+            }
+        }
+    }
 }

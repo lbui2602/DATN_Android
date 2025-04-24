@@ -2,12 +2,17 @@ package com.example.datn.remote.service
 
 import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceByUserIdResponse
+import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.attendance.GetAllAttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
+import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
+import com.example.datn.models.group.CreateGroupResponse
+import com.example.datn.models.group.CreateRequest
 import com.example.datn.models.group.GroupsResponse
 import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.register.RegisterResponse
@@ -27,8 +32,10 @@ import com.example.datn.models.staff.StaffsResponse
 import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.user.UserResponse
+import com.example.datn.models.user_info.UserInfoResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
+import com.example.datn.models.working_day.WorkingDayForManageResponse
 import com.example.datn.view.main.fragment.working_day.DetailWorkingDayViewModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -80,6 +87,11 @@ interface ApiService {
         @Header("Authorization") token: String,
     ): ProfileResponse
 
+    @GET("api/auth/getUserInfo")
+    suspend fun getUserInfo(
+        @Header("Authorization") token: String,
+    ): UserInfoResponse
+
     @PUT("api/auth/change-password")
     suspend fun changePassword(
         @Header("Authorization") token: String,
@@ -127,7 +139,8 @@ interface ApiService {
     @GET("api/auth/staff/{idDepartment}")
     suspend fun getListUserByDepartmentID(
         @Header("Authorization") token: String,
-        @Path("idDepartment") idDepartment : String
+        @Path("idDepartment") idDepartment : String,
+        @Query("search") search : String?
     ) : StaffsResponse
 
     @GET("api/auth/search")
@@ -166,4 +179,34 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("groupId") groupId : String
     ) : PrivateGroupResponse
+
+    @GET("api/departments/{id}")
+    suspend fun getDepartmentById(
+        @Header("Authorization") token: String,
+        @Path("id") id : String
+    ) : DepartmentResponse
+
+    @GET("api/auth/getProfileByUserId/{userId")
+    suspend fun getProfileByUserId(
+        @Header("Authorization") token: String,
+        @Path("userId") userId : String
+    ) : ProfileResponse
+
+    @POST("api/attendance/getAll")
+    suspend fun getAllAttendance(
+        @Header("Authorization") token: String,
+        @Body request: AttendanceRequest
+    ) : GetAllAttendanceResponse
+
+    @POST("api/working-days/getAll")
+    suspend fun getAllWorkingDay(
+        @Header("Authorization") token: String,
+        @Body request: AttendanceRequest
+    ) : WorkingDayForManageResponse
+
+    @POST("api/groups")
+    suspend fun createGroup(
+        @Header("Authorization") token: String,
+        @Body request: CreateRequest
+    ) : CreateGroupResponse
 }

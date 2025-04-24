@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.main.fragment.chat.ChatFragment">
+        tools:context=".view.main.fragment.mess.chat.ChatFragment">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -66,6 +66,5 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
     </FrameLayout>
 </layout>

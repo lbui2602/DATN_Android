@@ -83,7 +83,7 @@ class DetailWorkingDayFragment : BaseFragment(), IClickAttendance {
                     Util.showDialog(requireContext(),response.message.toString())
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->

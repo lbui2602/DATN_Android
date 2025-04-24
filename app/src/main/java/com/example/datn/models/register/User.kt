@@ -4,6 +4,8 @@ data class User(
     val __v: Int,
     val _id: String,
     val address: String,
+    val birthday: String,
+    val gender: String,
     val createdAt: String,
     val email: String,
     val fullName: String,

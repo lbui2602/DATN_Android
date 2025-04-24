@@ -3,8 +3,11 @@ package com.example.datn.remote.repository
 import android.util.Log
 import com.example.datn.models.attendance.AttendanceByDateResponse
 import com.example.datn.models.attendance.AttendanceByUserIdResponse
+import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.attendance.AttendanceResponse
+import com.example.datn.models.attendance.GetAllAttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
+import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.CompareFaceResponse
@@ -12,6 +15,8 @@ import com.example.datn.models.face_api.CreateFaceSetResponse
 import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
+import com.example.datn.models.group.CreateGroupResponse
+import com.example.datn.models.group.CreateRequest
 import com.example.datn.models.group.GroupsResponse
 import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.login.LoginRequest
@@ -33,9 +38,11 @@ import com.example.datn.models.training.TrainingResponse
 import com.example.datn.models.update_user.UpdateUserRequest
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.user.UserResponse
+import com.example.datn.models.user_info.UserInfoResponse
 import com.example.datn.models.working_day.DetailWorkingDayResponse
 import com.example.datn.models.working_day.WorkingDay
 import com.example.datn.models.working_day.WorkingDayByMonthResponse
+import com.example.datn.models.working_day.WorkingDayForManageResponse
 import com.example.datn.remote.service.ApiService
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -87,6 +94,10 @@ class Repository @Inject constructor(
         return apiService.getProfile(token)
     }
 
+    suspend fun getUserInfo(token: String): UserInfoResponse {
+        return apiService.getUserInfo(token)
+    }
+
     suspend fun changePassword(
         token: String,
         request: ChangePasswordRequest
@@ -135,9 +146,10 @@ class Repository @Inject constructor(
 
     suspend fun getListUserByDepartmentID(
         token: String,
-        idDepartment: String
+        idDepartment: String,
+        search:String?
     ) : StaffsResponse {
-        return apiService.getListUserByDepartmentID(token,idDepartment)
+        return apiService.getListUserByDepartmentID(token,idDepartment,search)
     }
 
     suspend fun searchUser(
@@ -172,6 +184,39 @@ class Repository @Inject constructor(
         groupId: String
     ) : PrivateGroupResponse {
         return apiService.getGroupById(token,groupId)
+    }
+    suspend fun getDepartmentById(
+        token: String,
+        id: String
+    ) : DepartmentResponse {
+        return apiService.getDepartmentById(token,id)
+    }
+
+    suspend fun getProfileByUserId(
+        token : String,
+        userId : String
+    ) : ProfileResponse {
+        return apiService.getProfileByUserId(token,userId)
+    }
+
+    suspend fun getAllAttendance(
+        token : String,
+        request: AttendanceRequest
+    ) : GetAllAttendanceResponse {
+        return apiService.getAllAttendance(token,request)
+    }
+    suspend fun getAllWorkingDay(
+        token : String,
+        request: AttendanceRequest
+    ) : WorkingDayForManageResponse {
+        return apiService.getAllWorkingDay(token,request)
+    }
+
+    suspend fun createGroup(
+        token : String,
+        request: CreateRequest
+    ) : CreateGroupResponse {
+        return apiService.createGroup(token,request)
     }
 
 }

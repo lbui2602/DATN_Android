@@ -30,6 +30,15 @@
         <action
             android:id="@+id/action_settingFragment_to_listStaffFragment"
             app:destination="@id/listStaffFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_departmentFragment"
+            app:destination="@id/departmentFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_manageAttendanceFragment"
+            app:destination="@id/manageAttendanceFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_manageWorkingDayFragment"
+            app:destination="@id/manageWorkingDayFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -73,7 +82,7 @@
         tools:layout="@layout/fragment_attendance_history" />
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.example.datn.view.main.fragment.chat.ChatFragment"
+        android:name="com.example.datn.view.main.fragment.mess.chat.ChatFragment"
         android:label="ChatFragment" />
     <fragment
         android:id="@+id/messFragment"
@@ -82,6 +91,9 @@
         <action
             android:id="@+id/action_messFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_messFragment_to_createGroupFragment"
+            app:destination="@id/createGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailWorkingDayFragment"
@@ -90,5 +102,40 @@
     <fragment
         android:id="@+id/listStaffFragment"
         android:name="com.example.datn.view.main.fragment.for_manage.staff.ListStaffFragment"
-        android:label="ListStaffFragment" />
+        android:label="ListStaffFragment" >
+        <action
+            android:id="@+id/action_listStaffFragment_to_detailStaffFragment"
+            app:destination="@id/detailStaffFragment" />
+        <action
+            android:id="@+id/action_listStaffFragment_to_updateUserInfoFragment"
+            app:destination="@id/updateUserInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/departmentFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.department.DepartmentFragment"
+        android:label="DepartmentFragment" >
+        <action
+            android:id="@+id/action_departmentFragment_to_listStaffFragment"
+            app:destination="@id/listStaffFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailStaffFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.detail_staff.DetailStaffFragment"
+        android:label="DetailStaffFragment" />
+    <fragment
+        android:id="@+id/manageAttendanceFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.attendance.ManageAttendanceFragment"
+        android:label="ManageAttendanceFragment" />
+    <fragment
+        android:id="@+id/manageWorkingDayFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.working_day.ManageWorkingDayFragment"
+        android:label="ManageWorkingDayFragment" >
+        <action
+            android:id="@+id/action_manageWorkingDayFragment_to_detailWorkingDayFragment"
+            app:destination="@id/detailWorkingDayFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createGroupFragment"
+        android:name="com.example.datn.view.main.fragment.mess.create_group.CreateGroupFragment"
+        android:label="CreateGroupFragment" />
 </navigation>

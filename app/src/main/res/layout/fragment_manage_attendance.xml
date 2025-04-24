@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.main.fragment.for_manage.attendance.ManageAttendanceFragment">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:background="@color/green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageButton
+                    android:background="@android:color/transparent"
+                    android:id="@+id/imgBack"
+                    android:src="@drawable/back_icon"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:id="@+id/tvTitle"
+                    android:text="Quản lý chấm công"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_rounded"
+                android:padding="5dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:id="@+id/llDepartment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="Phòng ban"
+                        android:textColor="@color/black"
+                        android:textSize="17sp" />
+
+                    <Spinner
+                        android:id="@+id/spnDepartment"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="7" />
+                </LinearLayout>
+                <EditText
+                    android:id="@+id/edtSearch"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:inputType="text"
+                    android:hint="Tìm kiếm"
+                    android:textColor="@color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <FrameLayout
+                        android:layout_margin="10dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="9"
+                        android:layout_height="wrap_content">
+                        <EditText
+                            android:id="@+id/edtDate"
+                            android:layout_gravity="center"
+                            android:clickable="false"
+                            android:enabled="false"
+                            android:textColor="@color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <ImageButton
+                            android:id="@+id/imgDelete"
+                            android:src="@drawable/close"
+                            android:layout_gravity="center|end"
+                            android:layout_margin="5dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:scaleType="fitCenter"
+                            android:background="@android:color/transparent"/>
+
+                    </FrameLayout>
+                    <ImageButton
+                        android:background="@drawable/bg_rounded"
+                        android:backgroundTint="@color/green"
+                        android:padding="5dp"
+                        android:scaleType="centerCrop"
+                        android:id="@+id/imgCalendar"
+                        android:src="@drawable/calendar_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+                </LinearLayout>
+                <Button
+                    android:id="@+id/btnSearch"
+                    android:text="Tìm kiếm"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bg_rounded"
+                    android:backgroundTint="@color/green"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rcv"/>
+        </LinearLayout>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+    </FrameLayout>
+</layout>

@@ -74,6 +74,9 @@ class MessFragment : BaseFragment(), IClickMess {
             val dialog = DialogUserFragment()
             dialog.show(parentFragmentManager, dialog.tag)
         }
+        binding.btnAdd.setOnClickListener {
+            findNavController().navigate(R.id.action_messFragment_to_createGroupFragment)
+        }
     }
 
     override fun setObserves() {
@@ -86,7 +89,7 @@ class MessFragment : BaseFragment(), IClickMess {
                     Util.showDialog(requireContext(),response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
     }

@@ -2,7 +2,9 @@ package com.example.datn.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.databinding.CustomSnackbarBinding
 import com.example.datn.models.message.Message
+import com.example.datn.view.auth.AuthActivity
 import com.google.android.material.snackbar.Snackbar
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -57,6 +60,28 @@ object Util {
             snackbar.dismiss()
         }
         snackbar.show()
+    }
+    fun logout(sharedPreferencesManager: SharedPreferencesManager){
+        sharedPreferencesManager.clearUserId()
+        sharedPreferencesManager.clearAuthToken()
+        sharedPreferencesManager.clearUserRole()
+        sharedPreferencesManager.clearDepartment()
+    }
+    fun showDatePicker(context: Context, onDateSelected: (String) -> Unit) {
+        val calendar = Calendar.getInstance()
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val dayFormatted = String.format("%02d", dayOfMonth)
+                val monthFormatted = String.format("%02d", month + 1)
+                val formattedDate = "$dayFormatted-$monthFormatted-$year"
+                onDateSelected(formattedDate)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.show()
     }
     fun showDialog(
         context: Context,

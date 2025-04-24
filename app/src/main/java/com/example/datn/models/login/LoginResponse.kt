@@ -8,9 +8,11 @@ data class LoginResponse(
     val email: String,
     val phone: String,
     val address: String,
+    val birthday: String,
+    val gender: String,
     val roleId: String,
     val idDepartment: String,
     val image: String,
-    val face_token: String,
+    val status: Boolean,
     val token: String
 )

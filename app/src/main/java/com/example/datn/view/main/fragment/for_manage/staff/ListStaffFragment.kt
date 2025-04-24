@@ -27,6 +27,7 @@ import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.AttendanceAdapter
 import com.example.datn.view.main.adapter.UserAdapter
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue
@@ -58,6 +59,10 @@ class ListStaffFragment : BaseFragment(), IClickUser {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getListUserByDepartmentID(
             "Bearer "+sharedPreferencesManager.getAuthToken(),
+            idDepartment,""
+        )
+        viewModel.getDepartmentById(
+            "Bearer "+sharedPreferencesManager.getAuthToken(),
             idDepartment
         )
     }
@@ -86,7 +91,19 @@ class ListStaffFragment : BaseFragment(), IClickUser {
                     Util.showDialog(requireContext(),response.message.toString())
                 }
             } else {
-                Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+            }
+        })
+        viewModel.departmentResponse.observe(viewLifecycleOwner, Observer { response ->
+            if (response != null ) {
+                if(response.code.toInt()==1){
+                    binding.tvTitle.text = response.department?.name
+                }else{
+                    adapter.submitList(mutableListOf())
+                    Util.showDialog(requireContext(),response.message.toString())
+                }
+            } else {
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.acceptUserResponse.observe(viewLifecycleOwner, Observer { response ->
@@ -94,13 +111,13 @@ class ListStaffFragment : BaseFragment(), IClickUser {
                 if(response.code.toInt()==1){
                     viewModel.getListUserByDepartmentID(
                         "Bearer "+sharedPreferencesManager.getAuthToken(),
-                        idDepartment
+                        idDepartment,""
                     )
                 }else{
                     Util.showDialog(requireContext(),response.message.toString())
                 }
             } else {
-                Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
@@ -115,9 +132,9 @@ class ListStaffFragment : BaseFragment(), IClickUser {
             if (actionId == EditorInfo.IME_ACTION_SEARCH ||
                 event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN) {
                 val name = binding.edtSearch.text.toString()
-                viewModel.searchUser(
+                viewModel.getListUserByDepartmentID(
                     "Bearer "+sharedPreferencesManager.getAuthToken(),
-                    name
+                    idDepartment,name
                 )
                 Util.hideKeyboard(requireActivity())
                 true // Đã xử lý sự kiện
@@ -132,14 +149,39 @@ class ListStaffFragment : BaseFragment(), IClickUser {
     }
 
     override fun clickUser(user: User) {
+        val gson = Gson()
+        val userString = gson.toJson(user)
+        val bundle = Bundle()
+        bundle.putString("user",userString)
+        if(sharedPreferencesManager.getUserId().toString().equals(user._id)){
+            bundle.putBoolean("isOwner",true)
+        }
+        findNavController().navigate(R.id.action_listStaffFragment_to_updateUserInfoFragment,bundle)
     }
 
     override fun confirmUser(user: User) {
-        Util.showDialog(requireContext(),"Bạn có chắc chắn muốn xác nhận tài khoản này?","OK",{
+        val mess = if (!user.status) {
+            "Bạn có chắc chắn muốn xác nhận tài khoản này?"
+        } else {
+            "Bạn có chắc chắn muốn khóa tài khoản này?"
+        }
+        Util.showDialog(requireContext(),mess,"OK",{
             viewModel.acceptUser(
                 "Bearer "+sharedPreferencesManager.getAuthToken(),
                 AcceptUserRequest(user._id)
             )
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(sharedPreferencesManager.getUserRole().toString().equals("nhan_vien")){
+            findNavController().popBackStack()
+        }
+        if(!sharedPreferencesManager.getDepartment().toString().equals(idDepartment)){
+            if(!sharedPreferencesManager.getDepartment().toString().equals("ban_giam_doc")){
+                findNavController().popBackStack()
+            }
+        }
     }
 }

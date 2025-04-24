@@ -38,13 +38,28 @@ class UpdateUserInfoFragment : BaseFragment() {
     private var departments = mutableListOf<Department>()
     var selectedRoleID = ""
     var selectedDepartmentId = ""
+
+    val months = (1..12).map { it.toString() }
+
+    // Dữ liệu năm từ 2000 đến 2025
+    val years = (2025 downTo 1950).map { it.toString() }
+    val days = (1 .. 31).map { it.toString() }
+
+    var selectedDay = ""
+    var selectedMonth = ""
+    var selectedYear = ""
+    var gender = "Nam"
+    var isOwner = false
+    var from = ""
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val userString = arguments?.getString("user")
+        isOwner = arguments?.getBoolean("isOwner") ?: false
         val gson = Gson()
         user = gson.fromJson(userString, User::class.java)
+        from = arguments?.getString("from") ?: ""
     }
 
     override fun onCreateView(
@@ -83,13 +98,51 @@ class UpdateUserInfoFragment : BaseFragment() {
         binding.spnDepartment.adapter = adapterDepartment
     }
     override fun setView() {
+        setupSpinners()
+        if(from.equals("profile")){
+            binding.spnRole.isEnabled = false
+            binding.spnDepartment.isEnabled = false
+        }
         if(user!=null){
             binding.tvEmail.text = user.email
             binding.edtFullname.setText(user.fullName)
             binding.edtPhone.setText(user.phone)
             binding.edtAddress.setText(user.address)
             Glide.with(requireContext()).load(Util.url+user.image).into(binding.imgAvatar)
+            if(user.gender.equals("Nam")){
+                binding.radioGender.check(R.id.radioNam)
+            }else{
+                binding.radioGender.check(R.id.radioNu)
+            }
+            user.birthday.split("-").let { parts ->
+                if (parts.size == 3) {
+                    val day = parts[0].padStart(2, '0').toInt()
+                    val month = parts[1].padStart(2, '0').toInt()
+                    val year = parts[2].toInt()
+
+                    Log.e("bỉthday",""+day+month+year)
+
+                    binding.spnDay.setSelection(days.indexOf(day.toString()))
+                    binding.spnMonth.setSelection(months.indexOf(month.toString()))
+                    binding.spnYear.setSelection(years.indexOf(year.toString()))
+                }
+            }
         }
+
+    }
+    private fun setupSpinners() {
+
+        val monthAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
+        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnMonth.adapter = monthAdapter
+
+        val yearAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, years)
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnYear.adapter = yearAdapter
+
+        val dayAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, days)
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spnDay.adapter = dayAdapter
     }
 
     override fun setAction() {
@@ -104,6 +157,40 @@ class UpdateUserInfoFragment : BaseFragment() {
     }
 
     override fun setObserves() {
+        binding.radioGender.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.radioNam -> {
+                    gender = "Nam"
+                }
+                R.id.radioNu -> {
+                    gender = "Nữ"
+                }
+            }
+        }
+        binding.spnDay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val day = days[position].toInt()
+                selectedDay = if (day < 10) "0$day" else "$day"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        binding.spnMonth.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val month = months[position].toInt()
+                selectedMonth = if (month < 10) "0$month" else "$month"
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+        binding.spnYear.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedYear = years[position]
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        }
         viewModel.checkPasswordResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 Log.e("check",response.toString())
@@ -113,7 +200,8 @@ class UpdateUserInfoFragment : BaseFragment() {
                     val fullName = binding.edtFullname.text.toString().trim().ifEmpty { null }
                     val phone = binding.edtPhone.text.toString().trim().ifEmpty { null }
                     val address = binding.edtAddress.text.toString().trim().ifEmpty { null }
-                    val request = UpdateUserRequest(fullName,phone,address,selectedRoleID,selectedDepartmentId)
+                    val birthday = (selectedDay+"-"+selectedMonth+"-"+selectedYear).toString().trim().ifEmpty { null }
+                    val request = UpdateUserRequest(user._id,fullName,phone,address,birthday,gender,selectedRoleID,selectedDepartmentId)
                     viewModel.updateUser(
                         "Bearer "+sharedPreferencesManager.getAuthToken(),
                         request
@@ -125,8 +213,10 @@ class UpdateUserInfoFragment : BaseFragment() {
             if (response != null) {
                 if(response.code.toInt() == 1){
                     Util.showDialog(requireContext(),response.message,"OK",{
-                        sharedPreferencesManager.saveUserRole(response.user.roleId)
-                        sharedPreferencesManager.saveDepartment(response.user.idDepartment)
+                        if(isOwner){
+                            sharedPreferencesManager.saveUserRole(response.user.roleId)
+                            sharedPreferencesManager.saveDepartment(response.user.idDepartment)
+                        }
                         findNavController().popBackStack()
                     })
                 }
@@ -134,7 +224,7 @@ class UpdateUserInfoFragment : BaseFragment() {
                     Util.showDialog(requireContext(),response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.rolesResponse.observe(viewLifecycleOwner, Observer { response->
@@ -151,12 +241,12 @@ class UpdateUserInfoFragment : BaseFragment() {
                     Util.showDialog(requireContext(),response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
-                if(response.code.toInt() == 1){
+                if(response.code.toInt() == 1 && response.departments != null){
                     departments = response.departments.toMutableList()
                     setDepartmentSpinner()
                     val position = departments.indexOfFirst { it.name.equals(user.department) }
@@ -165,7 +255,7 @@ class UpdateUserInfoFragment : BaseFragment() {
                     }
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         binding.spnRole.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

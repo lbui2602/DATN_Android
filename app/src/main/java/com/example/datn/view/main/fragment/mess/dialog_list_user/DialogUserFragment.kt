@@ -84,7 +84,7 @@ class DialogUserFragment : DialogFragment(), IClickUserOnline {
                     adapter.submitList(response.users)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
     }
@@ -109,4 +109,9 @@ class DialogUserFragment : DialogFragment(), IClickUserOnline {
             }
         }
     }
+
+    override fun selectUser(user: User, isCheck: Boolean) {
+
+    }
+
 }
