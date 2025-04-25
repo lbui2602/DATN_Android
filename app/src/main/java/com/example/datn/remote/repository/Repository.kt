@@ -72,6 +72,10 @@ class Repository @Inject constructor(
     suspend fun uploadAvatar(name: RequestBody, image: MultipartBody.Part): TrainingResponse {
         return apiService.uploadAvatar( name,image)
     }
+    //face-service-python
+    suspend fun training(name: RequestBody, image: MultipartBody.Part): TrainingResponse {
+        return apiService.training( name,image)
+    }
 
     suspend fun attendance(
         token: String,
@@ -81,6 +85,17 @@ class Repository @Inject constructor(
         date: RequestBody,
     ): AttendanceResponse {
         return apiService.attendance(token, file,userId, time, date)
+    }
+
+    suspend fun compare(
+        token: String,
+        file: MultipartBody.Part,
+        fileName: RequestBody,
+        userId: RequestBody,
+        time: RequestBody,
+        date: RequestBody,
+    ): AttendanceResponse {
+        return apiService.compare(token, file,fileName,userId, time, date)
     }
 
     suspend fun getAttendanceByUserIdAndDate(

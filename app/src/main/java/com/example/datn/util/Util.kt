@@ -64,6 +64,7 @@ object Util {
     fun logout(sharedPreferencesManager: SharedPreferencesManager){
         sharedPreferencesManager.clearUserId()
         sharedPreferencesManager.clearAuthToken()
+        sharedPreferencesManager.clearImage()
         sharedPreferencesManager.clearUserRole()
         sharedPreferencesManager.clearDepartment()
     }

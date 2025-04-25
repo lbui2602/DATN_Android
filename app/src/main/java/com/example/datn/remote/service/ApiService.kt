@@ -76,6 +76,17 @@ interface ApiService {
         @Part("date") date: RequestBody
     ): AttendanceResponse
 
+    @Multipart
+    @POST("/api/face/compare-faces")
+    suspend fun compare(
+        @Header("Authorization") token: String,
+        @Part file: MultipartBody.Part,
+        @Part("fileName") fileName: RequestBody,
+        @Part("userId") userId: RequestBody,
+        @Part("time") time: RequestBody,
+        @Part("date") date: RequestBody
+    ): AttendanceResponse
+
     @POST("api/attendance/getByDate")
     suspend fun getAttendanceByUserIdAndDate(
         @Header("Authorization") token: String,
@@ -158,6 +169,14 @@ interface ApiService {
     @Multipart
     @POST("/api/training/upload-file")
     suspend fun uploadAvatar(
+        @Part("name") name: RequestBody,
+        @Part file: MultipartBody.Part
+    ): TrainingResponse
+
+    // face-service
+    @Multipart
+    @POST("/api/training")
+    suspend fun training(
         @Part("name") name: RequestBody,
         @Part file: MultipartBody.Part
     ): TrainingResponse

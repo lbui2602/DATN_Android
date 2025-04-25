@@ -66,6 +66,28 @@ class UploadAvatarViewModel @Inject constructor(
             _isLoading.postValue(false)
         }
     }
+
+    fun training(userId : RequestBody,image : MultipartBody.Part){
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.training(
+                    userId,
+                    image)
+                if(response!=null){
+                    _uploadAvatarResponse.postValue(response)
+                }
+                else{
+                    _uploadAvatarResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                print(e.toString())
+                _uploadAvatarResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
     fun capturePhoto(context : Context,imageCapture: ImageCapture) {
         _isLoading.value = true
         val file = File(context.externalMediaDirs.first(), "lbui.jpg")
@@ -85,8 +107,9 @@ class UploadAvatarViewModel @Inject constructor(
     }
     private fun uploadImage(file: File) {
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
-        val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+        val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
         val userId = RequestBody.create("text/plain".toMediaTypeOrNull(),sharedPreferencesManager.getUserId().toString())
-        uploadAvatar(userId,body)
+//        uploadAvatar(userId,body)
+        training(userId,body)
     }
 }

@@ -66,12 +66,18 @@ class AttendanceViewModel @Inject constructor(
     }
     fun uploadImage(file: File) {
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
-        val body = MultipartBody.Part.createFormData("file", file.name, requestFile)
+        val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
+        val fileName = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getImage().toString())
         val userId = RequestBody.create("text/plain".toMediaTypeOrNull(), sharedPreferencesManager.getUserId().toString())
         val time = RequestBody.create("text/plain".toMediaTypeOrNull(), Util.formatTime())
         val date = RequestBody.create("text/plain".toMediaTypeOrNull(),Util.formatDate())
-        attendance("Bearer "+sharedPreferencesManager.getAuthToken().toString(),
+//        attendance("Bearer "+sharedPreferencesManager.getAuthToken().toString(),
+//            body,
+//            userId,
+//            time,date)
+        compare("Bearer "+sharedPreferencesManager.getAuthToken().toString(),
             body,
+            fileName,
             userId,
             time,date)
     }
@@ -80,6 +86,27 @@ class AttendanceViewModel @Inject constructor(
             _isLoading.postValue(true)
             try {
                 val response = repository.attendance(token, image,userId, time, date)
+                if(response != null){
+                    _attendanceResponse.postValue(response)
+                }
+                else{
+                    Log.e("attendance ","null")
+                    _attendanceResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                Log.e("attendance ",e.toString())
+                _attendanceResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
+
+    fun compare(token: String,image :MultipartBody.Part,fileName : RequestBody,userId: RequestBody,time : RequestBody,date : RequestBody){
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.compare(token, image,fileName,userId, time, date)
                 if(response != null){
                     _attendanceResponse.postValue(response)
                 }
