@@ -83,7 +83,11 @@
     <fragment
         android:id="@+id/chatFragment"
         android:name="com.example.datn.view.main.fragment.mess.chat.ChatFragment"
-        android:label="ChatFragment" />
+        android:label="ChatFragment" >
+        <action
+            android:id="@+id/action_chatFragment_to_settingChatFragment"
+            app:destination="@id/settingChatFragment" />
+    </fragment>
     <fragment
         android:id="@+id/messFragment"
         android:name="com.example.datn.view.main.fragment.mess.MessFragment"
@@ -138,4 +142,8 @@
         android:id="@+id/createGroupFragment"
         android:name="com.example.datn.view.main.fragment.mess.create_group.CreateGroupFragment"
         android:label="CreateGroupFragment" />
+    <fragment
+        android:id="@+id/settingChatFragment"
+        android:name="com.example.datn.view.main.fragment.mess.setting_chat.SettingChatFragment"
+        android:label="SettingChatFragment" />
 </navigation>

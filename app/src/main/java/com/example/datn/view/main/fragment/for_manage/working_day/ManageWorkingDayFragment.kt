@@ -123,7 +123,7 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
 
         if(id.isNullOrBlank()){
             binding.spnDepartment.isEnabled = true
-        }else{
+        }else {
             val index = departments.indexOfFirst { it._id == id }
             if (index != -1) {
                 binding.spnDepartment.setSelection(index)
@@ -163,7 +163,9 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
         viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 if(response.code.toInt() == 1 && response.departments != null){
-                    departments.addAll(response.departments.toMutableList())
+                    departments.clear()
+                    departments.add(Department(_id = "", name = "Xem tất cả", createdAt = null, updatedAt = null, __v = null)) // add lại "Xem tất cả"
+                    departments.addAll(response.departments.toMutableList()) // rồi add API trả về
                     setDepartmentSpinner()
                 }
             } else {

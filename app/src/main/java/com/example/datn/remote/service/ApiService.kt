@@ -14,6 +14,7 @@ import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.group.CreateGroupResponse
 import com.example.datn.models.group.CreateRequest
 import com.example.datn.models.group.GroupsResponse
+import com.example.datn.models.group.LeaveRequest
 import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.login.LoginRequest
@@ -228,4 +229,16 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request: CreateRequest
     ) : CreateGroupResponse
+
+    @POST("api/groups/delete")
+    suspend fun leaveGroup(
+        @Header("Authorization") token: String,
+        @Body request : LeaveRequest
+    ) : TrainingResponse
+
+    @POST("api/groups/add")
+    suspend fun joinGroup(
+        @Header("Authorization") token: String,
+        @Body request : LeaveRequest
+    ) : TrainingResponse
 }

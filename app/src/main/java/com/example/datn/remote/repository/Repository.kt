@@ -18,6 +18,7 @@ import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.group.CreateGroupResponse
 import com.example.datn.models.group.CreateRequest
 import com.example.datn.models.group.GroupsResponse
+import com.example.datn.models.group.LeaveRequest
 import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
@@ -234,4 +235,17 @@ class Repository @Inject constructor(
         return apiService.createGroup(token,request)
     }
 
+    suspend fun leaveGroup(
+        token: String,
+        request: LeaveRequest
+    ) : TrainingResponse {
+        return apiService.leaveGroup(token,request)
+    }
+
+    suspend fun joinGroup(
+        token: String,
+        request: LeaveRequest
+    ) : TrainingResponse {
+        return apiService.joinGroup(token,request)
+    }
 }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datn.R
 import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentChatBinding
 import com.example.datn.models.message.Message
@@ -63,6 +64,12 @@ class ChatFragment : BaseFragment() {
         }
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()
+        }
+        binding.imgSetting.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("groupId",groupId)
+            }
+            findNavController().navigate(R.id.action_chatFragment_to_settingChatFragment,bundle)
         }
     }
 
