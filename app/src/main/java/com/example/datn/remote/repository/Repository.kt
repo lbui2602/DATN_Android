@@ -15,6 +15,7 @@ import com.example.datn.models.face_api.CreateFaceSetResponse
 import com.example.datn.models.face_api.DetectFaceResponse
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
+import com.example.datn.models.group.AddRequest
 import com.example.datn.models.group.CreateGroupResponse
 import com.example.datn.models.group.CreateRequest
 import com.example.datn.models.group.GroupsResponse
@@ -244,8 +245,15 @@ class Repository @Inject constructor(
 
     suspend fun joinGroup(
         token: String,
-        request: LeaveRequest
+        request: AddRequest
     ) : TrainingResponse {
         return apiService.joinGroup(token,request)
+    }
+
+    suspend fun getUserInGroup(
+        token: String,
+        groupId: String
+    ) : UserResponse {
+        return apiService.getUserInGroup(token,groupId)
     }
 }

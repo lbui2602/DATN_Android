@@ -145,5 +145,13 @@
     <fragment
         android:id="@+id/settingChatFragment"
         android:name="com.example.datn.view.main.fragment.mess.setting_chat.SettingChatFragment"
-        android:label="SettingChatFragment" />
+        android:label="SettingChatFragment" >
+        <action
+            android:id="@+id/action_settingChatFragment_to_addGroupFragment"
+            app:destination="@id/addGroupFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addGroupFragment"
+        android:name="com.example.datn.view.main.fragment.mess.add_group.AddGroupFragment"
+        android:label="AddGroupFragment" />
 </navigation>

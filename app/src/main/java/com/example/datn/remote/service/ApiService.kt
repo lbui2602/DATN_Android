@@ -11,6 +11,7 @@ import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.department.DepartmentsResponses
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
+import com.example.datn.models.group.AddRequest
 import com.example.datn.models.group.CreateGroupResponse
 import com.example.datn.models.group.CreateRequest
 import com.example.datn.models.group.GroupsResponse
@@ -239,6 +240,12 @@ interface ApiService {
     @POST("api/groups/add")
     suspend fun joinGroup(
         @Header("Authorization") token: String,
-        @Body request : LeaveRequest
+        @Body request : AddRequest
     ) : TrainingResponse
+
+    @POST("api/groups/getUserInGroup/{groupId}")
+    suspend fun getUserInGroup(
+        @Header("Authorization") token: String,
+        @Path("groupId") groupId : String
+    ) : UserResponse
 }

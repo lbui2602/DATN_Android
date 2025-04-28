@@ -94,6 +94,7 @@ object Util {
     ) {
         val builder = AlertDialog.Builder(context)
         builder.setMessage(message)
+            .setCancelable(false)
             .setPositiveButton(positiveText) { dialogInterface, _ ->
                 positiveAction?.invoke()
                 dialogInterface.dismiss()
