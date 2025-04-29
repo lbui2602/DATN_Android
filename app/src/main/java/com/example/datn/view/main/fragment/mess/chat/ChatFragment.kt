@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datn.R
@@ -17,6 +18,7 @@ import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.ChatAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -46,6 +48,25 @@ class ChatFragment : BaseFragment() {
     }
 
     override fun setView() {
+        lifecycleScope.launch {
+            val groupResponse = viewModel.getGroupById(
+                "Bearer "+sharedPreferencesManager.getAuthToken(),
+                groupId
+            )
+            if(groupResponse != null){
+                if(groupResponse.group.isPrivate != null ){
+                    if(groupResponse.group.isPrivate){
+                        binding.imgSetting.visibility = View.GONE
+                    }
+                    else{
+                        binding.imgSetting.visibility = View.VISIBLE
+                    }
+                }
+                else{
+                    binding.imgSetting.visibility = View.VISIBLE
+                }
+            }
+        }
         binding.tvTitle.setText(groupName)
         senderId = sharedPreferencesManager.getUserId().toString()
         viewModel.getMessages(groupId)
@@ -97,7 +118,7 @@ class ChatFragment : BaseFragment() {
     }
 
     private fun setupRecyclerView() {
-        chatAdapter = ChatAdapter(messages,sharedPreferencesManager.getUserId().toString())
+        chatAdapter = ChatAdapter(sharedPreferencesManager.getUserId().toString())
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = chatAdapter

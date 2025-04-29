@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.message.Message
 import com.example.datn.models.message.MessageResponse
 import com.example.datn.remote.repository.Repository
@@ -37,6 +38,16 @@ class ChatViewModel @Inject constructor(
             } catch (e: Exception) {
                 _messages.value = null
             }
+        }
+    }
+
+    suspend fun getGroupById(token: String, groupId: String): PrivateGroupResponse? {
+        return try {
+            val response = repository.getGroupById(token, groupId)
+            response
+        } catch (e: Exception) {
+            null
+        } finally {
         }
     }
 

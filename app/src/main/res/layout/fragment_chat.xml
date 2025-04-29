@@ -42,6 +42,7 @@
                         android:layout_weight="9"
                         android:layout_height="wrap_content"/>
                     <ImageButton
+                        android:visibility="gone"
                         android:background="@android:color/transparent"
                         android:layout_gravity="center"
                         android:id="@+id/imgSetting"

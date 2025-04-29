@@ -110,7 +110,10 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
                     endTime = System.currentTimeMillis()
                     val elapsedTime = endTime - startTime
                     Log.d("ExecutionTime", "Chạy hết $elapsedTime ms")
-                    adapter.submitList(response.attendances.toMutableList())
+                    Util.showDialog(requireContext(),"Bạn đã điểm danh thành công!","OK",{
+                        adapter.submitList(response.attendances.toMutableList())
+                        binding.rcv.scrollToPosition(response.attendances.toMutableList().size)
+                    })
                 } else {
                     Util.showDialog(requireContext(),response.message.toString())
                 }
@@ -121,6 +124,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
                 if (response.code.toInt() == 1) {
                     if(response.attendances !=null){
                         adapter.submitList(response.attendances.toMutableList())
+                        binding.rcv.scrollToPosition(response.attendances.toMutableList().size - 1)
                     }
                 }
             }

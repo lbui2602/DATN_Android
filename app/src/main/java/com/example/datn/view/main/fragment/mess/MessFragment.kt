@@ -54,7 +54,7 @@ class MessFragment : BaseFragment(), IClickMess {
         viewModel.getGroupsByUserId(sharedPreferencesManager.getUserId().toString())
     }
     private fun setUpAdapter(){
-        adapterMess = MessAdapter(groups,this)
+        adapterMess = MessAdapter(this)
         binding.rcv.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = adapterMess
@@ -84,7 +84,7 @@ class MessFragment : BaseFragment(), IClickMess {
             if (response != null) {
                 if(response.code.toInt() == 1){
                     Log.e("MessFragment",response.toString())
-                    adapterMess.updateList(response.groups.toMutableList())
+                    adapterMess.submitList(response.groups.toMutableList())
                 }else{
                     Util.showDialog(requireContext(),response.message)
                 }
