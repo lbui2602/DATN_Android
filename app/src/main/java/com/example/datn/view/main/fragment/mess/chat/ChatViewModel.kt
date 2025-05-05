@@ -26,18 +26,23 @@ class ChatViewModel @Inject constructor(
     private val _messages = MutableLiveData<MessageResponse?>()
     val messages: LiveData<MessageResponse?> get() = _messages
 
+    private val _isLoading = MutableLiveData<Boolean?>()
+    val isLoading: LiveData<Boolean?> get() = _isLoading
+
     init {
         listenForIncomingMessages()
     }
 
     fun getMessages(groupId: String) {
         viewModelScope.launch {
+            _isLoading.postValue(true)
             try {
                 val response = repository.getMessages(groupId)
                 _messages.value = response
             } catch (e: Exception) {
                 _messages.value = null
             }
+            _isLoading.postValue(false)
         }
     }
 

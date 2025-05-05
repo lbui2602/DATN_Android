@@ -92,6 +92,13 @@ class MessFragment : BaseFragment(), IClickMess {
                 Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
     }
 
     override fun setTabBar() {

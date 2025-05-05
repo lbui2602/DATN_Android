@@ -26,10 +26,11 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterFragment : BaseFragment() {
-    lateinit var binding : FragmentRegisterBinding
+    lateinit var binding: FragmentRegisterBinding
     private var roles = mutableListOf<Role>()
     private var departments = mutableListOf<Department>()
     private val viewModel: RegisterViewModel by viewModels()
+
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     var selectedRoleID = ""
@@ -38,7 +39,7 @@ class RegisterFragment : BaseFragment() {
 
     // Dữ liệu năm từ 2000 đến 2025
     val years = (2025 downTo 1950).map { it.toString() }
-    val days = (1 .. 31).map { it.toString() }
+    val days = (1..31).map { it.toString() }
 
     var selectedDay = ""
     var selectedMonth = ""
@@ -52,7 +53,7 @@ class RegisterFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentRegisterBinding.inflate(layoutInflater,container,false)
+        binding = FragmentRegisterBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -61,13 +62,16 @@ class RegisterFragment : BaseFragment() {
         setupSpinners()
         binding.radioGender.check(R.id.radioNam)
     }
+
     private fun setupSpinners() {
 
-        val monthAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
+        val monthAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, months)
         monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnMonth.adapter = monthAdapter
 
-        val yearAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, years)
+        val yearAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, years)
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnYear.adapter = yearAdapter
 
@@ -93,8 +97,8 @@ class RegisterFragment : BaseFragment() {
             val passwordConfirm = binding.edtPasswordConfirm.text.toString().trim()
             val phone = binding.edtPhone.text.toString().trim()
             val address = binding.edtAddress.text.toString().trim()
-            val birthday = selectedDay+"-"+selectedMonth+"-"+selectedYear
-            validate(fullname,email,password,passwordConfirm,phone,address) {
+            val birthday = selectedDay + "-" + selectedMonth + "-" + selectedYear
+            validate(fullname, email, password, passwordConfirm, phone, address) {
                 viewModel.register(
                     RegisterRequest(
                         fullname,
@@ -119,13 +123,19 @@ class RegisterFragment : BaseFragment() {
                 R.id.radioNam -> {
                     gender = "Nam"
                 }
+
                 R.id.radioNu -> {
                     gender = "Nữ"
                 }
             }
         }
         binding.spnDay.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 val day = days[position].toInt()
                 selectedDay = if (day < 10) "0$day" else "$day"
             }
@@ -134,7 +144,12 @@ class RegisterFragment : BaseFragment() {
         }
 
         binding.spnMonth.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 val month = months[position].toInt()
                 selectedMonth = if (month < 10) "0$month" else "$month"
             }
@@ -143,36 +158,54 @@ class RegisterFragment : BaseFragment() {
         }
 
         binding.spnYear.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 selectedYear = years[position]
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         }
-        viewModel.registerResponse.observe(viewLifecycleOwner, Observer { response->
+        viewModel.registerResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
-                if(response.code.toInt() == 1){
+                if (response.code.toInt() == 1) {
                     sharedPreferencesManager.saveUserId(response.user._id)
                     findNavController().navigate(R.id.action_registerFragment_to_uploadAvatarFragment)
-                }else{
-                    Util.showDialog(requireContext(),response.message)
+                } else {
+                    Util.showDialog(requireContext(), response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to register account", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to register account", Snackbar.LENGTH_SHORT)
+                    .show()
             }
         })
 
         binding.spnRole.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 selectedRoleID = roles[position]._id
 
             }
+
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         }
 
         binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 selectedDepartmentId = departments[position]._id
             }
 
@@ -180,33 +213,35 @@ class RegisterFragment : BaseFragment() {
 
             }
         }
-        viewModel.rolesResponse.observe(viewLifecycleOwner, Observer { response->
+        viewModel.rolesResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
-                if(response.code.toInt() == 1){
+                if (response.code.toInt() == 1) {
                     roles = response.roles.toMutableList()
                     setRoleSpinner()
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
-        viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response->
+        viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
-                if(response.code.toInt() == 1 && response.departments != null){
+                if (response.code.toInt() == 1 && response.departments != null) {
                     departments = response.departments.toMutableList()
                     setDepartmentSpinner()
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->
             if (isVisible == true) {
                 binding.imgVisible.setImageResource(R.drawable.ic_visible_off)
-                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.edtPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             } else {
                 binding.imgVisible.setImageResource(R.drawable.ic_visible)
-                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                binding.edtPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
             binding.edtPassword.setSelection(binding.edtPassword.text!!.length)
         })
@@ -214,18 +249,19 @@ class RegisterFragment : BaseFragment() {
         viewModel.isVisibleConfirm.observe(viewLifecycleOwner, Observer { isVisible ->
             if (isVisible == true) {
                 binding.imgVisibleConfirm.setImageResource(R.drawable.ic_visible_off)
-                binding.edtPasswordConfirm.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.edtPasswordConfirm.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             } else {
                 binding.imgVisibleConfirm.setImageResource(R.drawable.ic_visible)
-                binding.edtPasswordConfirm.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                binding.edtPasswordConfirm.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
             binding.edtPasswordConfirm.setSelection(binding.edtPasswordConfirm.text!!.length)
         })
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            if(isLoading == true){
+            if (isLoading == true) {
                 binding.progressBar.visibility = View.VISIBLE
-            }
-            else{
+            } else {
                 binding.progressBar.visibility = View.GONE
             }
         })
@@ -239,11 +275,13 @@ class RegisterFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         initData()
     }
-    private fun initData(){
+
+    private fun initData() {
         viewModel.getRoles()
         viewModel.getDepartments()
     }
-    private fun setRoleSpinner(){
+
+    private fun setRoleSpinner() {
         val adapterRoles = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
@@ -252,7 +290,8 @@ class RegisterFragment : BaseFragment() {
         adapterRoles.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnRole.adapter = adapterRoles
     }
-    private fun setDepartmentSpinner(){
+
+    private fun setDepartmentSpinner() {
         val adapterDepartment = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
@@ -261,36 +300,33 @@ class RegisterFragment : BaseFragment() {
         adapterDepartment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnDepartment.adapter = adapterDepartment
     }
+
     private fun validate(
-        fullname : String,
-        email : String,
-        password : String,
-        passwordConfirm : String,
-        phone : String,
-        address : String,
-        action : () -> Unit){
-        if(fullname.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_register_fullname))
-        }
-        else if(email.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_login_email))
-        }
-        else if(password.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_login_password))
-        }
-        else if(passwordConfirm.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_login_password_confirm))
-        }
-        else if(!password.equals(passwordConfirm)){
-            Util.showDialog(requireContext(),getString(R.string.msg_password_no_match))
-        }
-        else if(phone.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_register_phone))
-        }
-        else if(address.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_register_address))
-        }
-        else{
+        fullname: String,
+        email: String,
+        password: String,
+        passwordConfirm: String,
+        phone: String,
+        address: String,
+        action: () -> Unit
+    ) {
+        if (fullname.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_register_fullname))
+        } else if (email.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_login_email))
+        } else if (password.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_login_password))
+        } else if (password.length < 8) {
+            Util.showDialog(requireContext(), "Vui lòng nhập mật khẩu từ 8 kí tự trở lên.")
+        } else if (passwordConfirm.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_login_password_confirm))
+        } else if (!password.equals(passwordConfirm)) {
+            Util.showDialog(requireContext(), getString(R.string.msg_password_no_match))
+        } else if (phone.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_register_phone))
+        } else if (address.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_register_address))
+        } else {
             action()
         }
     }

@@ -276,6 +276,13 @@ class UpdateUserInfoFragment : BaseFragment() {
 
             }
         }
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
     }
 
     override fun setTabBar() {

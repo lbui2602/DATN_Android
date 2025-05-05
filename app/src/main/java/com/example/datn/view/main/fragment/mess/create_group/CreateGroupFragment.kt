@@ -24,20 +24,21 @@ import com.example.datn.view.main.adapter.SelectUserAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 @AndroidEntryPoint
 class CreateGroupFragment : BaseFragment(), IClickUserOnline {
-    private lateinit var adapter : SelectUserAdapter
-    private lateinit var binding : FragmentCreateGroupBinding
-    var name =""
+    private lateinit var adapter: SelectUserAdapter
+    private lateinit var binding: FragmentCreateGroupBinding
+    var name = ""
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
-    private val viewModel : CreateGroupViewModel by viewModels()
+    private val viewModel: CreateGroupViewModel by viewModels()
     var selectedUser = mutableListOf<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         selectedUser.add(sharedPreferencesManager.getUserId().toString())
         viewModel.getAllUser(
-            "Bearer "+sharedPreferencesManager.getAuthToken(),
+            "Bearer " + sharedPreferencesManager.getAuthToken(),
             sharedPreferencesManager.getUserId().toString()
         )
     }
@@ -47,7 +48,7 @@ class CreateGroupFragment : BaseFragment(), IClickUserOnline {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentCreateGroupBinding.inflate(layoutInflater,container,false)
+        binding = FragmentCreateGroupBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -61,43 +62,49 @@ class CreateGroupFragment : BaseFragment(), IClickUserOnline {
             findNavController().popBackStack()
         }
         binding.btnCreate.setOnClickListener {
-            Log.e("selected",selectedUser.toString())
+            Log.e("selected", selectedUser.toString())
             name = binding.edtNameGroup.text.toString().trim()
-            val request = CreateRequest(name,selectedUser)
-            viewModel.createGroup("Bearer "+sharedPreferencesManager.getAuthToken(),request)
+            val request = CreateRequest(name, selectedUser)
+            viewModel.createGroup("Bearer " + sharedPreferencesManager.getAuthToken(), request)
         }
     }
 
-    private fun check(){
+    private fun check() {
         name = binding.edtNameGroup.text.toString().trim()
-        if(!name.isNullOrBlank() && selectedUser.size > 1){
+        if (!name.isNullOrBlank() && selectedUser.size > 1) {
             binding.btnCreate.visibility = View.VISIBLE
-        }else{
+        } else {
             binding.btnCreate.visibility = View.GONE
         }
     }
 
     override fun setObserves() {
-        viewModel.userResponse.observe(viewLifecycleOwner, Observer { response->
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            if (isLoading == true) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        })
+        viewModel.userResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
-                if(response.code.toInt() ==1){
+                if (response.code.toInt() == 1) {
                     adapter.submitList(response.users)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
 
-        viewModel.createGroupResponse.observe(viewLifecycleOwner, Observer { response->
+        viewModel.createGroupResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
-                if(response.code.toInt() ==1){
+                if (response.code.toInt() == 1) {
                     findNavController().popBackStack()
-                }
-                else{
-                    Util.showDialog(requireContext(),response.message!!)
+                } else {
+                    Util.showDialog(requireContext(), response.message!!)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
 
@@ -138,9 +145,9 @@ class CreateGroupFragment : BaseFragment(), IClickUserOnline {
     }
 
     override fun selectUser(user: User, isCheck: Boolean) {
-        if(isCheck){
+        if (isCheck) {
             selectedUser.add(user._id)
-        }else{
+        } else {
             selectedUser.remove(user._id)
         }
         check()

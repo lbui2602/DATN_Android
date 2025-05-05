@@ -46,7 +46,7 @@ class ChatAdapter(private val userId: String) :
     }
 
     fun updateMessages(newMessages: List<Message>) {
-        submitList(newMessages)
+        submitList(newMessages.toList())
     }
 
     class SentMessageViewHolder(private val binding: ItemMessageSentBinding, val context: Context) :

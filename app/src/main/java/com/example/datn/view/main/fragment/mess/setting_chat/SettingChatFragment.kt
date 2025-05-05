@@ -87,6 +87,13 @@ class SettingChatFragment : BaseFragment(), IClickUserOnline {
     }
 
     override fun setObserves() {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
         viewModel.userResponse.observe(viewLifecycleOwner, Observer { response->
             if (response != null) {
                 if(response.code.toInt() ==1){

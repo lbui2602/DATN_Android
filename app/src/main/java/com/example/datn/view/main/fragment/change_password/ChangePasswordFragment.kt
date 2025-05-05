@@ -60,6 +60,13 @@ class ChangePasswordFragment : BaseFragment() {
     }
 
     override fun setObserves() {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
         viewModel.changePasswordResponse.observe(viewLifecycleOwner, Observer { response ->
             if(response != null){
                 if ( response.code.toInt() == 1) {

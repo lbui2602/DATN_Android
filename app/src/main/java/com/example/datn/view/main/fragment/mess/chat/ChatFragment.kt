@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentChatBinding
 import com.example.datn.models.message.Message
 import com.example.datn.util.SharedPreferencesManager
+import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.adapter.ChatAdapter
 import com.google.android.material.snackbar.Snackbar
@@ -100,7 +102,7 @@ class ChatFragment : BaseFragment() {
                 if(response.code.toInt() == 1){
                     messages.clear()
                     messages.addAll(response.messages)
-                    chatAdapter.updateMessages(messages)
+                    chatAdapter.updateMessages(ArrayList(messages))
                     Log.e("isScroll",isScroll.toString())
                     if(isScroll == true){
                         binding.recyclerView.scrollToPosition(messages.size - 1)
@@ -111,6 +113,13 @@ class ChatFragment : BaseFragment() {
                 Snackbar.make(binding.root,"Lấy tin nhắn tất bại", Snackbar.LENGTH_SHORT).show()
             }
         }
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
+            if(isLoading == true){
+                binding.progressBar.visibility = View.VISIBLE
+            }else{
+                binding.progressBar.visibility = View.GONE
+            }
+        })
     }
 
     override fun setTabBar() {

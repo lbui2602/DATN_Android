@@ -127,7 +127,7 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
             val index = departments.indexOfFirst { it._id == id }
             if (index != -1) {
                 binding.spnDepartment.setSelection(index)
-                binding.spnDepartment.isEnabled = true
+                binding.spnDepartment.isEnabled = false
             }
         }
     }

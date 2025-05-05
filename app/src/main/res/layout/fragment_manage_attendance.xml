@@ -92,6 +92,7 @@
                             android:id="@+id/edtDate"
                             android:layout_gravity="center"
                             android:clickable="false"
+                            android:hint="Ngày"
                             android:enabled="false"
                             android:textColor="@color/black"
                             android:layout_width="match_parent"

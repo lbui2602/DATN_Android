@@ -16,7 +16,7 @@ class AuthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
-        if(!sharedPreferencesManager.getUserId().isNullOrEmpty()){
+        if(!sharedPreferencesManager.getAuthToken().isNullOrEmpty()){
             startActivity(Intent(this,MainActivity::class.java))
             finish()
         }

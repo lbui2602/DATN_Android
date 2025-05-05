@@ -80,7 +80,6 @@ class ManageAttendanceFragment : BaseFragment() {
 
     override fun setView() {
         setRecyclerView()
-        binding.edtDate.setText(Util.formatDate())
     }
 
     override fun setAction() {
@@ -124,7 +123,7 @@ class ManageAttendanceFragment : BaseFragment() {
             val index = departments.indexOfFirst { it._id == id }
             if (index != -1) {
                 binding.spnDepartment.setSelection(index)
-                binding.spnDepartment.isEnabled = true
+                binding.spnDepartment.isEnabled = false
             }
         }
 

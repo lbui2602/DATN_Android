@@ -26,8 +26,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment() {
-    lateinit var binding : FragmentLoginBinding
+    lateinit var binding: FragmentLoginBinding
     private val viewModel: LoginViewModel by viewModels()
+
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +39,7 @@ class LoginFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLoginBinding.inflate(layoutInflater,container,false)
+        binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -50,14 +51,13 @@ class LoginFragment : BaseFragment() {
 
     }
 
-    override fun setAction(){
+    override fun setAction() {
         binding.btnLogin.setOnClickListener {
             val email = binding.edtEmail.text.toString().trim()
             val password = binding.edtPassword.text.toString().trim()
-            validate(email,password) {
+            validate(email, password) {
                 viewModel.login(LoginRequest(email, password))
             }
-//            startActivity(Intent(requireContext(),MainActivity::class.java))
         }
         binding.tvRegister.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -69,48 +69,45 @@ class LoginFragment : BaseFragment() {
 
     override fun setObserves() {
         viewModel.loginResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null ) {
-                if(response.code.toInt()==1){
-//                    if(response.status){
-//                        sharedPreferencesManager.saveAuthToken(response.token)
-//                        sharedPreferencesManager.saveUserId(response._id)
-//                        sharedPreferencesManager.saveUserRole(response.roleId)
-//                        sharedPreferencesManager.saveDepartment(response.idDepartment)
-//                        startActivity(Intent(requireContext(),MainActivity::class.java))
-//                        requireActivity().finish()
-//                    }else{
-//                        Util.showDialog(requireContext(),"Nhân viên chưa được xác thực. Vui lòng liên hệ quản lý.")
-//                    }
-
-                    sharedPreferencesManager.saveAuthToken(response.token)
-                    sharedPreferencesManager.saveUserId(response._id)
-                    sharedPreferencesManager.saveUserRole(response.roleId)
-                    sharedPreferencesManager.saveImage(response.image)
-                    sharedPreferencesManager.saveDepartment(response.idDepartment)
-                    startActivity(Intent(requireContext(),MainActivity::class.java))
-                    requireActivity().finish()
-                }else{
-                    Util.showDialog(requireContext(),response.message)
+            if (response != null) {
+                if (response.code.toInt() == 1) {
+                    if (response.status) {
+                        sharedPreferencesManager.saveAuthToken(response.token)
+                        sharedPreferencesManager.saveUserId(response._id)
+                        sharedPreferencesManager.saveUserRole(response.roleId)
+                        sharedPreferencesManager.saveImage(response.image)
+                        sharedPreferencesManager.saveDepartment(response.idDepartment)
+                        startActivity(Intent(requireContext(), MainActivity::class.java))
+                        requireActivity().finish()
+                    } else {
+                        Util.showDialog(
+                            requireContext(),
+                            "Nhân viên chưa được xác thực. Vui lòng liên hệ quản lý."
+                        )
+                    }
+                } else {
+                    Util.showDialog(requireContext(), response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Đăng nhập thất bại", Snackbar.LENGTH_SHORT).show()
             }
         })
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-            if(isLoading == true){
+            if (isLoading == true) {
                 binding.progressBar.visibility = View.VISIBLE
-            }
-            else{
+            } else {
                 binding.progressBar.visibility = View.GONE
             }
         })
         viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->
             if (isVisible == true) {
                 binding.imgVisible.setImageResource(R.drawable.ic_visible_off)
-                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                binding.edtPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
             } else {
                 binding.imgVisible.setImageResource(R.drawable.ic_visible)
-                binding.edtPassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                binding.edtPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
             }
             binding.edtPassword.setSelection(binding.edtPassword.text!!.length)
         })
@@ -120,12 +117,12 @@ class LoginFragment : BaseFragment() {
 
     }
 
-    private fun validate(email:String,password:String,action : () -> Unit){
-        if(email.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_login_email))
-        }else if(password.isNullOrBlank()){
-            Util.showDialog(requireContext(),getString(R.string.msg_login_password))
-        }else{
+    private fun validate(email: String, password: String, action: () -> Unit) {
+        if (email.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_login_email))
+        } else if (password.isNullOrBlank()) {
+            Util.showDialog(requireContext(), getString(R.string.msg_login_password))
+        } else {
             action()
         }
     }
