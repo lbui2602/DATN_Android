@@ -89,6 +89,7 @@ class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
             if (response != null && response.code.toInt() == 1) {
                 if(response.attendances !=null){
                     adapter.submitList(response.attendances.toMutableList())
+                    binding.rcv.scrollToPosition(0)
                 }
             }else{
                 adapter.submitList(mutableListOf())
@@ -100,6 +101,7 @@ class AttendanceHistoryFragment : BaseFragment(), IClickAttendance {
                 if (response.code.toInt() == 1) {
                     if(response.attendances !=null){
                         adapter.submitList(response.attendances.toMutableList())
+                        binding.rcv.scrollToPosition(0)
                     }
                 }
                 else{
