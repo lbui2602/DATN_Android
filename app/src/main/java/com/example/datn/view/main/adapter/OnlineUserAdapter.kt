@@ -20,12 +20,19 @@ import com.example.datn.databinding.LayoutUserItemBinding
 import com.example.datn.models.register.User
 import com.example.datn.util.Util
 
-class OnlineUserAdapter(var iClickUser: IClickUserOnline) : ListAdapter<User, OnlineUserAdapter.OnlineUserViewHolder>(UserDiffCallback()) {
+class OnlineUserAdapter(var iClickUser: IClickUserOnline,var owner : String?, var userId : String?) : ListAdapter<User, OnlineUserAdapter.OnlineUserViewHolder>(UserDiffCallback()) {
 
     inner class OnlineUserViewHolder(private val binding: LayoutOnlineUserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("ResourceAsColor")
         fun bind(user: User, context: Context) {
             if(user != null) {
+                if(owner != null && userId != null){
+                    if(owner.equals(userId) && !owner.equals(user._id)){
+                        binding.imgDelete.visibility = View.VISIBLE
+                    }else {
+                        binding.imgDelete.visibility = View.GONE
+                    }
+                }
                 binding.tvName.text = user.fullName
                 Glide.with(context).load(Util.url+user.image).into(binding.imgAvatar)
                 if(user.isOnline != null){
@@ -38,6 +45,9 @@ class OnlineUserAdapter(var iClickUser: IClickUserOnline) : ListAdapter<User, On
                 }
                 binding.llItem.setOnClickListener {
                     iClickUser.clickUser(user)
+                }
+                binding.imgDelete.setOnClickListener {
+                    iClickUser.selectUser(user,false)
                 }
             }
         }

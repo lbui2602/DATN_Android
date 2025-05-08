@@ -26,6 +26,9 @@ class SettingChatViewModel @Inject constructor(
     private val _leaveGroupResponse = MutableLiveData<TrainingResponse?>()
     val leaveGroupResponse: LiveData<TrainingResponse?> get() = _leaveGroupResponse
 
+    private val _deleteResponse = MutableLiveData<TrainingResponse?>()
+    val deleteResponse: LiveData<TrainingResponse?> get() = _deleteResponse
+
     private val _userResponse = MutableLiveData<UserResponse?>()
     val userResponse: LiveData<UserResponse?> get() = _userResponse
 
@@ -45,6 +48,24 @@ class SettingChatViewModel @Inject constructor(
 
             } catch (e: Exception) {
                 _leaveGroupResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
+
+    fun deleteMember(token: String, request: LeaveRequest) {
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.leaveGroup(token,request)
+                if (response != null) {
+                    _deleteResponse.postValue(response)
+                } else {
+                    _deleteResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                _deleteResponse.postValue(null)
             }
             _isLoading.postValue(false)
         }

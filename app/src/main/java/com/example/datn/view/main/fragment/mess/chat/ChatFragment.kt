@@ -35,6 +35,7 @@ class ChatFragment : BaseFragment() {
     private lateinit var chatAdapter: ChatAdapter
     private val viewModel: ChatViewModel by viewModels()
     var isScroll = true
+    var owner = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +66,7 @@ class ChatFragment : BaseFragment() {
                     }
                 }
                 else{
+                    owner = groupResponse.group.owner
                     binding.imgSetting.visibility = View.VISIBLE
                 }
             }
@@ -91,6 +93,7 @@ class ChatFragment : BaseFragment() {
         binding.imgSetting.setOnClickListener {
             val bundle = Bundle().apply {
                 putString("groupId",groupId)
+                putString("owner",owner)
             }
             findNavController().navigate(R.id.action_chatFragment_to_settingChatFragment,bundle)
         }

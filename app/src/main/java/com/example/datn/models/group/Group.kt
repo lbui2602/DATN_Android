@@ -8,6 +8,7 @@ data class Group(
     val _id: String,
     val createdAt: String,
     val members: List<String>,
+    val owner : String,
     val name: String,
     val image: String?,
     val updatedAt: String

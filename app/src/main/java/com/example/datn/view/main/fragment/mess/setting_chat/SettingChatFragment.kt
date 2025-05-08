@@ -1,6 +1,7 @@
 package com.example.datn.view.main.fragment.mess.setting_chat
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class SettingChatFragment : BaseFragment(), IClickUserOnline {
     private lateinit var binding: FragmentSettingChatBinding
     var groupId = ""
+    var owner = ""
     private val viewModel : SettingChatViewModel by viewModels()
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
@@ -34,6 +36,8 @@ class SettingChatFragment : BaseFragment(), IClickUserOnline {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         groupId = arguments?.getString("groupId") ?: ""
+        owner = arguments?.getString("owner") ?: ""
+        Log.e("owner",owner)
         viewModel.getUserInGroup(
             "Bearer "+sharedPreferencesManager.getAuthToken(),
             groupId
@@ -62,7 +66,7 @@ class SettingChatFragment : BaseFragment(), IClickUserOnline {
     }
     private fun setRecyclerView() {
         binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = OnlineUserAdapter(this)
+        adapter = OnlineUserAdapter(this,owner,sharedPreferencesManager.getUserId())
         binding.rcv.adapter = adapter
     }
 
@@ -113,6 +117,18 @@ class SettingChatFragment : BaseFragment(), IClickUserOnline {
                 Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
+        viewModel.deleteResponse.observe(viewLifecycleOwner, Observer { response->
+            if (response != null) {
+                if(response.code.toInt() ==1){
+                    viewModel.getUserInGroup(
+                        "Bearer "+sharedPreferencesManager.getAuthToken(),
+                        groupId
+                    )
+                }
+            } else {
+                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+            }
+        })
     }
 
     override fun setTabBar() {
@@ -124,6 +140,8 @@ class SettingChatFragment : BaseFragment(), IClickUserOnline {
     }
 
     override fun selectUser(user: User, isCheck: Boolean) {
-
+        Util.showDialog(requireContext(),"Bạn có muốn xóa thành viên này ra khỏi nhóm không ?","OK",{
+            viewModel.deleteMember("Bearer "+sharedPreferencesManager.getAuthToken(), LeaveRequest(user._id,groupId))
+        },"Hủy")
     }
 }

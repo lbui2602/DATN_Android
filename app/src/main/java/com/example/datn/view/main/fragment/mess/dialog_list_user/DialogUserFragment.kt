@@ -74,7 +74,7 @@ class DialogUserFragment : DialogFragment(), IClickUserOnline {
     }
     private fun setRecyclerView() {
         binding.rcv.layoutManager = LinearLayoutManager(requireContext())
-        adapter = OnlineUserAdapter(this)
+        adapter = OnlineUserAdapter(this,null,null)
         binding.rcv.adapter = adapter
     }
     private fun setObserves() {
