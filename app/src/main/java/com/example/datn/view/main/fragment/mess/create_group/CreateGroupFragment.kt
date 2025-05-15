@@ -82,8 +82,10 @@ class CreateGroupFragment : BaseFragment(), IClickUserOnline {
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
             if (isLoading == true) {
                 binding.progressBar.visibility = View.VISIBLE
+                binding.btnCreate.isEnabled = false
             } else {
                 binding.progressBar.visibility = View.GONE
+                binding.btnCreate.isEnabled = true
             }
         })
         viewModel.userResponse.observe(viewLifecycleOwner, Observer { response ->

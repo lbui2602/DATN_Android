@@ -1,6 +1,9 @@
 package com.example.datn.view.main.fragment.attendance
 
+import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
@@ -44,6 +47,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     var startTime: Long = 0
     var endTime : Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -58,8 +62,8 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 100)
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.CAMERA), 100)
         }else{
             startCamera()
         }
@@ -67,7 +71,6 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
             sharedPreferencesManager.getUserId().toString(),Util.formatDate()
         )
         viewModel.getAttendanceByUserIdAndDate("Bearer "+sharedPreferencesManager.getAuthToken().toString(),request)
-
 
     }
 
@@ -95,8 +98,10 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
             if(isLoading == true){
                 binding.progressBar.visibility = View.VISIBLE
+                binding.imgCapture.isEnabled = false
             }else{
                 binding.progressBar.visibility = View.GONE
+                binding.imgCapture.isEnabled = true
             }
         })
         viewModel.file.observe(viewLifecycleOwner, Observer { response ->
@@ -128,6 +133,17 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            startCamera()
+        }
     }
 
     override fun setTabBar() {
@@ -164,9 +180,26 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            100 ->{
+            100 -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startCamera()
+                } else {
+                    // Người dùng từ chối cấp quyền
+                    Util.showDialog(
+                        requireContext(),
+                        "Ứng dụng cần quyền truy cập máy ảnh để tiếp tục. Vui lòng bật quyền trong Cài đặt.",
+                        "Đi đến cài đặt",
+                        {
+                            val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            val uri = Uri.fromParts("package", requireContext().packageName, null)
+                            intent.data = uri
+                            startActivity(intent)
+                        },
+                        "Huỷ",
+                        {
+                            findNavController().popBackStack()
+                        }
+                    )
                 }
             }
         }

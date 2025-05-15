@@ -95,8 +95,12 @@ class LoginFragment : BaseFragment() {
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
             if (isLoading == true) {
                 binding.progressBar.visibility = View.VISIBLE
+                binding.tvRegister.isEnabled = false
+                binding.btnLogin.isEnabled = false
             } else {
                 binding.progressBar.visibility = View.GONE
+                binding.tvRegister.isEnabled = true
+                binding.btnLogin.isEnabled = true
             }
         })
         viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->

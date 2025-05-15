@@ -1,5 +1,6 @@
 package com.example.datn.view.auth.fragment.upload_avatar
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -59,6 +60,17 @@ class UploadAvatarFragment : BaseFragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            startCamera()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,10 +84,9 @@ class UploadAvatarFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 100)
-        }else{
+        } else {
             startCamera()
         }
-
     }
 
     override fun setView() {
@@ -103,8 +114,10 @@ class UploadAvatarFragment : BaseFragment() {
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
             if(isLoading == true){
                 binding.progressBar.visibility = View.VISIBLE
+                binding.imgCapture.isEnabled = false
             }else{
                 binding.progressBar.visibility = View.GONE
+                binding.imgCapture.isEnabled = true
             }
         })
     }
@@ -121,9 +134,7 @@ class UploadAvatarFragment : BaseFragment() {
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(binding.previewView.surfaceProvider)
             }
-            imageCapture = ImageCapture.Builder()
-//                .setTargetResolution(Size(186, 261)) // ép ảnh đầu ra thành 640x480
-                .build()
+            imageCapture = ImageCapture.Builder().build()
 
             val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
@@ -135,20 +146,6 @@ class UploadAvatarFragment : BaseFragment() {
             }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            100 ->{
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startCamera()
-                }
-            }
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -157,4 +154,34 @@ class UploadAvatarFragment : BaseFragment() {
         sharedPreferencesManager.clearUserRole()
         sharedPreferencesManager.clearDepartment()
     }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            100 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startCamera()
+                } else {
+                    // Người dùng từ chối cấp quyền
+                    Util.showDialog(
+                        requireContext(),
+                        "Ứng dụng cần quyền truy cập máy ảnh để tiếp tục. Vui lòng bật quyền trong Cài đặt.",
+                        "Đi đến cài đặt",
+                        {
+                            val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            val uri = Uri.fromParts("package", requireContext().packageName, null)
+                            intent.data = uri
+                            startActivity(intent)
+                        },
+                        "Huỷ",
+                        {}
+                    )
+                }
+            }
+        }
+    }
+
 }

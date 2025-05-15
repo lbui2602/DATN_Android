@@ -59,7 +59,7 @@ class SettingFragment : BaseFragment() {
                 Util.logout(sharedPreferencesManager)
                 startActivity(Intent(requireActivity(),AuthActivity::class.java))
                 requireActivity().finish()
-            })
+            },"Hủy")
         }
         binding.llManageStaff.setOnClickListener {
             val bundle = Bundle()

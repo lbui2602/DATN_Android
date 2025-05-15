@@ -78,8 +78,10 @@ class AddGroupFragment : BaseFragment(), IClickUserOnline {
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
             if(isLoading == true){
                 binding.progressBar.visibility = View.VISIBLE
+                binding.btnAdd.isEnabled = false
             }else{
                 binding.progressBar.visibility = View.GONE
+                binding.btnAdd.isEnabled = true
             }
         })
         viewModel.userResponse.observe(viewLifecycleOwner, Observer { response->

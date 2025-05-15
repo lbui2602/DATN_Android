@@ -2,9 +2,11 @@ package com.example.datn.view.main.fragment.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -92,6 +94,13 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            setupMap()
+        }
     }
 
     private fun requestLocationPermission() {
@@ -228,5 +237,37 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onStop() {
         super.onStop()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    setupMap()
+                } else {
+                    // Người dùng từ chối cấp quyền
+                    Util.showDialog(
+                        requireContext(),
+                        "Ứng dụng cần quyền truy cập vị trí để tiếp tục. Vui lòng bật quyền trong Cài đặt.",
+                        "Đi đến cài đặt",
+                        {
+                            val intent = Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            val uri = Uri.fromParts("package", requireContext().packageName, null)
+                            intent.data = uri
+                            startActivity(intent)
+                        },
+                        "Huỷ",
+                        {
+                            requireActivity().finish()
+                        }
+                    )
+                }
+            }
+        }
     }
 }

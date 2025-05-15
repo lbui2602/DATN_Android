@@ -29,12 +29,14 @@ import com.example.datn.view.main.fragment.for_manage.attendance.ManageAttendanc
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 @AndroidEntryPoint
 class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
-    private val viewModel : ManageWorkingDayViewModel by viewModels()
+    private val viewModel: ManageWorkingDayViewModel by viewModels()
     private lateinit var binding: FragmentManageWorkingDayBinding
-    val request = AttendanceRequest("","","")
+    val request = AttendanceRequest("", "", "")
     private var departments = mutableListOf<Department>()
+
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     lateinit var adapter: WorkingDayForManageAdapter
@@ -43,7 +45,15 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
     var id = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        departments.add(Department(_id = "", name = "Xem tất cả", createdAt = null, updatedAt = null, __v = null))
+        departments.add(
+            Department(
+                _id = "",
+                name = "Xem tất cả",
+                createdAt = null,
+                updatedAt = null,
+                __v = null
+            )
+        )
         viewModel.getDepartments()
     }
 
@@ -51,16 +61,16 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentManageWorkingDayBinding.inflate(layoutInflater,container,false)
+        binding = FragmentManageWorkingDayBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        id = arguments?.getString("idDepartment")?:""
+        id = arguments?.getString("idDepartment") ?: ""
         request.idDepartment = id
-        viewModel.getAllWorkingDay("Bearer "+sharedPreferencesManager.getAuthToken(),request)
+        viewModel.getAllWorkingDay("Bearer " + sharedPreferencesManager.getAuthToken(), request)
 //        if(!id.isNullOrBlank()){
 //            viewModel.getDepartmentById(
 //                "Bearer "+sharedPreferencesManager.getAuthToken(),
@@ -80,6 +90,7 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
         setRecyclerView()
 //        binding.edtDate.setText(Util.formatDate())
     }
+
     private fun setRecyclerView() {
         binding.rcv.layoutManager = LinearLayoutManager(requireContext())
         adapter = WorkingDayForManageAdapter(this)
@@ -91,7 +102,7 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
             findNavController().popBackStack()
         }
         binding.imgCalendar.setOnClickListener {
-            Util.showDatePicker(requireContext(),{
+            Util.showDatePicker(requireContext(), {
                 selectedDate = it
                 binding.edtDate.setText(selectedDate)
             })
@@ -106,13 +117,14 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
             request.name = search
             request.date = selectedDate
             viewModel.getAllWorkingDay(
-                "Bearer "+sharedPreferencesManager.getAuthToken(),
+                "Bearer " + sharedPreferencesManager.getAuthToken(),
                 request
             )
             Util.hideKeyboard(requireActivity())
         }
     }
-    private fun setDepartmentSpinner(){
+
+    private fun setDepartmentSpinner() {
         val adapterDepartment = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
@@ -121,9 +133,9 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
         adapterDepartment.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spnDepartment.adapter = adapterDepartment
 
-        if(id.isNullOrBlank()){
+        if (id.isNullOrBlank()) {
             binding.spnDepartment.isEnabled = true
-        }else {
+        } else {
             val index = departments.indexOfFirst { it._id == id }
             if (index != -1) {
                 binding.spnDepartment.setSelection(index)
@@ -133,15 +145,17 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
     }
 
     override fun setObserves() {
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
-            if(isLoading == true){
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            if (isLoading == true) {
                 binding.progressBar.visibility = View.VISIBLE
-            }else{
+                binding.btnSearch.isEnabled = false
+            } else {
                 binding.progressBar.visibility = View.GONE
+                binding.btnSearch.isEnabled = true
             }
         })
         viewModel.workingDayResponse.observe(viewLifecycleOwner, Observer { response ->
-            if(response != null){
+            if (response != null) {
                 if (response.code.toInt() == 1) {
 //                    adapter.submitList(response.attendances.toMutableList())
 //                    binding.rcv.scrollToPosition(response.attendances.size - 1)
@@ -150,30 +164,43 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
             }
         })
         viewModel.departmentResponse.observe(viewLifecycleOwner, Observer { response ->
-            if (response != null ) {
-                if(response.code.toInt()==1){
+            if (response != null) {
+                if (response.code.toInt() == 1) {
 //                    binding.tvTitle.text = response.department?.name
-                }else{
-                    Util.showDialog(requireContext(),response.message.toString())
+                } else {
+                    Util.showDialog(requireContext(), response.message.toString())
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
-        viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response->
+        viewModel.departmentsResponse.observe(viewLifecycleOwner, Observer { response ->
             if (response != null) {
-                if(response.code.toInt() == 1 && response.departments != null){
+                if (response.code.toInt() == 1 && response.departments != null) {
                     departments.clear()
-                    departments.add(Department(_id = "", name = "Xem tất cả", createdAt = null, updatedAt = null, __v = null)) // add lại "Xem tất cả"
+                    departments.add(
+                        Department(
+                            _id = "",
+                            name = "Xem tất cả",
+                            createdAt = null,
+                            updatedAt = null,
+                            __v = null
+                        )
+                    ) // add lại "Xem tất cả"
                     departments.addAll(response.departments.toMutableList()) // rồi add API trả về
                     setDepartmentSpinner()
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
         binding.spnDepartment.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 this@ManageWorkingDayFragment.id = departments[position]._id
             }
 
@@ -193,7 +220,10 @@ class ManageWorkingDayFragment : BaseFragment(), IClickWorkingDay {
 
     override fun selectWorkingDay(workingDay: WorkingDayXX) {
         val bundle = Bundle()
-        bundle.putString("workingDayId",workingDay._id)
-        findNavController().navigate(R.id.action_manageWorkingDayFragment_to_detailWorkingDayFragment,bundle)
+        bundle.putString("workingDayId", workingDay._id)
+        findNavController().navigate(
+            R.id.action_manageWorkingDayFragment_to_detailWorkingDayFragment,
+            bundle
+        )
     }
 }

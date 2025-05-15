@@ -53,10 +53,6 @@ class AttendanceViewModel @Inject constructor(
         imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(context),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    Log.e("CameraFragment", "capture2")
-//                    val resizedFile = Util.resizeImageFile(file)
-//                    _file.value = resizedFile
-//                    uploadImageToCompare(resizedFile)
                     uploadImage(file)
                 }
                 override fun onError(exception: ImageCaptureException) {

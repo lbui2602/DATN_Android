@@ -261,8 +261,12 @@ class RegisterFragment : BaseFragment() {
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
             if (isLoading == true) {
                 binding.progressBar.visibility = View.VISIBLE
+                binding.btnRegister.isEnabled = false
+                binding.llBack.isEnabled = false
             } else {
                 binding.progressBar.visibility = View.GONE
+                binding.btnRegister.isEnabled = true
+                binding.llBack.isEnabled = true
             }
         })
     }

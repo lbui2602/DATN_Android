@@ -279,8 +279,10 @@ class UpdateUserInfoFragment : BaseFragment() {
         viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading->
             if(isLoading == true){
                 binding.progressBar.visibility = View.VISIBLE
+                binding.btnChange.isEnabled = false
             }else{
                 binding.progressBar.visibility = View.GONE
+                binding.btnChange.isEnabled = true
             }
         })
     }
