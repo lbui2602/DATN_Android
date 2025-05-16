@@ -6,9 +6,11 @@ import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAllAttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
+import com.example.datn.models.department.CreateDepartmentRequest
 import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.upload_avatar.UploadAvatarResponse
 import com.example.datn.models.department.DepartmentsResponses
+import com.example.datn.models.department.UpdateDepartmentRequest
 import com.example.datn.models.face_token.FaceTokenRequest
 import com.example.datn.models.face_token.FaceTokenResponse
 import com.example.datn.models.group.AddRequest
@@ -42,6 +44,7 @@ import com.example.datn.view.main.fragment.working_day.DetailWorkingDayViewModel
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -248,4 +251,23 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("groupId") groupId : String
     ) : UserResponse
+
+    @PUT("api/departments/{id}")
+    suspend fun updateDepartment(
+        @Header("Authorization") token: String,
+        @Path("id") id : String,
+        @Body request : UpdateDepartmentRequest
+    ) : DepartmentResponse
+
+    @DELETE("api/departments/{id}")
+    suspend fun deleteDepartment(
+        @Header("Authorization") token: String,
+        @Path("id") id : String,
+    ) : TrainingResponse
+
+    @POST("api/departments")
+    suspend fun createDepartment(
+        @Header("Authorization") token: String,
+        @Body request : CreateDepartmentRequest
+    ) : DepartmentResponse
 }

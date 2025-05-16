@@ -14,17 +14,22 @@ import android.media.MediaPlayer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
 import com.example.datn.R
 import com.example.datn.databinding.CustomSnackbarBinding
+import com.example.datn.models.department.Department
 import com.example.datn.models.message.Message
 import com.example.datn.view.auth.AuthActivity
 import com.google.android.material.snackbar.Snackbar
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.text.Normalizer
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -108,6 +113,62 @@ object Util {
         }
         builder.show()
     }
+    fun showAddOrUpdateDialog(
+        context: Context,
+        isUpdate: Boolean = false,
+        department: Department? = null,
+        action: ((String) -> Unit)? = null
+    ) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_update_department, null)
+        val edtName = dialogView.findViewById<EditText>(R.id.edtDepartmentName)
+        val tvTitle = dialogView.findViewById<TextView>(R.id.tvTitle)
+        val btnCancel = dialogView.findViewById<Button>(R.id.btnCancel)
+        val btnConfirm = dialogView.findViewById<Button>(R.id.btnConfirm)
+
+        if (isUpdate && department != null) {
+            edtName.setText(department.name)
+            tvTitle.text = "Cập nhật phòng ban"
+            btnConfirm.text = "Cập nhật"
+        } else {
+            tvTitle.text = "Thêm phòng ban"
+            btnConfirm.text = "Thêm"
+        }
+
+        val alertDialog = AlertDialog.Builder(context)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        btnCancel.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        btnConfirm.setOnClickListener {
+            val name = edtName.text.toString().trim()
+            if (name.isEmpty()) {
+                edtName.error = "Vui lòng nhập tên"
+                return@setOnClickListener
+            }
+
+            action?.invoke(name) // Gọi hàm action truyền vào với name
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+    }
+
+    fun convertToSnakeCase(fullName: String): String {
+        val normalized = Normalizer.normalize(fullName, Normalizer.Form.NFD)
+        val withoutDiacritics = normalized.replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
+        val snakeCase = withoutDiacritics
+            .trim()
+            .lowercase(Locale.getDefault())
+            .replace("[^a-z0-9\\s]".toRegex(), "") // loại bỏ ký tự đặc biệt
+            .replace("\\s+".toRegex(), "_") // thay khoảng trắng bằng _
+        return snakeCase
+    }
+
+
     fun formatDate(): String {
         val date = Date()
         val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())

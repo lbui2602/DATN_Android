@@ -57,10 +57,6 @@ class ListStaffFragment : BaseFragment(), IClickUser {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getListUserByDepartmentID(
-            "Bearer "+sharedPreferencesManager.getAuthToken(),
-            idDepartment,""
-        )
         viewModel.getDepartmentById(
             "Bearer "+sharedPreferencesManager.getAuthToken(),
             idDepartment
@@ -175,6 +171,10 @@ class ListStaffFragment : BaseFragment(), IClickUser {
 
     override fun onResume() {
         super.onResume()
+        viewModel.getListUserByDepartmentID(
+            "Bearer "+sharedPreferencesManager.getAuthToken(),
+            idDepartment,""
+        )
         if(sharedPreferencesManager.getUserRole().toString().equals("nhan_vien")){
             findNavController().popBackStack()
         }

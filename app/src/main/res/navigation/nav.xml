@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_settingFragment_to_manageWorkingDayFragment"
             app:destination="@id/manageWorkingDayFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_manageDepartmentFragment"
+            app:destination="@id/manageDepartmentFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -154,4 +157,8 @@
         android:id="@+id/addGroupFragment"
         android:name="com.example.datn.view.main.fragment.mess.add_group.AddGroupFragment"
         android:label="AddGroupFragment" />
+    <fragment
+        android:id="@+id/manageDepartmentFragment"
+        android:name="com.example.datn.view.main.fragment.for_manage.manage_department.ManageDepartmentFragment"
+        android:label="ManageDepartmentFragment" />
 </navigation>

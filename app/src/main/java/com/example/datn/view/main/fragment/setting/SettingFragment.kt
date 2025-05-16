@@ -27,26 +27,36 @@ class SettingFragment : BaseFragment() {
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     private lateinit var binding: FragmentSettingBinding
-    private val viewModel : SettingViewModel by viewModels()
+    private val viewModel: SettingViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+
     override fun onResume() {
         super.onResume()
-        viewModel.getUserInfo("Bearer "+sharedPreferencesManager.getAuthToken())
+        viewModel.getUserInfo("Bearer " + sharedPreferencesManager.getAuthToken())
         setTabBar()
     }
 
     override fun setView() {
         checkRole()
     }
-    private fun checkRole(){
-        if(sharedPreferencesManager.getUserRole().toString().equals("giam_doc") || sharedPreferencesManager.getUserRole().toString().equals("truong_phong")){
+
+    private fun checkRole() {
+        if (sharedPreferencesManager.getUserRole().toString()
+                .equals("giam_doc") || sharedPreferencesManager.getUserRole().toString()
+                .equals("truong_phong")
+        ) {
             binding.llManageStaff.visibility = View.VISIBLE
             binding.llManageAttendance.visibility = View.VISIBLE
             binding.llManageWorkingDay.visibility = View.VISIBLE
-        }else{
+            if (sharedPreferencesManager.getUserRole().toString().equals("giam_doc")) {
+                binding.llManageDepartment.visibility = View.VISIBLE
+            } else {
+                binding.llManageDepartment.visibility = View.GONE
+            }
+        } else {
             binding.llManageStaff.visibility = View.GONE
             binding.llManageWorkingDay.visibility = View.GONE
             binding.llManageAttendance.visibility = View.GONE
@@ -55,18 +65,21 @@ class SettingFragment : BaseFragment() {
 
     override fun setAction() {
         binding.llLogout.setOnClickListener {
-            Util.showDialog(requireContext(),"Bạn có muốn đăng xuất?","OK", {
+            Util.showDialog(requireContext(), "Bạn có muốn đăng xuất?", "OK", {
                 Util.logout(sharedPreferencesManager)
-                startActivity(Intent(requireActivity(),AuthActivity::class.java))
+                startActivity(Intent(requireActivity(), AuthActivity::class.java))
                 requireActivity().finish()
-            },"Hủy")
+            }, "Hủy")
         }
         binding.llManageStaff.setOnClickListener {
             val bundle = Bundle()
-            if(sharedPreferencesManager.getUserRole().toString().equals("truong_phong")){
-                bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
-                findNavController().navigate(R.id.action_settingFragment_to_listStaffFragment,bundle)
-            }else{
+            if (sharedPreferencesManager.getUserRole().toString().equals("truong_phong")) {
+                bundle.putString("idDepartment", sharedPreferencesManager.getDepartment())
+                findNavController().navigate(
+                    R.id.action_settingFragment_to_listStaffFragment,
+                    bundle
+                )
+            } else {
                 findNavController().navigate(R.id.action_settingFragment_to_departmentFragment)
             }
         }
@@ -75,36 +88,51 @@ class SettingFragment : BaseFragment() {
         }
         binding.llManageAttendance.setOnClickListener {
             val bundle = Bundle()
-            if(!sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-                bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
-                findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
-            }else{
-                findNavController().navigate(R.id.action_settingFragment_to_manageAttendanceFragment,bundle)
+            if (!sharedPreferencesManager.getUserRole().toString().equals("giam_doc")) {
+                bundle.putString("idDepartment", sharedPreferencesManager.getDepartment())
+                findNavController().navigate(
+                    R.id.action_settingFragment_to_manageAttendanceFragment,
+                    bundle
+                )
+            } else {
+                findNavController().navigate(
+                    R.id.action_settingFragment_to_manageAttendanceFragment,
+                    bundle
+                )
             }
         }
         binding.llManageWorkingDay.setOnClickListener {
             val bundle = Bundle()
-            if(!sharedPreferencesManager.getUserRole().toString().equals("giam_doc")){
-                bundle.putString("idDepartment",sharedPreferencesManager.getDepartment())
-                findNavController().navigate(R.id.action_settingFragment_to_manageWorkingDayFragment,bundle)
-            }else{
-                findNavController().navigate(R.id.action_settingFragment_to_manageWorkingDayFragment,bundle)
+            if (!sharedPreferencesManager.getUserRole().toString().equals("giam_doc")) {
+                bundle.putString("idDepartment", sharedPreferencesManager.getDepartment())
+                findNavController().navigate(
+                    R.id.action_settingFragment_to_manageWorkingDayFragment,
+                    bundle
+                )
+            } else {
+                findNavController().navigate(
+                    R.id.action_settingFragment_to_manageWorkingDayFragment,
+                    bundle
+                )
             }
+        }
+        binding.llManageDepartment.setOnClickListener {
+            findNavController().navigate(R.id.action_settingFragment_to_manageDepartmentFragment)
         }
     }
 
     override fun setObserves() {
-        viewModel.userInfoResponse.observe(this, Observer { response->
+        viewModel.userInfoResponse.observe(this, Observer { response ->
             if (response != null) {
-                if(response.code.toInt() == 1){
+                if (response.code.toInt() == 1) {
                     sharedPreferencesManager.saveUserRole(response.user.roleId)
                     sharedPreferencesManager.saveDepartment(response.user.idDepartment)
                     checkRole()
-                }else{
-                    Util.showDialog(requireContext(),response.message)
+                } else {
+                    Util.showDialog(requireContext(), response.message)
                 }
             } else {
-                Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, "Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
     }
@@ -112,11 +140,12 @@ class SettingFragment : BaseFragment() {
     override fun setTabBar() {
         (requireActivity() as MainActivity).binding.bnvMain.visibility = View.VISIBLE
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSettingBinding.inflate(layoutInflater,container,false)
+        binding = FragmentSettingBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }

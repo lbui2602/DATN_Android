@@ -1,23 +1,18 @@
 package com.example.datn.view.main.adapter
 
 import android.annotation.SuppressLint
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.example.datn.R
 import com.example.datn.click.IClickDepartment
 import com.example.datn.databinding.LayoutMessItemBinding
 import com.example.datn.models.department.Department
-import com.example.datn.util.Util
 
-class DepartmentAdapter(
+class ManageDepartmentAdapter(
     private val iClick: IClickDepartment
-) : ListAdapter<Department, DepartmentAdapter.DepartmentViewHolder>(DepartmentDiffCallback()) {
+) : ListAdapter<Department, ManageDepartmentAdapter.DepartmentViewHolder>(DepartmentDiffCallback()) {
 
     class DepartmentViewHolder(val binding: LayoutMessItemBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -30,7 +25,6 @@ class DepartmentAdapter(
     override fun getItemCount(): Int {
         return currentList.size
     }
-    fun getItemAt(position: Int): Department = currentList[position]
 
     @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: DepartmentViewHolder, position: Int) {

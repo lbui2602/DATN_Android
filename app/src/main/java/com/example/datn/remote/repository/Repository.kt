@@ -7,8 +7,10 @@ import com.example.datn.models.attendance.AttendanceRequest
 import com.example.datn.models.attendance.AttendanceResponse
 import com.example.datn.models.attendance.GetAllAttendanceResponse
 import com.example.datn.models.attendance.GetAttendanceByUserIdRequest
+import com.example.datn.models.department.CreateDepartmentRequest
 import com.example.datn.models.department.DepartmentResponse
 import com.example.datn.models.department.DepartmentsResponses
+import com.example.datn.models.department.UpdateDepartmentRequest
 import com.example.datn.models.face_api.AddFaceResponse
 import com.example.datn.models.face_api.CompareFaceResponse
 import com.example.datn.models.face_api.CreateFaceSetResponse
@@ -256,4 +258,27 @@ class Repository @Inject constructor(
     ) : UserResponse {
         return apiService.getUserInGroup(token,groupId)
     }
+
+    suspend fun updateDepartment(
+        token: String,
+        id: String,
+        request: UpdateDepartmentRequest
+    ) : DepartmentResponse {
+        return apiService.updateDepartment(token,id,request)
+    }
+
+    suspend fun deleteDepartment(
+        token: String,
+        id: String
+    ) : TrainingResponse {
+        return apiService.deleteDepartment(token,id)
+    }
+
+    suspend fun createDepartment(
+        token: String,
+        request: CreateDepartmentRequest
+    ) : DepartmentResponse {
+        return apiService.createDepartment(token,request)
+    }
+
 }
