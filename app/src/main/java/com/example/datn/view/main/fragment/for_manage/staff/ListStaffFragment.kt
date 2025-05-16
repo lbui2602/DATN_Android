@@ -84,6 +84,7 @@ class ListStaffFragment : BaseFragment(), IClickUser {
                 if(response.code.toInt()==1){
                     adapter.submitList(response.users)
                 }else{
+                    adapter.submitList(mutableListOf())
                     Util.showDialog(requireContext(),response.message.toString())
                 }
             } else {
