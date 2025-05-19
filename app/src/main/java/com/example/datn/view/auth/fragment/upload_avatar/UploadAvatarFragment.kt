@@ -55,9 +55,10 @@ class UploadAvatarFragment : BaseFragment() {
     lateinit var sharedPreferencesManager: SharedPreferencesManager
     private lateinit var file : MultipartBody.Part
     var face_token = ""
+    var isFromMain = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        isFromMain = arguments?.getBoolean("isFromMain") ?: false
     }
 
     override fun onResume() {
@@ -104,7 +105,11 @@ class UploadAvatarFragment : BaseFragment() {
             if(response != null){
                 if (response.code.toInt() == 1) {
                     Util.showDialog(requireContext(),response.message,"OK",{
-                        findNavController().popBackStack(R.id.loginFragment,true)
+                        if(isFromMain){
+                            findNavController().popBackStack()
+                        }else {
+                            findNavController().popBackStack(R.id.loginFragment, true)
+                        }
                     })
                 } else {
                     Util.showDialog(requireContext(),response.message)
@@ -123,7 +128,7 @@ class UploadAvatarFragment : BaseFragment() {
     }
 
     override fun setTabBar() {
-
+        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
     }
 
     private fun startCamera() {
@@ -149,10 +154,12 @@ class UploadAvatarFragment : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        sharedPreferencesManager.clearUserId()
-        sharedPreferencesManager.clearAuthToken()
-        sharedPreferencesManager.clearUserRole()
-        sharedPreferencesManager.clearDepartment()
+        if(!isFromMain){
+            sharedPreferencesManager.clearUserId()
+            sharedPreferencesManager.clearAuthToken()
+            sharedPreferencesManager.clearUserRole()
+            sharedPreferencesManager.clearDepartment()
+        }
     }
     override fun onRequestPermissionsResult(
         requestCode: Int,

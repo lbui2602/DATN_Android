@@ -42,6 +42,9 @@
         <action
             android:id="@+id/action_settingFragment_to_manageDepartmentFragment"
             app:destination="@id/manageDepartmentFragment" />
+        <action
+            android:id="@+id/action_settingFragment_to_uploadAvatarFragment2"
+            app:destination="@id/uploadAvatarFragment2" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -161,4 +164,8 @@
         android:id="@+id/manageDepartmentFragment"
         android:name="com.example.datn.view.main.fragment.for_manage.manage_department.ManageDepartmentFragment"
         android:label="ManageDepartmentFragment" />
+    <fragment
+        android:id="@+id/uploadAvatarFragment2"
+        android:name="com.example.datn.view.auth.fragment.upload_avatar.UploadAvatarFragment"
+        android:label="UploadAvatarFragment" />
 </navigation>

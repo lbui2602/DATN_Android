@@ -72,18 +72,28 @@ class LoginFragment : BaseFragment() {
             if (response != null) {
                 if (response.code.toInt() == 1) {
                     if (response.status) {
-                        sharedPreferencesManager.saveAuthToken(response.token)
-                        sharedPreferencesManager.saveUserId(response._id)
-                        sharedPreferencesManager.saveUserRole(response.roleId)
-                        sharedPreferencesManager.saveImage(response.image)
-                        sharedPreferencesManager.saveDepartment(response.idDepartment)
-                        startActivity(Intent(requireContext(), MainActivity::class.java))
-                        requireActivity().finish()
+                        if (!response.isAdmin) {
+                            if(!response.image.isNullOrEmpty()){
+                                sharedPreferencesManager.saveImage(response.image)
+                            }
+                            sharedPreferencesManager.saveAuthToken(response.token)
+                            sharedPreferencesManager.saveUserId(response._id)
+                            sharedPreferencesManager.saveUserRole(response.roleId)
+                            sharedPreferencesManager.saveDepartment(response.idDepartment)
+                            startActivity(Intent(requireContext(), MainActivity::class.java))
+                            requireActivity().finish()
+                        } else {
+                            Util.showDialog(
+                                requireContext(),
+                                "Tài khoản admin vui lòng đăng nhập trên website để sử dụng."
+                            )
+                        }
                     } else {
                         Util.showDialog(
                             requireContext(),
                             "Nhân viên chưa được xác thực. Vui lòng liên hệ quản lý."
                         )
+
                     }
                 } else {
                     Util.showDialog(requireContext(), response.message)

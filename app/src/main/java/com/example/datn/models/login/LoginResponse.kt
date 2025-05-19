@@ -14,5 +14,6 @@ data class LoginResponse(
     val idDepartment: String,
     val image: String,
     val status: Boolean,
-    val token: String
+    val token: String,
+    val isAdmin: Boolean,
 )

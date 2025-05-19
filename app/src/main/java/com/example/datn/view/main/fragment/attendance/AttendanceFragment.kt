@@ -80,8 +80,12 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
 
     override fun setAction() {
         binding.imgCapture.setOnClickListener {
-            viewModel.capturePhoto(requireContext(),imageCapture)
-            startTime = System.currentTimeMillis()
+            if(sharedPreferencesManager.getImage().isNullOrEmpty()){
+                Util.showDialog(requireContext(),"Vui lòng tải ảnh đại diện!")
+            }else{
+                viewModel.capturePhoto(requireContext(),imageCapture)
+                startTime = System.currentTimeMillis()
+            }
         }
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()

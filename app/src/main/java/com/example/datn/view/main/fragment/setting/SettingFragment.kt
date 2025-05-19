@@ -61,6 +61,7 @@ class SettingFragment : BaseFragment() {
             binding.llManageWorkingDay.visibility = View.GONE
             binding.llManageAttendance.visibility = View.GONE
         }
+
     }
 
     override fun setAction() {
@@ -119,6 +120,11 @@ class SettingFragment : BaseFragment() {
         binding.llManageDepartment.setOnClickListener {
             findNavController().navigate(R.id.action_settingFragment_to_manageDepartmentFragment)
         }
+        binding.llUploadAvatar.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putBoolean("isFromMain",true)
+            findNavController().navigate(R.id.action_settingFragment_to_uploadAvatarFragment2,bundle)
+        }
     }
 
     override fun setObserves() {
@@ -128,6 +134,12 @@ class SettingFragment : BaseFragment() {
                     sharedPreferencesManager.saveUserRole(response.user.roleId)
                     sharedPreferencesManager.saveDepartment(response.user.idDepartment)
                     checkRole()
+                    if(response.user.image.isNullOrEmpty()){
+                        binding.llUploadAvatar.visibility = View.VISIBLE
+                    }else{
+                        binding.llUploadAvatar.visibility = View.GONE
+                        sharedPreferencesManager.saveImage(response.user.image)
+                    }
                 } else {
                     Util.showDialog(requireContext(), response.message)
                 }
