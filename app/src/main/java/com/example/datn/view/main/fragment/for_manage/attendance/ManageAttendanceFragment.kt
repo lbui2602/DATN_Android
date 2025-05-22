@@ -107,6 +107,7 @@ class ManageAttendanceFragment : BaseFragment() {
             request.idDepartment = id
             request.name = search
             request.date = selectedDate
+            println("luong " + request.toString())
             viewModel.getAllAttendance(
                 "Bearer " + sharedPreferencesManager.getAuthToken(),
                 request
@@ -147,7 +148,7 @@ class ManageAttendanceFragment : BaseFragment() {
                 binding.btnSearch.isEnabled = false
             } else {
                 binding.progressBar.visibility = View.GONE
-                binding.btnSearch.isEnabled = false
+                binding.btnSearch.isEnabled = true
             }
         })
         viewModel.getAllAttendanceResponse.observe(viewLifecycleOwner, Observer { response ->
