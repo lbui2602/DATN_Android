@@ -59,6 +59,9 @@ class UploadAvatarFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         isFromMain = arguments?.getBoolean("isFromMain") ?: false
+        if(isFromMain){
+            (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
+        }
     }
 
     override fun onResume() {
@@ -128,7 +131,6 @@ class UploadAvatarFragment : BaseFragment() {
     }
 
     override fun setTabBar() {
-        (requireActivity() as MainActivity).binding.bnvMain.visibility = View.GONE
     }
 
     private fun startCamera() {
