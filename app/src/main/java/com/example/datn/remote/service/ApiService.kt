@@ -86,7 +86,6 @@ interface ApiService {
     suspend fun compare(
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part,
-        @Part("fileName") fileName: RequestBody,
         @Part("userId") userId: RequestBody,
         @Part("time") time: RequestBody,
         @Part("date") date: RequestBody

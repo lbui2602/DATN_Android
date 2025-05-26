@@ -94,12 +94,11 @@ class Repository @Inject constructor(
     suspend fun compare(
         token: String,
         file: MultipartBody.Part,
-        fileName: RequestBody,
         userId: RequestBody,
         time: RequestBody,
         date: RequestBody,
     ): AttendanceResponse {
-        return apiService.compare(token, file,fileName,userId, time, date)
+        return apiService.compare(token, file,userId, time, date)
     }
 
     suspend fun getAttendanceByUserIdAndDate(
