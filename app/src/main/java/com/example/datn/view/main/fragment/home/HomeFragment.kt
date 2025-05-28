@@ -73,7 +73,11 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun setAction() {
         binding.btnAttendance.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_attendanceFragment)
+            if(Util.getBSSID(requireContext()).toString().equals("52:f8:c0:76:60:aa")){
+                findNavController().navigate(R.id.action_homeFragment_to_attendanceFragment)
+            }else {
+                Util.showDialog(requireContext(),"Vui lòng bắt wifi công ty để chấm công.")
+            }
         }
         binding.imgMess.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_messFragment)

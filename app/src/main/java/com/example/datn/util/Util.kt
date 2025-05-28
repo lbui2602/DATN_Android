@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.media.MediaPlayer
+import android.net.wifi.WifiManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -39,6 +40,13 @@ object Util {
 //    172.20.10.4
 //    192.168.52.52
     val url = "http://127.0.0.1:3000"
+
+    fun getBSSID(context: Context): String? {
+        val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiInfo = wifiManager.connectionInfo
+        return wifiInfo.bssid // Đây là địa chỉ MAC của router WiFi
+    }
+
     @SuppressLint("RestrictedApi")
     fun showCustomSnackbar(
         view: View,
