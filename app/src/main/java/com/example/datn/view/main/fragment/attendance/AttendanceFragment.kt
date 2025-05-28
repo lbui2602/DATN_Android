@@ -21,6 +21,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datn.R
 import com.example.datn.base.BaseFragment
 import com.example.datn.click.IClickAttendance
 import com.example.datn.databinding.FragmentAttendanceBinding
@@ -80,12 +81,17 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
 
     override fun setAction() {
         binding.imgCapture.setOnClickListener {
-            if(sharedPreferencesManager.getImage().isNullOrEmpty()){
-                Util.showDialog(requireContext(),"Vui lòng tải ảnh đại diện!")
-            }else{
-                viewModel.capturePhoto(requireContext(),imageCapture)
-                startTime = System.currentTimeMillis()
+            if(Util.getBSSID(requireContext()).toString().equals("5c:a6:e6:cf:d4:50")){
+                if(sharedPreferencesManager.getImage().isNullOrEmpty()){
+                    Util.showDialog(requireContext(),"Vui lòng tải ảnh đại diện!")
+                }else{
+                    viewModel.capturePhoto(requireContext(),imageCapture)
+                    startTime = System.currentTimeMillis()
+                }
+            }else {
+                Util.showDialog(requireContext(),"Vui lòng bắt wifi công ty để chấm công.")
             }
+            Log.e("BSSID",Util.getBSSID(requireContext()).toString())
         }
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()
