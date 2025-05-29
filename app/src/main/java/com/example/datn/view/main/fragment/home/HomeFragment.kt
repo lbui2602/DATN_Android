@@ -27,7 +27,6 @@ import com.example.datn.util.Util
 import com.example.datn.view.main.MainActivity
 import com.example.datn.view.main.fragment.change_password.ChangePasswordViewModel
 import com.google.android.gms.location.*
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -37,6 +36,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.math.*
+
 @AndroidEntryPoint
 class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
@@ -44,15 +44,13 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
 
     private val viewModel: HomeViewModel by viewModels()
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
 
-
     private val fixedLocation = LatLng(21.053811, 105.735232)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -67,9 +65,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         return binding.root
     }
 
-    override fun setView() {
-
-    }
+    override fun setView() {}
 
     override fun setAction() {
         binding.btnAttendance.setOnClickListener {
@@ -80,8 +76,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    override fun setObserves() {
-    }
+    override fun setObserves() {}
 
     override fun setTabBar() {
         (requireActivity() as MainActivity).binding.bnvMain.visibility = View.VISIBLE
@@ -89,7 +84,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.e("Home","onViewCreated")
+        Log.e("Home", "onViewCreated")
     }
 
     override fun onResume() {
@@ -119,27 +114,12 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     }
 
     private fun setupMap() {
-        Log.e("setupMap","true")
+        Log.e("setupMap", "true")
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map) as? SupportMapFragment
         mapFragment?.getMapAsync(this)
 
-        // Khởi tạo FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-
-        // Thiết lập yêu cầu cập nhật vị trí
-        locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000) // Cập nhật mỗi 5 giây
-            .setMinUpdateDistanceMeters(10f) // Chỉ cập nhật khi di chuyển tối thiểu 10m
-            .build()
-
-        // Khởi tạo LocationCallback để lắng nghe vị trí mới
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                locationResult.lastLocation?.let { location ->
-                    updateLocationOnMap(LatLng(location.latitude, location.longitude))
-                }
-            }
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -163,16 +143,24 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         ) {
             Log.e("enableMyLocation", "Bắt đầu lấy vị trí")
             mMap.isMyLocationEnabled = true
-            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+
+            // Lấy vị trí hiện tại một lần duy nhất
+            fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        updateLocationOnMap(LatLng(location.latitude, location.longitude))
+                    } else {
+                        Toast.makeText(requireContext(), "Không lấy được vị trí hiện tại", Toast.LENGTH_SHORT).show()
+                    }
+                }
         } else {
             requestLocationPermission()
         }
     }
 
     private fun updateLocationOnMap(currentLatLng: LatLng) {
-        Log.e("updateLocationOnMap","start")
+        Log.e("updateLocationOnMap", "start")
         mMap.clear()
-
 
         mMap.addMarker(
             MarkerOptions()
@@ -188,7 +176,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
             fixedLocation.latitude, fixedLocation.longitude
         )
         binding.tvDistance.text = "Khoảng cách của bạn tới công ty là: ${"%.2f".format(distance)} mét"
-        if(distance < 1){
+        if (distance < 1) {
             binding.btnAttendance.isEnabled = true
             binding.btnAttendance.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(requireContext(), R.color.green)
@@ -203,7 +191,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
 
         val padding = 100 // Độ đệm cho camera (pixels)
         mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
-        Log.e("updateLocationOnMap","end")
+        Log.e("updateLocationOnMap", "end")
     }
 
     // Hàm vẽ đường đi giữa hai điểm
@@ -216,7 +204,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         mMap.addPolyline(polylineOptions)
     }
 
-    // Hàm tính khoảng cách giữa hai tọa độ (km)
+    // Hàm tính khoảng cách giữa hai tọa độ (mét)
     private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val R = 6371000 // Bán kính trái đất (mét)
         val dLat = Math.toRadians(lat2 - lat1)
@@ -228,12 +216,10 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         return R * c // Khoảng cách (mét)
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
-//        fusedLocationClient.removeLocationUpdates(locationCallback)
+        // Không cần remove location updates vì không đăng ký cập nhật liên tục nữa
     }
-
 
     override fun onStop() {
         super.onStop()
@@ -250,7 +236,6 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     setupMap()
                 } else {
-                    // Người dùng từ chối cấp quyền
                     Util.showDialog(
                         requireContext(),
                         "Ứng dụng cần quyền truy cập vị trí để tiếp tục. Vui lòng bật quyền trong Cài đặt.",
