@@ -22,10 +22,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "face_api_key", "\"${localProperties.getProperty("face_api_key")}\""
-        buildConfigField "String", "face_api_secret", "\"${localProperties.getProperty("face_api_secret")}\""
-        buildConfigField "String", "faceset_token", "\"${localProperties.getProperty("faceset_token")}\""
-        buildConfigField "String", "outer_id", "\"${localProperties.getProperty("outer_id")}\""
+        buildConfigField "String", "API_KEY", "\"${localProperties.getProperty("API_KEY")}\""
+
+        resValue "string", "google_maps_key", getApiKey()
     }
 
     buildTypes {
@@ -88,4 +87,9 @@ dependencies {
     implementation 'io.socket:socket.io-client:2.1.0'
 
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
+}
+def getApiKey() {
+    def properties = new Properties()
+    properties.load(new FileInputStream(rootProject.file("local.properties")))
+    return properties.getProperty("API_KEY")
 }

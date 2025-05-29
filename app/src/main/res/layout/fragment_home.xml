@@ -58,6 +58,8 @@
                     android:id="@+id/tvDistance"
                     android:textColor="@color/black"
                     android:layout_margin="20dp"
+                    android:gravity="center"
+                    android:textAlignment="center"
                     android:textSize="15sp"
                     android:text="Khoảng cách của bạn tới công ty là: "
                     android:layout_width="wrap_content"

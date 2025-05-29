@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.example.datn.BuildConfig
 import com.example.datn.R
 import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentHomeBinding
@@ -42,14 +43,12 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: FragmentHomeBinding
     private val LOCATION_PERMISSION_REQUEST_CODE = 1
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private val viewModel: HomeViewModel by viewModels()
     @Inject
     lateinit var sharedPreferencesManager: SharedPreferencesManager
 
-    private val fixedLocation = LatLng(21.053811, 105.735232)
+    private val fixedLocation = LatLng(21.053811, 105.735400)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +93,12 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            setupMap()
+            if (::mMap.isInitialized) {
+                enableMyLocation()
+            } else {
+                // Nếu map chưa sẵn sàng thì setup map (onMapReady sẽ xử lý tiếp)
+                setupMap()
+            }
         }
     }
 
@@ -175,11 +179,17 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
             currentLatLng.latitude, currentLatLng.longitude,
             fixedLocation.latitude, fixedLocation.longitude
         )
-        binding.tvDistance.text = "Khoảng cách của bạn tới công ty là: ${"%.2f".format(distance)} mét"
-        if (distance < 1) {
+        if (distance < 100) {
+            binding.tvDistance.text = "Khoảng cách của bạn tới công ty là: ${"%.2f".format(distance)} mét.\nBạn có thể chấm công ngay."
             binding.btnAttendance.isEnabled = true
             binding.btnAttendance.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(requireContext(), R.color.green)
+            )
+        }else{
+            binding.tvDistance.text = "Khoảng cách của bạn tới công ty là: ${"%.2f".format(distance)} mét.\nVui lòng đi chuyển đến bán kính 100 mét để chấm công."
+            binding.btnAttendance.isEnabled = false
+            binding.btnAttendance.backgroundTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(requireContext(), R.color.grey)
             )
         }
 
