@@ -52,7 +52,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
     lateinit var sharedPreferencesManager: SharedPreferencesManager
 
 
-    private val fixedLocation = LatLng(21.02295, 105.80137)
+    private val fixedLocation = LatLng(21.053811, 105.735232)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
