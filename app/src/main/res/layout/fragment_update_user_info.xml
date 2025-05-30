@@ -280,6 +280,18 @@
                             android:layout_gravity="center"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
+                        <Button
+                            android:id="@+id/btnReset"
+                            android:visibility="gone"
+                            android:background="@drawable/bg_rounded"
+                            android:backgroundTint="@color/green"
+                            android:text="Reset mật khẩu"
+                            android:paddingHorizontal="20dp"
+                            android:layout_marginBottom="10dp"
+                            android:textColor="@color/white"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>

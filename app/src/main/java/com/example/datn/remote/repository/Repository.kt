@@ -30,6 +30,7 @@ import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.password.CheckPasswordRequest
 import com.example.datn.models.password.CheckPasswordResponse
+import com.example.datn.models.password.ResetPasswordRequest
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.profile.User
 import com.example.datn.models.register.RegisterRequest
@@ -121,6 +122,13 @@ class Repository @Inject constructor(
         request: ChangePasswordRequest
     ): ChangePasswordResponse {
         return apiService.changePassword(token, request)
+    }
+
+    suspend fun resetPassword(
+        token: String,
+        request: ResetPasswordRequest
+    ): ChangePasswordResponse {
+        return apiService.resetPassword(token, request)
     }
 
     suspend fun getMessages(groupId: String): MessageResponse {

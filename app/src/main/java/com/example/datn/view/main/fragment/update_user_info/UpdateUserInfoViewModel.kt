@@ -6,8 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datn.models.department.DepartmentsResponses
+import com.example.datn.models.password.ChangePasswordRequest
+import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.password.CheckPasswordRequest
 import com.example.datn.models.password.CheckPasswordResponse
+import com.example.datn.models.password.ResetPasswordRequest
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.role.RolesResponse
 import com.example.datn.models.update_user.UpdateUserRequest
@@ -34,11 +37,45 @@ class UpdateUserInfoViewModel @Inject constructor(
     private val _departmentsResponse = MutableLiveData<DepartmentsResponses?>()
     val departmentsResponse: LiveData<DepartmentsResponses?> get() = _departmentsResponse
 
+    private val _resetPasswordResponse = MutableLiveData<ChangePasswordResponse?>()
+    val resetPasswordResponse: LiveData<ChangePasswordResponse?> get() = _resetPasswordResponse
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean?> get() = _isLoading
 
     private val _isVisible = MutableLiveData<Boolean?>()
     val isVisible: LiveData<Boolean?> get() = _isVisible
+
+    init {
+        _isVisible.value = false
+    }
+
+    fun changVisiblePassword() {
+        if (_isVisible.value == true) {
+            _isVisible.value = false
+        } else {
+            _isVisible.value = true
+        }
+    }
+
+    fun resetPassword(token: String,request: ResetPasswordRequest){
+        viewModelScope.launch {
+            _isLoading.postValue(true)
+            try {
+                val response = repository.resetPassword(token,request)
+                if(response != null){
+                    _resetPasswordResponse.postValue(response)
+                }
+                else{
+                    _resetPasswordResponse.postValue(null)
+                }
+
+            } catch (e: Exception) {
+                _resetPasswordResponse.postValue(null)
+            }
+            _isLoading.postValue(false)
+        }
+    }
 
     fun updateUser(token : String, request: UpdateUserRequest){
         viewModelScope.launch {
@@ -72,13 +109,6 @@ class UpdateUserInfoViewModel @Inject constructor(
         }
     }
 
-    fun changVisiblePassword() {
-        if (_isVisible.value == true) {
-            _isVisible.value = false
-        } else {
-            _isVisible.value = true
-        }
-    }
     fun getRoles(){
         viewModelScope.launch {
             _isLoading.postValue(true)

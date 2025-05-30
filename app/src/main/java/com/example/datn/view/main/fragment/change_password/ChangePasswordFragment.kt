@@ -1,6 +1,7 @@
 package com.example.datn.view.main.fragment.change_password
 
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -57,6 +58,15 @@ class ChangePasswordFragment : BaseFragment() {
                     ChangePasswordRequest(oldPass,newPass))
             })
         }
+        binding.imgNewVisible.setOnClickListener {
+            viewModel.changVisiblePasswordNew()
+        }
+        binding.imgOldVisible.setOnClickListener {
+            viewModel.changVisiblePassword()
+        }
+        binding.imgNewVisibleConfirm.setOnClickListener {
+            viewModel.changVisiblePasswordConfirm()
+        }
     }
 
     override fun setObserves() {
@@ -79,6 +89,44 @@ class ChangePasswordFragment : BaseFragment() {
                     Util.showDialog(requireContext(),response.message)
                 }
             }
+        })
+        viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->
+            if (isVisible == true) {
+                binding.imgOldVisible.setImageResource(R.drawable.ic_visible_off)
+                binding.edtOldPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                binding.imgOldVisible.setImageResource(R.drawable.ic_visible)
+                binding.edtOldPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtOldPassword.setSelection(binding.edtOldPassword.text!!.length)
+        })
+
+        viewModel.isVisibleConfirm.observe(viewLifecycleOwner, Observer { isVisible ->
+            if (isVisible == true) {
+                binding.imgNewVisibleConfirm.setImageResource(R.drawable.ic_visible_off)
+                binding.edtNewPasswordConfirm.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                binding.imgNewVisibleConfirm.setImageResource(R.drawable.ic_visible)
+                binding.edtNewPasswordConfirm.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtNewPasswordConfirm.setSelection(binding.edtNewPasswordConfirm.text!!.length)
+        })
+
+        viewModel.isVisibleNew.observe(viewLifecycleOwner, Observer { isVisible ->
+            if (isVisible == true) {
+                binding.imgNewVisible.setImageResource(R.drawable.ic_visible_off)
+                binding.edtNewPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                binding.imgNewVisible.setImageResource(R.drawable.ic_visible)
+                binding.edtNewPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtNewPassword.setSelection(binding.edtNewPassword.text!!.length)
         })
     }
 

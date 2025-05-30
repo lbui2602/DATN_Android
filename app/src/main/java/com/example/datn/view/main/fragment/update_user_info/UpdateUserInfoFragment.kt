@@ -1,6 +1,7 @@
 package com.example.datn.view.main.fragment.update_user_info
 
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import com.example.datn.base.BaseFragment
 import com.example.datn.databinding.FragmentUpdateUserInfoBinding
 import com.example.datn.models.department.Department
 import com.example.datn.models.password.CheckPasswordRequest
+import com.example.datn.models.password.ResetPasswordRequest
 import com.example.datn.models.profile.User
 import com.example.datn.models.role.Role
 import com.example.datn.models.update_user.UpdateUserRequest
@@ -102,6 +104,11 @@ class UpdateUserInfoFragment : BaseFragment() {
         if(from.equals("profile")){
             binding.spnRole.isEnabled = false
             binding.spnDepartment.isEnabled = false
+            binding.btnReset.visibility = View.GONE
+        } else {
+            binding.btnReset.visibility = View.VISIBLE
+            binding.spnRole.isEnabled = true
+            binding.spnDepartment.isEnabled = true
         }
         if(user!=null){
             binding.tvEmail.text = user.email
@@ -153,6 +160,13 @@ class UpdateUserInfoFragment : BaseFragment() {
             val pass = binding.edtPassword.text.toString().trim()
             viewModel.checkPassword("Bearer "+sharedPreferencesManager.getAuthToken(),
                 CheckPasswordRequest(pass))
+        }
+        binding.btnReset.setOnClickListener {
+            viewModel.resetPassword("Bearer "+sharedPreferencesManager.getAuthToken(),
+                ResetPasswordRequest(user._id))
+        }
+        binding.imgNewVisible.setOnClickListener {
+            viewModel.changVisiblePassword()
         }
     }
 
@@ -258,6 +272,15 @@ class UpdateUserInfoFragment : BaseFragment() {
                 Snackbar.make(binding.root,"Fail to load data", Snackbar.LENGTH_SHORT).show()
             }
         })
+        viewModel.resetPasswordResponse.observe(viewLifecycleOwner, Observer { response ->
+            if(response != null){
+                if ( response.code.toInt() == 1) {
+                    Util.showDialog(requireContext(),response.message,"OK")
+                } else {
+                    Util.showDialog(requireContext(),response.message)
+                }
+            }
+        })
         binding.spnRole.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedRoleID = roles[position]._id
@@ -284,6 +307,18 @@ class UpdateUserInfoFragment : BaseFragment() {
                 binding.progressBar.visibility = View.GONE
                 binding.btnChange.isEnabled = true
             }
+        })
+        viewModel.isVisible.observe(viewLifecycleOwner, Observer { isVisible ->
+            if (isVisible == true) {
+                binding.imgNewVisible.setImageResource(R.drawable.ic_visible_off)
+                binding.edtPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            } else {
+                binding.imgNewVisible.setImageResource(R.drawable.ic_visible)
+                binding.edtPassword.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+            binding.edtPassword.setSelection(binding.edtPassword.text!!.length)
         })
     }
 

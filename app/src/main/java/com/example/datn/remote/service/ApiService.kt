@@ -27,6 +27,7 @@ import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.password.CheckPasswordRequest
 import com.example.datn.models.password.CheckPasswordResponse
+import com.example.datn.models.password.ResetPasswordRequest
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
@@ -111,6 +112,12 @@ interface ApiService {
     suspend fun changePassword(
         @Header("Authorization") token: String,
         @Body request: ChangePasswordRequest
+    ): ChangePasswordResponse
+
+    @PUT("api/auth/reset-password")
+    suspend fun resetPassword(
+        @Header("Authorization") token: String,
+        @Body request: ResetPasswordRequest
     ): ChangePasswordResponse
 
     @GET("api/messages/{groupId}")
