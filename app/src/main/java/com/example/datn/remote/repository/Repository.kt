@@ -25,12 +25,15 @@ import com.example.datn.models.group.LeaveRequest
 import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.mail.SendOTPRequest
+import com.example.datn.models.mail.VerifyOTPRequest
 import com.example.datn.models.message.MessageResponse
 import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.password.CheckPasswordRequest
 import com.example.datn.models.password.CheckPasswordResponse
 import com.example.datn.models.password.ResetPasswordRequest
+import com.example.datn.models.password.UpdatePasswordRequest
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.profile.User
 import com.example.datn.models.register.RegisterRequest
@@ -286,6 +289,24 @@ class Repository @Inject constructor(
         request: CreateDepartmentRequest
     ) : DepartmentResponse {
         return apiService.createDepartment(token,request)
+    }
+
+    suspend fun sendOtp(
+        request: SendOTPRequest
+    ) : TrainingResponse {
+        return apiService.sendOtp(request)
+    }
+
+    suspend fun verifyOtp(
+        request: VerifyOTPRequest
+    ) : TrainingResponse {
+        return apiService.verifyOtp(request)
+    }
+
+    suspend fun updatePassword(
+        request: UpdatePasswordRequest
+    ) : TrainingResponse {
+        return apiService.updatePassword(request)
     }
 
 }

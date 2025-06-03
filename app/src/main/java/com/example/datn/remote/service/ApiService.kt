@@ -22,12 +22,15 @@ import com.example.datn.models.group.PrivateGroupResponse
 import com.example.datn.models.register.RegisterResponse
 import com.example.datn.models.login.LoginRequest
 import com.example.datn.models.login.LoginResponse
+import com.example.datn.models.mail.SendOTPRequest
+import com.example.datn.models.mail.VerifyOTPRequest
 import com.example.datn.models.message.MessageResponse
 import com.example.datn.models.password.ChangePasswordRequest
 import com.example.datn.models.password.ChangePasswordResponse
 import com.example.datn.models.password.CheckPasswordRequest
 import com.example.datn.models.password.CheckPasswordResponse
 import com.example.datn.models.password.ResetPasswordRequest
+import com.example.datn.models.password.UpdatePasswordRequest
 import com.example.datn.models.profile.ProfileResponse
 import com.example.datn.models.register.RegisterRequest
 import com.example.datn.models.role.RolesResponse
@@ -276,4 +279,19 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request : CreateDepartmentRequest
     ) : DepartmentResponse
+
+    @POST("api/mail/send-otp")
+    suspend fun sendOtp(
+        @Body request : SendOTPRequest
+    ) : TrainingResponse
+
+    @POST("api/mail/verify-otp")
+    suspend fun verifyOtp(
+        @Body request : VerifyOTPRequest
+    ) : TrainingResponse
+
+    @POST("api/auth/update-password")
+    suspend fun updatePassword(
+        @Body request : UpdatePasswordRequest
+    ) : TrainingResponse
 }
