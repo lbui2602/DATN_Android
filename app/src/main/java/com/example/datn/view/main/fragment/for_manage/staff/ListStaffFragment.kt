@@ -167,7 +167,7 @@ class ListStaffFragment : BaseFragment(), IClickUser {
                 "Bearer "+sharedPreferencesManager.getAuthToken(),
                 AcceptUserRequest(user._id)
             )
-        })
+        },"Hủy")
     }
 
     override fun onResume() {

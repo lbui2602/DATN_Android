@@ -81,7 +81,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
 
     override fun setAction() {
         binding.imgCapture.setOnClickListener {
-            if(Util.getBSSID(requireContext()).toString().equals("a2:01:46:0b:bb:0b")){
+            if(Util.getBSSID(requireContext()).toString().equals("ba:84:3a:4c:45:78")){
                 if(sharedPreferencesManager.getImage().isNullOrEmpty()){
                     Util.showDialog(requireContext(),"Vui lòng tải ảnh đại diện!")
                 }else{
