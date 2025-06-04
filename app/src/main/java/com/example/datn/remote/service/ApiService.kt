@@ -290,7 +290,7 @@ interface ApiService {
         @Body request : VerifyOTPRequest
     ) : TrainingResponse
 
-    @POST("api/auth/update-password")
+    @PUT("api/auth/update-password")
     suspend fun updatePassword(
         @Body request : UpdatePasswordRequest
     ) : TrainingResponse

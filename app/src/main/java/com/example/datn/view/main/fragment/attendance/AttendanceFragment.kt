@@ -81,7 +81,7 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
 
     override fun setAction() {
         binding.imgCapture.setOnClickListener {
-            if(Util.getBSSID(requireContext()).toString().equals("5c:a6:e6:cf:d4:50")){
+            if(Util.getBSSID(requireContext()).toString().equals("a2:01:46:0b:bb:0b")){
                 if(sharedPreferencesManager.getImage().isNullOrEmpty()){
                     Util.showDialog(requireContext(),"Vui lòng tải ảnh đại diện!")
                 }else{
@@ -91,7 +91,6 @@ class AttendanceFragment : BaseFragment(),IClickAttendance {
             }else {
                 Util.showDialog(requireContext(),"Vui lòng bắt wifi công ty để chấm công.")
             }
-            Log.e("BSSID",Util.getBSSID(requireContext()).toString())
         }
         binding.imgBack.setOnClickListener {
             findNavController().popBackStack()

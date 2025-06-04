@@ -61,6 +61,7 @@ class HomeFragment : BaseFragment(), OnMapReadyCallback {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         requestLocationPermission()
+        Log.e("BSSID",Util.getBSSID(requireContext()).toString())
         return binding.root
     }
 

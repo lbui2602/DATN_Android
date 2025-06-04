@@ -65,6 +65,9 @@ class LoginFragment : BaseFragment() {
         binding.imgVisible.setOnClickListener {
             viewModel.changVisiblePassword()
         }
+        binding.tvForgotPassword.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_sendOtpFragment)
+        }
     }
 
     override fun setObserves() {
